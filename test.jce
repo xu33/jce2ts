@@ -1,0 +1,26 @@
+module ABC {
+    struct XXX {
+        0 require int count;//风口数量指标
+        1 optional string name;
+        2 require float age;
+    };
+
+    enum STORM_EYE_IDX_TYPE
+    {
+        STORM_EYE_IDX_TYPE_NUM,     //风口数量指标
+        STORM_EYE_IDX_TYPE_LEVEL,   //板块风级指标
+    };
+
+    struct BBB {
+        0 require int count;
+        1 optional string name;
+        2 require float age;
+    };
+
+    struct ZZZ {
+        0 require int count;
+        1 optional string name;
+        2 require float age;
+        4 require STORM_EYE_IDX_TYPE zb;
+    };
+};
