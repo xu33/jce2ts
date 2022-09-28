@@ -1,4 +1,10 @@
-// const template = require("@babel/template").default;
+/**
+ * author:nanshi
+ * jce格式协议转ts格式类型声明
+ * 首先解析jce生成自定义的数据结构
+ * 根据数据手工构建AST抽象语法树，并生成代码
+ * 支持注释保留，对enum等特性做ts对等的转换
+ */
 const generate = require("@babel/generator").default;
 const t = require("@babel/types");
 const parser = require("./jce").parser;
