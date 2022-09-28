@@ -213,7 +213,7 @@ t
 {
     $$ = {
         type: $1,
-        childType: null,
+        params:[],
         isPrimitive: true
     }
 }
@@ -221,32 +221,34 @@ t
 {
     $$ = {
         type: $1,
-        childType: $1,
-        isReference: true
+        params:[],
+        isPrimitive: false
     }
 }
 | VECTOR OPEN t CLOSE
 {
     $$ = {
         type: 'Array',
-        childType: $3,
-        isReference: false
+        params: [$3],
+        isPrimitive: false
     }
 }
 | MAP OPEN t COMMA t CLOSE
 {
     $$ = {
         type: 'Record',
-        childType: [$3, $3],
-        isReference: true
+        params: [$3, $3],
+        isPrimitive: true
     }
 }
 | IDENTIFIER DOUBLE_COLON IDENTIFIER 
 {
     $$ = {
-        type: $1 + "[" + $3 + "]",
-        childType: null,
-        isReference: true
+        // type: $1 + "[" + $3 + "]",
+        // childType: null,
+        type:'IndexedAccessTypes',
+        params:[$1, $3],
+        isPrimitive: false
     }
 }
 ;

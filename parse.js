@@ -27,7 +27,30 @@ const content = fs.readFileSync(fileName, {
 
 const output = parser.parse(content);
 
-console.log(output);
+// console.log(output);
+
+// 递归创建引用类型
+// todo:实现递归创建类型
+const createTypeAnnotationRecursion = (typeInfo) => {
+  // console.log({ typeInfo });
+  if (typeInfo.params) {
+    typeInfo.params.forEach((t) => {
+      createTypeAnnotationRecursion(t);
+    });
+  }
+
+  if (typeInfo.isPrimitive) {
+    return t.tsTypeAnnotation(t.tsStringKeyword());
+  } else {
+    if (typeInfo.type === "Array") {
+      return t.tsTypeAnnotation(
+        t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.params[0])))
+      );
+    } else {
+      return t.tsTypeAnnotation(t.tsTypeReference(t.identifier(typeInfo.type)));
+    }
+  }
+};
 
 // 创建单个interface的Body数组
 const createInterfaceBody = (list) => {
@@ -37,19 +60,8 @@ const createInterfaceBody = (list) => {
     // console.log(o.name);
     const { typeInfo } = o;
     let node;
-    // if (typeInfo.isReference && typeInfo.type === "Array") {
-    //   node = t.tsPropertySignature(
-    //     t.identifier(o.name),
-    //     t.tsTypeAnnotation(
-    //       t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.childType)))
-    //     )
-    //   );
-    // } else {
-    //   node = t.tsPropertySignature(
-    //     t.identifier(o.name),
-    //     t.tsTypeAnnotation(t.tsStringKeyword())
-    //   );
-    // }
+
+    createTypeAnnotationRecursion(typeInfo);
 
     if (typeInfo.isPrimitive) {
       node = t.tsPropertySignature(
@@ -57,21 +69,29 @@ const createInterfaceBody = (list) => {
         t.tsTypeAnnotation(t.tsStringKeyword())
       );
     } else {
-      if (typeInfo.type === "Array") {
-        node = t.tsPropertySignature(
-          t.identifier(o.name),
-          t.tsTypeAnnotation(
-            t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.childType)))
-          )
-        );
-      } else {
-        node = t.tsPropertySignature(
-          t.identifier(o.name),
-          t.tsTypeAnnotation(
-            t.tsTypeReference(t.identifier(typeInfo.childType))
-          )
-        );
-      }
+      // if (typeInfo.type === "Array") {
+      //   node = t.tsPropertySignature(
+      //     t.identifier(o.name),
+      //     // t.tsTypeAnnotation(
+      //     //   t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.childType)))
+      //     // )
+      //     createTypeAnnotationRecursion(typeInfo)
+      //   );
+      // } else {
+      //   node = t.tsPropertySignature(
+      //     t.identifier(o.name),
+      //     t.tsTypeAnnotation(
+      //       t.tsTypeReference(t.identifier(typeInfo.childType))
+      //     )
+      //   );
+      // }
+      node = t.tsPropertySignature(
+        t.identifier(o.name),
+        // t.tsTypeAnnotation(
+        //   t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.childType)))
+        // )
+        createTypeAnnotationRecursion(typeInfo)
+      );
     }
 
     // 如果有注释，则插入注释

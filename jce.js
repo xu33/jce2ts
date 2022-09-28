@@ -243,7 +243,8 @@ case 20:
 
     this.$ = {
         type: $$[$0],
-        childType: null,
+        // childType: null,
+        params:[],
         isPrimitive: true
     }
 
@@ -252,8 +253,9 @@ case 21:
 
     this.$ = {
         type: $$[$0],
-        childType: $$[$0],
-        isReference: true
+        // childType: $$[$0],
+        params:[],
+        isPrimitive: false
     }
 
 break;
@@ -261,7 +263,8 @@ case 22:
 
     this.$ = {
         type: 'Array',
-        childType: $$[$0-1],
+        // childType: $$[$0-1],
+        params: [$$[$0-1]],
         isReference: false
     }
 
@@ -270,7 +273,7 @@ case 23:
 
     this.$ = {
         type: 'Record',
-        childType: [$$[$0-3], $$[$0-3]],
+        params: [$$[$0-3], $$[$0-3]],
         isReference: true
     }
 
@@ -278,8 +281,10 @@ break;
 case 24:
 
     this.$ = {
-        type: $$[$0-2] + "[" + $$[$0] + "]",
-        childType: null,
+        // type: $$[$0-2] + "[" + $$[$0] + "]",
+        // childType: null,
+        type:'IndexedAccessTypes',
+        params:[$$[$0-2], $$[$0]],
         isReference: true
     }
 
