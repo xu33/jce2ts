@@ -50,7 +50,13 @@ const createTypeRecursion = (typeInfo) => {
     }
   } else {
     if (typeInfo.type === "Array") {
-      return t.tsArrayType(createTypeRecursion(typeInfo.params[0]));
+      // return t.tsArrayType(createTypeRecursion(typeInfo.params[0]));
+      return t.tsTypeReference(
+        t.identifier(typeInfo.type),
+        t.tsTypeParameterInstantiation([
+          createTypeRecursion(typeInfo.params[0]),
+        ])
+      );
     } else if (typeInfo.type === "Record") {
       // console.log("Record:", typeInfo);
       return t.tsTypeReference(

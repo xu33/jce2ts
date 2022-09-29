@@ -123,13 +123,13 @@ declare global {
     interface StockZDTHisDate {
       market?: string;
       sCode?: string;
-      setZtDays?: string[]; //近31天里涨停的日期
+      setZtDays?: Array<string>; //近31天里涨停的日期
 
-      setOneZtDays?: string[]; //近31天里一字涨停的日期
+      setOneZtDays?: Array<string>; //近31天里一字涨停的日期
 
-      setDtDays?: string[]; //近31天里跌停的日期
+      setDtDays?: Array<string>; //近31天里跌停的日期
 
-      setOneDtDays?: string[]; //近31天里一字跌停的日期
+      setOneDtDays?: Array<string>; //近31天里一字跌停的日期
 
     }
     interface FZDStockInfo {
@@ -159,7 +159,7 @@ declare global {
 
       iDetailNum?: string; //开板数
 
-      vecDetail?: FOpenBoardDetail[]; //当天开板明细
+      vecDetail?: Array<FOpenBoardDetail>; //当天开板明细
 
       stBoard?: FBoardPeriod; //几天几板
 
@@ -179,7 +179,7 @@ declare global {
 
       strStockZTReason?: string; //涨停原因
 
-      vecBlk?: FBlockSimpleInfo[]; //对应板块信息 全部,包括行业 地域 概念，带标识区分
+      vecBlk?: Array<FBlockSimpleInfo>; //对应板块信息 全部,包括行业 地域 概念，带标识区分
 
       dTotalMarketValue?: string; //总市值
 
@@ -187,7 +187,7 @@ declare global {
 
       nStockZTReasonUpdateTime?: string; //涨停原因更新时间戳 透传
 
-      vRelatedPlates?: string[]; //涨停原因 关联板块(爬虫)
+      vRelatedPlates?: Array<string>; //涨停原因 关联板块(爬虫)
 
       dHighPrice?: string; //当天最高价
 
@@ -239,7 +239,7 @@ declare global {
 
       mapZDtHisDate?: Record<string, StockZDTHisDate>; //历史涨停日期集合 不包含当天
 
-      vecPreZTStock?: FupanZTStockLabelInfo[]; //昨日涨停个股集合 
+      vecPreZTStock?: Array<FupanZTStockLabelInfo>; //昨日涨停个股集合 
 
       mapHisStockInfo?: Record<string, Record<string, FStockZTData>>; //个股历史信息，包括交易日，换手率等
 
