@@ -1,0 +1,293 @@
+#include "FupanHisFactor.jce"
+
+module FuPan
+{
+    //板块数据类型
+    enum E_BLOCK_DATA_TYPE
+    {
+        E_BLOCK_BASIC_DATA = 0,         //板块基础数据 0
+        E_BLOCK_DRAGON_HEAD,            //题材龙头(兼容老数据) 1
+        E_BLOCK_HIS_ZT_TRAIL,           //涨停历史轨迹(兼容老数据) 2
+        E_BLOCK_ZT_STATIC,              //涨停轮动(兼容老数据) 3
+        E_BLOCK_ZT_NUM,                 //板块涨停股数量 4
+        E_BLOCK_ZT_NUM_TS,              //板块涨停股数量(分时) 5
+        E_BLOCK_STORM_EYE,              //板块风口 6
+        E_BLOCK_STORM_EYE_IDX,          //风口指标 7
+
+        E_BLOCK_DATA_TYPE_END,          //结束符 无意义,用来遍历
+    };
+
+    enum E_BLK_BASIC_DATA_TYPE
+    {
+        E_BLK_BASIC_DATA_TYPE_BASIC = 0,    //基础信息
+        E_BLK_BASIC_DATA_TYPE_ZTSTK,        //涨停成分股
+        E_BLK_BASIC_DATA_TYPE_UNZTSTK,      //未涨停成分股
+        E_BLK_BASIC_DATA_TYPE_ALLSTK,       //所有成分股
+        E_BLK_BASIC_DATA_TYPE_ALL,          //所有信息
+    };
+
+    enum E_BLK_STK_ZD_STATE
+    {
+        E_BLK_STK_RISE,
+        E_BLK_STK_FALL,
+        E_BLK_STK_STATIC,
+        E_BLK_STK_ZT,
+        E_BLK_STK_DT,
+    };
+
+    enum E_BLK_STK_STNEW_TYPE
+    {
+        E_BLK_STK_NORMAL,
+        E_BLK_STK_NEW,
+        E_BLK_STK_ST,
+    };
+
+    struct FBlockInfo
+    {
+        0 optional FBlockSimpleInfo block;
+        1 optional double dHot;
+        2 optional double dChgRatio;
+    };
+
+    //板块涨停成分股(涨停股是少数可以多些字段)
+    struct FBlockStockInfo
+    {
+        0 optional int iMarket;                         //市场
+        1 optional string sCode;                        //代码
+        2 optional double dNowPrice;                    //最新价
+        3 optional double dChgRatio;                    //涨跌幅
+        4 optional double dTurnOver;                    //换手率
+        5 optional E_BLK_STK_ZD_STATE eZdState;         //涨跌状态
+        6 optional int iContinueBoard;                  //连板数
+        7 optional int iDetailNum;                      //开板数
+        8 optional FBoardPeriod stBoard;                //几天几板
+        9 optional E_STOCK_ZT_TYPE eType;               //涨停类型
+        10 optional int iFirstZTime;                    //首次涨停时间
+        11 optional int iLastZTime;                     //最后涨停时间
+        12 optional long lLastZTVol;                    //封板期间 最后封单量，当日最新涨停时刻的买一(跌停 就是卖一)档委托量
+        13 optional double dLastZTRatio;                //封板期间 最后封成比,最后封单量/成交量
+        14 optional E_BLK_STK_STNEW_TYPE eSTNew;        //是否是ST或新股
+        15 optional double dFloatValue;                 //流通市值
+        16 optional double dTotalMarketValue;           //总市值
+        17 optional double dAmount;                     //成交额
+        18 optional vector<FBlockInfo> vecBlk;          //所属板块集合
+        19 optional double dUpSpeed;                    //5min涨速
+		20 optional double dVolume;						//成交量
+    };
+
+    // //板块未涨停成分股(比较多尽可能不要加字段)
+    // struct FBlockUnZtStkInfo
+    // {
+    //     0 optional int iMarket;                         //市场
+    //     1 optional string sCode;                        //代码
+    //     2 optional double dNowPrice;                    //最新价
+    //     3 optional double dChgRatio;                    //涨跌幅
+    //     4 optional double dTurnOver;                    //换手率
+    //     5 optional bool bIsST = false;                  //是否是ST
+    //     6 optional double dFloatValue;                  //流通市值
+    //     7 optional double dTotalMarketValue;            //总市值
+    //     8 optional double dUpSpeed;                     //5min涨速
+    // };
+
+    //板块基础信息
+    struct FBlockBasicInfo
+    {
+        0 optional FBlockSimpleInfo blk;                //板块信息
+        1 optional double dChgRatio;                    //板块涨幅
+        2 optional double dDayMainMoneyInflow;          //主力资金净流入
+        3 optional double dDayMainMoneyRatio;           //主力占比
+        4 optional double dAmount;                      //成交额
+        5 optional double dLiangBi;                     //量比
+        6 optional double dHot;                         //板块热度
+        7 optional vector<int> vecZDFenBu;              //涨跌分布: 0:[跌停] 1:(跌停,-9) 2:[-9,8) 3:[-8,7) ... 11:[0平] ... 21:(9,涨停) 22:[涨停]
+        8 optional vector<int> vecZDFenBuFiltSTNew;     //涨跌分布 排除ST新股
+    };
+    //板块成分股
+    struct FBlcokStkSimpData
+    {
+        0 optional FBlockSimpleInfo blk;                //板块信息
+        1 optional vector<StockInfo> vecStk;            //涨停成分股列表
+    };
+    //完整的板块成分股
+    struct FBlockStkCompData
+    {
+        0 optional FBlockSimpleInfo blk;                //板块信息
+        1 optional vector<FBlockStockInfo> vecStk;      //涨停成分股列表
+    };
+
+    //板块基础数据成分股列表< tbBlockBasicData >
+    struct FBlockBasicData
+    {
+        0 optional FBlockBasicInfo stBlkBasic;          //板块基础信息
+        1 optional FBlcokStkSimpData stZtStk;           //涨停成分股
+        2 optional FBlcokStkSimpData stUnZtStk;         //未涨停成分股
+    };
+
+    //所有股票数据<内部使用>
+    // struct FAllStockData
+    // {
+    //     0 optional map<string, FBlockStockInfo> mapAllZtStk;
+    //     1 optional map<string, FBlockStockInfo> mapAllUnZtStk;
+    // };
+
+    //板块基础数据成分股详细信息<内部使用>
+    // struct FBlockDetailStockData
+    // {
+    //     0 optional FBlockBasicInfo stBlkBasic;              //板块基础信息
+    //     1 optional map<string, FBlockStockInfo> mapZtStk;   //涨停成分股
+    //     2 optional map<string, FBlockStockInfo> mapUnZtStk; //未涨停成分股
+    // };
+
+    //分割线----------------------------------------------------------------------------------------------
+
+    //题材龙头
+    struct FBlockDragonHead
+    {
+        0 optional int iDate;
+        1 optional map<string, FBlockZTData> mapDragonHeadBlk;
+    };
+
+    //历史轨迹
+    struct FBlockHisZTTrail
+    {
+        0 optional int iDate;
+        1 optional map<string, FBlockTimeTrail> ztTimeTrail;    //涨停板块历史轨迹，按时间
+        2 optional map<string, FBlockStockTrail> ztStockTrail;  //涨停板块历史轨迹，按股票
+    };
+
+    //板块轮动
+    struct FBlockZTStaticData
+    {
+        0 optional int iDate;
+        1 optional map<string, FBlockZTStatic> ztStatic;        //涨停板块轮动
+    };
+
+    struct FBlockZTStkNumInfo
+    {
+        0 optional FBlockSimpleInfo blk;            //板块信息
+        1 optional int iZTNum;                      //涨停家数
+        2 optional int iZTNumFiltSTNew;             //涨停家数过滤ST新股
+        3 optional map<int, int> mapDayZTNum;       //最近N天,日期对应涨停家数
+        4 optional map<int, int> mapDayZTNumFiltSTNew;//最近N天,日期对应涨停家数过滤ST新股
+    };
+
+    //板块涨停股数量
+    struct FBlockZTStkNum
+    {
+        0 optional int iDate;
+        1 optional map<string, FBlockZTStkNumInfo> mapBlkZTStkNum;
+    };
+
+    struct FZTStkNumTsInfo
+    {
+        0 optional int iTime;
+        1 optional int iZTStkNum;
+        2 optional int iZTStkNumFiltSTNew;
+    };
+
+    struct FBlockZTStkNumTsInfo
+    {
+        0 optional FBlockBasicData stBlkBasic;
+        1 optional FZTStkNumTsInfo stZtStkNum;
+    };
+    //板块涨停股数量(分时)
+    struct FBlockZTStkNumTs
+    {
+        0 optional int iDate;
+        1 optional vector<FBlockZTStkNumTsInfo> vecBlkZTStkNum;
+    };
+
+    //风口板块成分股
+    struct FBlockStormEyeStockInfo
+    {
+        0 optional StockInfo stk;                       //股票ID
+        1 optional int iNatureDayZTNum;                 //30自然日涨停次数
+        2 optional int iNatureDayLeadNum;               //30自然日领涨次数
+        3 optional double dDayMainMoneyInflow;          //主力资金净流入
+        4 optional double dDayMainMoneyRatio;           //主力资金净占比
+        5 optional double dLiangBi;                     //量比
+        6 optional bool bIsLeadStk = false;             //是否是领涨股
+    };
+
+    //板块风口龙头
+    struct FBlockStormEyeInfo
+    {
+        0 optional FBlockBasicInfo stBlkBasic;              //板块基础数据
+        1 optional vector<FBlockStormEyeStockInfo> vecStk;  //成分股(其中涨停股按30自然日涨停次数排序)
+        2 optional bool bIsNew = false;                     //是否是新产生的
+        3 optional int iContinueRiseDay;                    //连涨天数
+        4 optional int iZTStkNum;                           //涨停股数量 <日内风级>
+        5 optional int iNatureDayZTNum;                     //30自然日涨停股票数量和 <30自然日风级>
+        6 optional int iAccZTStkNum;                        //累计涨停股数量(某交易日没有涨停股则重置计数) <连续风级>
+        7 optional int iNatureDayUnuActNum;                 //30日炒作(异动)次数
+        8 optional vector<int> vecZTStkNum;                 //最近9个交易日涨停家数(不包括当天)
+        9 optional vector<double> vecChgRatio;              //最近19个交易日涨跌幅(不包括当天)
+        10 optional vector<double> vecMainRatio;            //最近19个交易日主力占比(不包括当天)
+    };
+
+    struct FBlockStormEye
+    {
+        0 optional int iDate;
+        1 optional vector<FBlockStormEyeInfo> vecBlkCoreStorm;  //核心风口
+        2 optional vector<FBlockStormEyeInfo> vecBlkCommStorm;  //普通风口
+    };
+
+    struct FBlockStormEyeExt
+    {
+        //             板块ID      日期  数据
+        0 optional map<string, map<int, map<string, int>>> mapBlkStkLeadNum;    //所有板块近N日 成分股->领涨idx
+        1 optional map<string, map<int, bool>> mapBlkUnuActNum;                 //所有板块近N日 是否异动(炒作)
+        2 optional map<string, map<int, double>> mapBlkChgRatio;                //所有板块近N日 涨跌幅
+        3 optional map<string, map<int, double>> mapBlkMainRatio;               //所有板块近N日 主力占比
+    };
+
+    //风口内部使用数据
+    struct FBlockStormEyeDB
+    {
+        0 optional int iDate;
+        1 optional FBlockStormEye stStormEye;
+        2 optional FBlockStormEyeExt stStormEyeExt;
+    };
+    //板块风级
+    struct FBlockStormLevel
+    {
+        0 optional FBlockSimpleInfo blk;//板块信息
+        1 optional int iZTStkNum;       //涨停股数量 <日内风级>
+        2 optional int iAccZTStkNum;    //累计涨停股数量(某交易日没有涨停股则重置计数) <连续风级>
+    };
+    struct FBlockStormNum
+    {
+        0 optional int iCoreStormNum;   //核心风口数量
+        1 optional int iCommStormNum;   //普通风口数量
+    };
+    //风口指标
+    struct FBlockStormEyeIdx
+    {
+        0 optional int iDate;
+        1 optional FBlockStormNum stStormNum;               //当天风口数量
+        2 optional map<string, FBlockStormLevel> mapStormLv;//板块->日内风口,连续风级
+    };
+
+    //板块附加信息< tbBlockExternData >
+    struct FBlockExternData
+    {
+        0 optional int iDate;                           //日期
+        1 optional FBlockDragonHead stDragonHead;       //题材龙头(兼容老数据)
+        2 optional FBlockHisZTTrail stHisZTTrail;       //涨停历史轨迹(兼容老数据)
+        3 optional FBlockZTStaticData stZTStatic;       //涨停轮动(兼容老数据)
+        4 optional FBlockZTStkNum stZTNum;              //板块涨停股数量
+        5 optional FBlockZTStkNumTs stZTNumTs;          //板块涨停股数量(分时)
+        6 optional FBlockStormEye stStormEye;           //板块风口
+        7 optional FBlockStormEyeIdx stStormEyeIdx;     //风口指标
+    };
+
+    //推送数据
+    struct FBlockData
+    {
+        0 optional int iDate;
+        1 optional map<string, FBlockBasicData> mapBlkBasicData;
+        2 optional map<string, FBlockStockInfo> mapAllZtStk;
+        3 optional map<string, FBlockStockInfo> mapAllUnZtStk;
+        4 optional FBlockExternData stBlkExtData;
+    };
+};

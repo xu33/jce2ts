@@ -1,0 +1,276 @@
+module HQSys
+{
+	struct HStockUnique
+	{
+		1 optional short shtSetcode;
+		2 optional string sCode;
+	};
+
+	//财务权息版本数据
+	struct HCWVerData
+	{
+			0 optional short shtSetCode;
+			1 optional string sCode;
+			2 optional long lCWVersion;			//财务数据最新版本
+			3 optional long lQXVersion;		    //权息数据最新版本
+			4 optional long lLTGChgVersion;	    //变动流通股最新版本
+	};
+
+    // 股票类型
+    enum E_STOCK_TYPE
+    {
+        E_STOCK_TYPE_A = 1,             // A股
+        E_STOCK_TYPE_B = 2              // B股
+    };
+
+    // 股票简称变动类型
+    enum E_SHT_NAME_CHG_TYPE
+    {
+        E_OTHER_CHG             = 0,                    // 其他
+        E_XGFX_CHG              = 1,                    // 新股发行
+        E_XGSR_CHG              = 2,                    // 新股首日
+        E_ST_CHG                = 3,                    // ST
+        E_CXST_CHG              = 4,                    // 撤销ST
+        E_PT_CHG                = 5,                    // PT
+        E_CXPT_CHG              = 6,                    // 撤销PT
+        E_XST_CHG               = 7,                    // *ST
+        E_CXXST_CHG             = 8,                    // 撤销*ST
+        E_CXXSTBST_CHG          = 9,                    // 撤销*ST变成ST
+        E_WCGGJCJG_CHG          = 10,                   // 完成股改简称加G
+        E_QDGGWCBZG_CHG         = 11,                   // 去掉股改完成标志G
+        E_JSGGWWCBZS_CHG        = 12,                   // 加上股改未完成标志S
+        E_WCGGJCQDS_CHG         = 13,                   // 完成股改简称去掉S
+        E_WCGGQDSTCXXSTBST_CHG  = 15,                   // 完成股改去掉S同时撤销*ST变成ST
+        E_GSMCHJYFWBG_CHG       = 16,                   // 公司名称或经营范围变更
+        E_HFSSSR_CHG            = 17,                   // 恢复上市首日
+        E_HFSSCR_CHG            = 18                    // 恢复上市次日
+    };
+
+    // 股票简称变动结构
+    struct HNameChgData
+    {
+        1 optional short shtMarket;
+        2 optional string sCode;
+        3 optional long lChgDate;                   // 变更日期
+        4 optional string sOldName;                 // 变更前名字
+        5 optional string sNewName;                 // 变更后名字
+        6 optional E_SHT_NAME_CHG_TYPE eType;       // 变更类型
+    };
+
+    // 返回客户端的曾用名结构
+    struct HNameUsedBefore
+    {
+        1 optional long lChgDate;                   // 变更日期
+        2 optional string sOldName;                 // 变更前名字
+        3 optional E_SHT_NAME_CHG_TYPE eType;       // 变更类型
+    };
+
+    struct HStockUpInfo
+    {
+        1 optional string sCode;                  //股票代码
+        2 optional short shtUnit;                 //最小成交单元
+        3 optional string sName;                  //股票名称
+        4 optional int iVolBase;
+        5 optional byte cPrecise;
+        6 optional short shtType;
+        7 optional vector<HNameUsedBefore> vChgData;   // 股票名称变更历史
+		8 optional int iBaseFreshCount;	               //给线上老版本客户端使用，极智版无用
+		9 optional int iGbFreshCount;                  //给线上老版本客户端使用，极智版无用
+    };
+
+    struct HStockDelistInfo
+    {
+        1 optional HStockUpInfo stInfo;
+        2 optional long lTsDate;                    // 退市日期
+    };
+    
+    struct HStockSuspendInfo
+    {
+        1 optional HStockUpInfo stInfo;
+        2 optional long lSuspendDate;                    //暂停上市日期
+    };
+	
+    struct HStockUpcomingInfo
+    {
+        1 optional HStockUpInfo stInfo;
+        2 optional long lUpcomingDate;              // 上市日期
+        3 optional double dPrice;                   // 上市发行价格
+    };
+
+    struct HMarketCodes
+    {
+        1 optional short shtSetCode;
+        2 optional short shtFlag;
+        3 optional string sCheckSum;
+        4 optional vector<HStockUpInfo> vInfo;
+        5 optional vector<HStockDelistInfo> vDelist;		// 退市股票
+        6 optional vector<HStockUpcomingInfo> vUpcoming;	// 即将上市
+        7 optional vector<HStockSuspendInfo> vSuspend;	// 暂停上市
+    };
+
+    // 财务数据
+    struct SCWData
+    {
+        1 require short shtMarket;
+        2 require string sCode;
+        3 optional int iUpdateDate;                 // 更新日期
+        4 optional int iIPODate;                    // 首次公开募股 Initial Public Offerings  上市日期
+        5 optional double dZGB;                     // 总股本
+        6 optional double dLTGB;                    // 流通股本
+        7 optional double dBShare;                  // B 股
+        8 optional double dHShare;                  // H 股
+        9 optional double dPerCapitaHold;           // 人均持股
+        10 optional double dMGSY;                   // 每股收益（earnings per share）
+        11 optional double dMGJZC;                  // 每股净资产(BVPS)
+        12 optional double dTZMGJZC;                // 调整每股净资产
+        13 optional double dMGGJJ;                  // 每股公积金 Accumulation fund per share
+        14 optional double dMGWFPLR;                // 每股未分配
+        15 optional double dYYSRTB;                 // 营业收入同比
+        16 optional double dJLRTB;                  // 净利润同比
+        17 optional double dJZCSYL;                 // 净资产收益率
+        18 optional double dJLL;                    // 净利率
+        19 optional double dYYLRL;                  // 营业利润率
+        20 optional double dXSMLL;                  // 销售毛利率
+        21 optional double dLDBL;                   // 流动比率
+        22 optional double dZCFZBL;                 // 资产负债比率
+        23 optional double dGDQYB;                  // 股东权益比
+        24 optional double dYYSR;                   // 营业收入
+        25 optional double dYYCB;                   // 营业成本
+        26 optional double dTZSY;                   // 投资收益
+        27 optional double dYYLR;                   // 营业利润
+        28 optional double dYYWSZ;                  // 营业外收支
+        29 optional double dLRZE;                   // 利润总额
+        30 optional double dJLR;                    // 净利润
+        31 optional double dZZC;                    // 总资产
+        32 optional double dLDZC;                   // 流动资产
+        33 optional double dGDZC;                   // 固定资产
+        34 optional double dWXZC;                   // 无形资产
+        35 optional double dCQGQTZ;                 // 长期股权投资
+        36 optional double dZFZ;                    // 总负债
+        37 optional double dLDFZ;                   // 流动负债
+        38 optional double dCQFZ;                   // 长期负债
+        39 optional double dJZC;                    // 净资产
+        40 optional double dZBGJJ;                  // 资本公积金
+        41 optional double dWFPLR;                  // 未分配利润
+        42 optional long lBGQ;                      // 报告期
+        43 optional string sSSHY;                   // 所属行业
+        44 optional double dFXJ;                    // 发行价
+        45 optional long lVer;                      // 版本号
+        46 optional double dMGSYDT;                 // 每股收益动态
+        47 optional double dMGJZCDT;                // 每股净资产动态
+        48 optional double dYYSRZZL;                // 3年营业收入增长率
+        49 optional double dJLRZZL;                 // 3年净利润增长率
+        50 optional string sSSHYCode;               // 所属行业代码，与sSSHY对应
+    };
+
+    // 权息变动类型  对应数据库中的类型
+    enum EQXChgType
+    {
+        E_PX        = 1,                            // 派息
+        E_SG        = 2,                            // 送股
+        E_ZZ        = 3,                            // 转增
+        E_PG        = 4,                            // 配股
+        E_GKZF      = 5,                            // 公开增发
+        E_FGKZF     = 6                             // 非公开增发
+    };
+
+    // 权息变动数据
+    struct SQXChgData
+    {
+        1 require long lChanDate;                   // 变更日期
+        2 optional double dCashBt;                  // 每10股派现
+        3 optional double dBonusShr;                // 每10股送股
+        4 optional double dCapShr;                  // 每10股转增
+        5 optional double dAllotPct;                // 10配几
+        6 optional double dAllotPrice;              // 配股价
+        7 optional double dIssPri;                  // 增发价格
+        8 optional double dIssShareNum;             // 发行数量
+        9 optional EQXChgType eType;                // 权息变动类型
+    };
+
+    struct SQXData
+    {
+        1 require short shtMarket;
+        2 require string sCode;
+        3 optional vector<SQXChgData> mChgData;
+        4 optional long lVer;                       // 版本号
+    };
+
+    // 退市股票返回结构
+    struct HTSStock
+    {
+        1 optional short shtMarket;             // 市场
+        2 optional string sCode;                // 股票代码
+        3 optional string sName;                // 股票名称
+        4 optional long lTsDate;                // 退市日期 格式 YYYYMMDD
+        5 optional E_STOCK_TYPE eType;          // 股票类型
+        6 optional int iBlockType;              // 股票板块类别
+    };
+
+    // 即将上市股票数据结构
+    struct HJjssStockData
+    {
+        1 optional short shtMarket;
+        2 optional string sCode;
+        3 optional string sName;                // 股票名称
+        4 optional double dPrice;               // 发行价
+        5 optional long lDate;                  // 上市日期
+        6 optional E_STOCK_TYPE eType;          // 股票类型
+    };
+
+    struct HLTGChgData
+    {
+        1 optional long lChgTime;           // 变动时间
+        2 optional long lAFloatShare;       // 流通A股
+        3 optional long lBFloatShare;       // 流通B股
+        4 optional long lHFloatShare;       // 流通H股
+        5 optional double dZGB;             // 总股本
+    };
+
+    struct HLTGChg
+    {
+        1 optional short shtMarket;             // 市场
+        2 optional string sCode;                // 股票代码
+        3 optional long lVer;                   // 版本号
+        4 optional vector<HLTGChgData> vData;   // 变动数据
+    };
+
+	//新股信息
+	struct HNewStockInfo
+	{
+		1 optional short shtMarket;
+		2 optional string sCode;
+		3 optional double dFXJ;        //发行价
+		4 optional string sListDate;   //上市日期
+        5 optional string sName;       // 股票名称     
+        6 optional int iAPLDate;       // 申购起始日 (YYYYMMDD)
+	};
+
+    // 经纪商数据
+    struct HBrokerData
+    {
+        1 optional string sId;                  // 经纪代号
+        2 optional string sEnName;              // 英文名
+        3 optional string sEnShtName;           // 英文名简称
+        4 optional string sChName;              // 中文名
+        5 optional string sChShtName;           // 中文名简称
+    };
+
+	//港股经纪人队列
+	struct HBrokerQueue
+	{
+		0 optional short shtSetcode;            //股票市场
+		1 optional string sCode;                //股票代码
+
+		2 optional map<int, vector<HBrokerData> > buySide;	//level对应的买方经纪人列表
+		3 optional map<int, vector<HBrokerData> > sellSide;	//level对应的卖方经纪人列表
+	};
+	
+    // 交易日历
+	struct TradeCale
+    {
+        0 optional  int iDate;       // 日期，格式：YYYYMMDD
+        1 optional  short shtStatus;    // 1：交易日；2：非交易日；3：提前闭市；4：半日交易
+    };
+
+};

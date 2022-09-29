@@ -1,0 +1,476 @@
+#include "FuPanBasicData.jce"
+#include "BasicData.jce"
+
+module FuPan
+{
+    enum E_TREND_DATE_TYPE
+    {
+        E_TREND_CURRENT,        //当天数据
+        E_TREND_LAST_30_DAY,    //近30日数据
+    };
+
+
+    enum E_MARKET_TREND_TYPE
+    {
+        E_INDEX_TREND,              //指数对比0
+        E_MARKET_ZD_TREND,          //涨跌对比1
+        E_MARKET_FENBU_TREND,       //涨跌分布2
+        E_MARKET_ZTDT_TREND,        //涨跌停对比3
+        E_ZT_PROFIT_TREND,          //昨日涨停今日收益4
+        E_CHG_PROFIT_TREND,         //昨日异动股今日收益5
+        E_OPEN_BOARD_TREND,         //开板率6
+        E_CONTINUE_BOARD_TREND,     //连板数7
+        E_HIT_BOARD_TREND,          //打板次日成功率8
+        E_MARKET_VOL_TREND,         //市场成交量9
+        E_MARKET_HOT_TREND,         //市场热度模块10
+        E_POSITION_RATE_TREND,      //仓位配比11
+		E_MARKET_FENBU_TREND_DETAIL, //涨跌分布(详细)12
+    };
+
+    enum E_PUSH_MSG_TYPE
+    {
+        E_MSG_TYPE_NONE,
+        E_MSG_TYPE_DRAGON_HEAD_SNIPER,  //龙头狙击
+    };
+
+    //市场风向：指数对比，当天
+    struct FIndexCurrent
+    {
+        0 optional double dSHRatio;      //上证指数涨跌幅
+        1 optional double dSH50Ratio;    //上证50涨跌幅
+        2 optional double dCYRatio;      //创业板指数涨跌幅
+        3 optional double dSZRatio;      //深圳成指 涨跌幅
+    };
+
+    //市场风向：指数对比
+    struct FIndexTrend
+    {
+        0 optional vector<int> vecTime;                //数据对应的时间刻度，当日为分钟，历史为日期
+        1 optional vector<FIndexCurrent> vecData;      //时间对应的指数数据
+    };
+
+    //市场风向：涨跌对比，当天
+    struct FZDCurrent
+    {
+        0 optional int iUpNum;       //上涨家数
+        1 optional int iDownNum;     //下跌家数
+        2 optional double dRatio; //上涨比例
+    };
+
+    //市场风向：涨跌对比
+    struct FZDTrend
+    {
+        0 optional vector<int> vecTime;              //数据对应的时间刻度，当日为分钟，历史为日期
+        1 optional vector<FZDCurrent> vecData;       //时间对应的数据
+    };
+
+    struct FZDFenBuCurrent
+    {
+        0 optional int iZPer5Num;    //涨跌幅>5% 的股票数量，实时
+        1 optional int iDPer5Num;    //涨跌幅<-5% 的股票数量，实时
+        2 optional int iZTNum;       //涨停股数量
+        3 optional int iZPer8Num;    //[8%，涨停）的数量
+        4 optional int iZPer6Num;    //[6%，8%）的数量
+        5 optional int iZPer4Num;    //[4%，6%）的数量
+        6 optional int iZPer2Num;    //[2%，4%）的数量
+        7 optional int iZPer0Num;    //[0%，2%）的数量
+        8 optional int iDPer0Num;    //(-2%，0%）的数量
+        9 optional int iDPer2Num;    //(-4%，-2%]的数量
+        10 optional int iDPer4Num;   //(-6%，-4%]的数量
+        11 optional int iDPer6Num;   //(-8%，-6%]的数量
+        12 optional int iDPer8Num;   //(跌停，-8%]的数量
+        13 optional int iDTNum;      //跌停股数量
+    };
+	
+	struct FZDFenBuNewCurrent
+	{
+		0 optional int iZTNum;   	 //涨停总数
+        1 optional int iZPer9Num;    //[9%,涨停)数量
+        2 optional int iZPer8Num;    //[8%,9%)的数量
+		3 optional int iZPer7Num;    //[7%,8%)的数量
+        4 optional int iZPer6Num;    //[6%,7%)的数量
+		5 optional int iZPer5Num;    //[5%,6%)的数量
+        6 optional int iZPer4Num;    //[4%,5%)的数量
+		7 optional int iZPer3Num;    //[3%,4%)的数量
+		8 optional int iZPer2Num;    //[2%,3%)的数量
+        9 optional int iZPer1Num;    //[1%,2%)的数量
+        10 optional int iZPer0Num;   //(0%,1%)的数量
+        11 optional int iDPer0Num;   //(-1%,0%)的数量
+		12 optional int iDPer1Num;   //(-2%,-1%]的数量
+        13 optional int iDPer2Num;   //(-3%,-2%]的数量
+        14 optional int iDPer3Num;   //(-4%,-3%]的数量
+		15 optional int iDPer4Num;   //(-5%,-4%]的数量
+        16 optional int iDPer5Num;   //(-6%,-5%]的数量
+		17 optional int iDPer6Num;   //(-7%,-6%]的数量
+        18 optional int iDPer7Num;   //(-8%,-7%]的数量
+		19 optional int iDPer8Num;   //(-9%,-8%]的数量
+		20 optional int iDPer9Num;   //(跌停,-9%]的数量
+        21 optional int iDTNum;      //跌停股数量
+		22 optional int iPPNum;      //平盘数量(上涨 =0.00%)
+		23 optional int iZPNum;      //停牌数量
+		24 optional int iZNum;		 //上涨数量
+		25 optional int iDNum;		 //下跌数量
+		
+	};
+	
+    //市场风向：涨跌分布
+    struct FZDFenBuTrend
+    {
+        0 optional vector<int> vecTime;                //近30交易日日期，折线图
+        1 optional vector<FZDFenBuCurrent> vecData;    //近30个交易日涨幅>%5数量，折线图，当天使柱状图，只有一条记录
+    };
+	
+	//市场风向: 涨跌分布(详细)
+	struct FZDFenBuNewTrend
+	{
+		0 optional vector<int> vecTime;                //近30交易日日期，折线图
+		1 optional map<int,vector<FZDFenBuNewCurrent>> mapData; //沪深(40)/沪市(2)/深市(6)-涨停分布
+	};
+
+    //市场风向：涨跌停对比，当天
+    struct FZTDTCurrent
+    {
+        0 optional int iZTNum;          //涨停股数量
+        1 optional int iNoOneBNum;      //非一字板涨停股数量 应该是换手板涨停股梳理 
+        2 optional int iDTNum;          //跌停股数量
+        3 optional int iOneBoardNum;    //一字板涨停股数量
+
+    };
+
+    //市场风向：涨跌停对比
+    struct FZTDTTrend
+    {
+        0 optional vector<int> vecTime;             //时间刻度，分钟或者日期
+        1 optional vector<FZTDTCurrent> vecData;    //时间对应的数据
+    };
+
+    //市场风向：昨日涨停今日收益，当日
+    struct FZTProfitCurrent
+    {
+        0 optional double dOneBProfit;    //昨日一字涨停收益
+        1 optional double dChgBProfit;    //昨日换手涨停收益
+        2 optional double dSHProfit;      //上证指数涨跌幅
+        3 optional double dZTProfit;      //昨日涨停今天收益
+    };
+
+    //市场风向：昨日涨停今日收益
+    struct FZTProfitTrend
+    {
+        0 optional vector<int> vecTime;                 //时间刻度，分钟或者日期
+        1 optional vector<FZTProfitCurrent> vecData;    //时间对应的数据
+    };
+
+    //市场风向：昨日异动股今日收益，当日
+    struct FChgProfitCurrent
+    {
+        0 optional double dVolProfit;      //成交前十收益
+        1 optional double dChgProfit;   //换手前十收益
+        2 optional double dSHRatio;    //上证指数涨跌幅
+    };
+
+    //市场风向：昨日异动股今日收益
+    struct FChgProfitTrend
+    {
+        0 optional vector<int> vecTime;                 //时间刻度，分钟或者日期
+        1 optional vector<FChgProfitCurrent> vecData;   //时间对应的数据
+    };
+
+    //市场风向：开板率，当日
+    struct FOpenBoardCurrent
+    {
+        0 optional int iZTNum;      //涨停股数量
+        1 optional int iOpenZTNum;   //开板股数量
+    };
+
+    //市场风向：开板率
+    struct FOpenBoardTrend
+    {
+        0 optional vector<int> vecTime;              //时间刻度，分钟或者日期
+        1 optional vector<FOpenBoardCurrent> vecData;//时间刻度对应的数据
+    };
+
+    //市场风向：连板数，当日
+    struct FConBoardCurrent
+    {
+        0 optional int iContinueBNum;      //连板数
+        1 optional int iNoOneBNum;        //非一字连板数
+    };
+
+    //市场风向：连板数
+    struct FConBoardTrend
+    {
+        0 optional vector<int> vecTime;             //时间刻度，分钟或者日期
+        1 optional vector<FConBoardCurrent> vecData; //时间刻度对应的数据
+    };
+
+    //市场风向：打板次日成功率，当天
+    struct FHitBoardCurrent
+    {
+        0 optional double dHit;           //打板次日成功率
+    };
+
+    //市场风向：打板次日成功率
+    struct FHitBoardTrend
+    {
+        0 optional vector<int> vecTime;             //时间刻度，日期
+        1 optional vector<FHitBoardCurrent> vecData; //时间对应的数据
+    };
+
+    //市场风向：市场成交量,当天
+    struct FMarketVolCurrent
+    {
+        0 require double dSHAmount;                        //沪市个股成交额之和, 也即上证综指成交额
+        1 require double dSZAmount;                        //深市个股成交额之和，也即深圳成指成交额
+    };
+    //市场风向：市场成交量
+    struct FMarketVolTrend
+    {
+        0 require vector<int> vecTime;                  //时间刻度，日期
+        1 require vector<FMarketVolCurrent> vecData;    //时间对应的数据
+    };
+
+    //市场热度组件 当天
+    struct FMarketHotCurrent
+    {
+        0 optional double dPreZTWinRate;                    //取昨日涨停个股(去除ST与新股)涨幅大于 0.00% 数量 / 昨日涨停个股(去除ST与新股)总数
+        1 optional double dZDRate;                          //取今日全市场涨幅大于0.00%个股数量 / （今日全市场跌幅大于0.00%个股数量*2）
+        2 optional double dLBRate;                          //取 今日涨停连扳个数(去除ST与新股) /20
+          
+        3 optional double dWeight1;                         //市场权重系数1
+        4 optional double dWeight2;                         //市场权重系数2
+        5 optional double dWeight3;                         //市场权重系数3
+
+        6 optional double dMarketHot;                       //市场热度
+		7 optional int 	  nPreZTNum;						//昨天涨停个股(去除ST与新股,科创板个股)
+		8 optional int	  nCurrZNum;						//昨天涨停个股(去除ST与新股,科创板个股) 今日涨幅大于 0.00% 数量
+
+    };
+    //市场热度组件
+    struct FMarketHotTrend
+    {
+        0 require vector<int> vecTime;                  //时间刻度，日期
+        1 require vector<FMarketHotCurrent> vecData;    //时间对应的数据
+    };
+
+    //仓位配比 当天
+    struct FPositionRateCurrent
+    {
+        0 optional double dRate;                        //仓位配比
+        1 optional int nAttackWaveNum;                  //攻击波个数
+        2 optional int nTurnRoundWaveNum;               //回头波个数
+
+    };
+    //仓位配比 组件
+    struct FPositionRateTrend
+    {
+        0 require vector<int> vecTime;                  //时间刻度，日期
+        1 require vector<FPositionRateCurrent> vecData; //时间对应的数据
+    };
+
+    struct FMarketTrendData
+    {
+        0 optional FIndexTrend stIndex;                 //指数对比
+        1 optional FZDTrend stZD;                       //涨跌对比
+        2 optional FZDFenBuTrend stZDFenBu;             //涨跌分布
+        3 optional FZTDTTrend stZTDT;                   //涨跌停对比
+        4 optional FZTProfitTrend stZTProfit;           //昨日涨停今日收益  
+        5 optional FChgProfitTrend stChgProfit;         //昨日异动股今日收益
+        6 optional FOpenBoardTrend stOpenBoard;         //开板率
+        7 optional FConBoardTrend stConBoard;           //连板数
+        8 optional FHitBoardTrend stHitBoard;           //打板次日成功率
+        9 optional FMarketVolTrend stMarketVol;         //市场成交量
+        10 optional FMarketHotTrend stMarketHot;        //市场热度
+        11 optional FPositionRateTrend stPositionRate;  //仓位配比
+        12 optional int iDate;                          //日期
+		13 optional FZDFenBuNewTrend stZDFenBuNew;		//涨跌分布(详细)
+    };
+
+    //题材中涨停个股数据
+    struct FBlockStockZT
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+        2 optional int iZTTime;                             //首次涨停时间
+        3 optional E_STOCK_ZT_TYPE eType;               //涨停类型 
+        4 optional int iConNum;                         //连涨天数
+        5 optional long lLastZTVol;                     //最后封单量
+        6 optional double dLastZTRatio;                 //最后封成比
+        7 optional int iLastZTTime;                     //最后涨停时间
+        8 optional double dLTValue;                     //流通市值
+        9 optional int iOpenNum;                        //开板数
+    };
+
+    //题材中未涨停个股数据(涨幅大于4%)
+    struct FBlockStockUnZT
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+        2 optional double dUpSpeed;     //5min涨速
+        3 optional double dTurnOver;    //换手率
+        4 optional double dLTValue;     //流通市值
+        5 optional double dChgRatio;     //涨幅
+    };
+
+    //当日所有涨停股票，内部使用
+    struct FStockZTMap
+    {
+        0 optional map<string, FBlockStockZT> stockMap;    	
+    };
+    
+    //当日所有未涨停股票，内部使用
+    struct FStockUnZTMap
+    {
+        0 optional map<string, FBlockStockUnZT> stockMap;    	
+    };
+
+    //涨停题材数据
+    struct FBlockZTData
+    {
+        0 optional string sCode;    
+        1 optional int iMarket;     
+        2 optional int iUpNum;                              //连涨天数
+        3 optional double dUpRatio;                         //涨幅
+        4 optional int iZTNum;                              //当天涨停家数
+        5 optional vector<FBlockStockZT> vecZTStock;        //涨停个股；
+        6 optional vector<FBlockStockUnZT> vecUnZTStock;    //未涨停个股
+        7 optional int iTotalNum;                           //板块成分股个数
+    };
+
+    struct FBlockTimeStock
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+        2 optional int iTime;               //涨停时间
+        3 optional E_STOCK_ZT_TYPE eType;   //涨停类型
+        4 optional int iConNum;             //连板数
+    };
+
+    struct FBlockTimeData
+    {
+        0 optional int iDate;                           //日期
+        1 optional int iZTNum;                          //涨停家数
+        2 optional vector<FBlockTimeStock> vecStock;    //涨停股票数据
+    };
+
+    //题材历史涨停轨迹，按时间
+    struct FBlockTimeTrail
+    {
+        0 optional int iMarket;
+        1 optional string sCode;                    //题材代码
+        2 optional vector<FBlockTimeData> vecData;  //涨停数据
+    };
+
+ 		//股票涨停明细
+    struct FStockTrailDetail
+    {
+        0 optional int iDate;               //涨停日期
+        1 optional int iTime;               //涨停时间
+        2 optional E_STOCK_ZT_TYPE eType;   //涨停类型
+        3 optional int iConNum;             //连板数
+    };
+
+    struct FBlockStockData
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+        2 optional int iZTNum;      //涨停次数
+        3 optional int iLeadNum;    //领涨次数
+        4 optional int iMaxCon;     //最长连板
+        5 optional vector<FStockTrailDetail> vecDetail;		//股票涨停明细
+    };
+
+    //题材历史涨停轨迹，按股票
+    struct FBlockStockTrail
+    {
+        0 optional int iMarket;
+        1 optional string sCode;                    //题材代码
+        2 optional vector<FBlockStockData> vecData; //涨停股票数据
+    };   
+
+    struct FStockLastHis
+    {
+        0 optional int iDate;           //日期
+        1 optional double dRatio;       //涨跌幅
+        2 optional int iZTNum;          //涨停成分股家数
+    };
+
+    //涨停题材轮动统计
+    struct FBlockZTStatic
+    {
+        0 optional int iMarket;
+        1 optional string sCode;                //涨停题材
+        2 optional int iZTDay;                  //近10日涨停天数
+        3 optional double dTotalRatio;          //近10日累计涨幅
+        4 optional vector<FStockLastHis> vecData;
+    };
+
+    //内部使用
+    enum E_FUPAN_REG_TYPE
+    {
+        E_FUPAN_STOCK_POOL,
+        E_FUPAN_MARKET_TREND,
+        E_FUPAN_BLOCK_DATA,
+        E_FUPAN_FILTER_MARKET_TREND,            //支持过滤的市场风向
+        E_FUPAN_HISFACTOR,                      //历史因子
+        E_FUPAN_BLK_STK_INFO,                   //板块信息，供query使用
+        E_FUPAN_MARKET_DATA,                    //市场状态等数据
+        E_FUPAN_NEW_BLOCK_DATA,                 //新版板块数据
+        E_FUPAN_CALL_AUCTION_DATA,              //集合竞价数据
+    };
+
+    struct FBlockAllData
+    {
+        0 optional map<string, FBlockZTData> ztBlock;           //涨停题材数据
+        1 optional map<string, FBlockTimeTrail> ztTimeTrail;    //涨停题材历史轨迹，按时间
+        2 optional map<string, FBlockStockTrail> ztStockTrail; //涨停题材历史轨迹，按股票
+        3 optional map<string, FBlockZTStatic> ztStatic;        //涨停题材轮动
+    };
+
+
+    //涨停原因对接,供外部调用，下发增量个股涨停原因变更信息
+    struct FStockZTReasonInfo
+    {
+        0 require string strCode;       //目前数据提供方 只有code 没有市场 不支持场外
+        1 require string strReasion;    //涨停原因
+        2 optional int updateTimestamp; //更新时间戳
+        3 optional vector<string> vRelatedPlates; //关联板块
+    };
+
+    struct FStockZTReasonReq
+    {
+        0 optional int iDate;                   //日期
+        1 optional vector<FStockZTReasonInfo>vecStock;
+    };
+
+    struct FStockZTReasonRsp
+    {
+        0 optional bool bSucc = true;
+    };
+
+    //板块个股对应信息
+    struct FBlkStkInfo
+    {
+        0 optional map<string,FBlockSimpleInfo>         mapBlockSimpleInfo; //版块详细信息
+        1 optional map<string, vector<string> >         mapStk2BlkAll;      //股票属于哪些板块,全部 不过滤
+        2 optional map<string, vector<string> >         mapBlk2StkAll;      //板块成份股,全部 不过滤
+    };
+
+    //市场信息
+    struct FMarketCommonData
+    {
+        0 optional int iDate;
+        1 optional int iTime;
+        2 optional byte cMarketStatus;
+    };
+
+    struct FDragonHeadSniperMsg
+    {
+        0 optional map<string, StkSimpInfo> mapStk;
+    };
+
+    struct FPushMsg
+    {
+        0 optional E_PUSH_MSG_TYPE eMsgType;
+        1 optional string sMsg;
+    };
+};

@@ -150,6 +150,7 @@ case 10:
 break;
 case 11:
 
+    console.log("enum0", $$[$0-2])
     this.$ = {
         name: $$[$0-2],
         comment: {
@@ -161,6 +162,8 @@ case 11:
 break;
 case 12:
 
+    console.log("enum1", $$[$0-1])
+
     this.$ = {
         name: $$[$0-1],
         comment: null
@@ -169,6 +172,7 @@ case 12:
 break;
 case 13:
 
+    console.log("enum2", $$[$0-1])
     this.$ = {
         name: $$[$0-1],
         comment: {
@@ -863,7 +867,7 @@ case 22:return "EOF"
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:$)/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:(string|short|bool|int|float|long|double|signed\s+int|unsigned\s+int))/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,]+)/,/^(?:\d+)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:$)/],
+rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:$)/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:(string|short|bool|int|float|long|double|signed\s+int|unsigned\s+int))/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,//]+)/,/^(?:\d+)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:$)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],"inclusive":true}}
 });
 return lexer;

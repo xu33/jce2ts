@@ -1,0 +1,264 @@
+#include "FuPanBasicData.jce"
+#include "FuPanCommon.jce"
+
+module FuPan
+{
+    //集合竞价异动类型Call auction unusual action type
+    enum E_CALL_AUCTION_DATA_TYPE
+    {
+        E_CA_DATA_TYPE_TS = 0,              //所有个股/板块竞价分时数据 0
+        E_CA_DATA_TYPE_EXTERN_DATA,         //竞价附加数据 1
+
+        E_CA_DATA_TYPE_UNU_ACT_RUSH,         //竞价抢筹 2
+        E_CA_DATA_TYPE_UNU_ACT_HIT,          //竞价砸盘 3
+        E_CA_DATA_TYPE_UNU_ACT_OPEN_HIGH,    //大幅高开 4
+        E_CA_DATA_TYPE_UNU_ACT_OPEN_LOW,     //大幅低开 5
+        E_CA_DATA_TYPE_UNU_ACT_ZT_TRAIL,     //涨停试盘 6
+        E_CA_DATA_TYPE_UNU_ACT_DT_TRAIL,     //跌停试盘 7
+        E_CA_DATA_TYPE_UNU_ACT_BUY_STRENGTH, //买一剩余大 8
+        E_CA_DATA_TYPE_UNU_ACT_SELL_STRENGTH,//卖一剩余大 9
+        E_CA_DATA_TYPE_UNU_ACT_LARGE_BUY,    //大买单试盘 10
+        E_CA_DATA_TYPE_UNU_ACT_LARGE_SELL,   //大卖单试盘 11
+        E_CA_DATA_TYPE_UNU_ACT_RAPID_RISE,   //急速上涨 12
+        E_CA_DATA_TYPE_UNU_ACT_RAPID_FALL,   //急速下跌 13
+
+        E_CA_UNU_ACT_TYPE_END,
+    };
+
+    enum E_CA_UNU_ACT_LEVEL
+    {
+        E_CA_UNU_ACT_LEVEL_BULLISH = 0,       //看多 0
+        E_CA_UNU_ACT_LEVEL_PARTIAL_BULLISH,   //偏多 1
+        E_CA_UNU_ACT_LEVEL_CHAOS,             //混战 2
+        E_CA_UNU_ACT_LEVEL_PARTIAL_BEARISH,   //偏空 3
+        E_CA_UNU_ACT_LEVEL_BEARISH,           //看空 4
+
+        E_CA_UNU_ACT_LEVEL_END,
+    };
+
+    //==========================================================================
+    // 异动基础数据
+    //==========================================================================    
+    //异动信息
+    struct FCaUnuActInfo
+    {
+        0 optional int iBeginTime;              //异动开始时间
+        1 optional int iEndTime;                //异动结束时间
+        2 optional double dBeginChgRatio;       //开始涨跌幅
+        3 optional double dBeginPrice;          //开始价格
+        4 optional double dEndChgRatio;         //结束涨跌幅
+        5 optional double dEndPrice;            //结束价格
+        6 optional E_CA_UNU_ACT_LEVEL eCaLv;    //竞价评级
+        7 optional double dMatchVol;            //竞价匹配量
+        8 optional double dUnMatchVol;          //竞价未匹配量(买方未匹配为正,卖方未匹配为负)
+        9 optional double dCallAmount;          //竞价匹配额(匹配量*匹配价)
+    };
+
+    //分时数据(1分钟记录一次)
+    struct FCaTsInfo
+    {
+        0 optional int iTime;           //时间
+        1 optional double dChgRatio;    //涨跌幅
+        2 optional double dNowPrice;    //价格
+    };
+
+    //==========================================================================
+    // <衍生数据结构> 异动评级->个股(板块)
+    //==========================================================================
+    struct FLastCaUnuActTypeInfo
+    {
+        0 optional E_CALL_AUCTION_DATA_TYPE eCaType;    //异动类型
+        1 optional FCaUnuActInfo stCaUnuAct;            //异动详细信息
+        2 optional double dOpenPrice;                   //开盘价
+        3 optional double dOpenChgRatio;                //开盘涨跌幅
+        4 optional double dOpenAmount;                  //开盘成交额
+        5 optional double dNowChgRatio;                 //最新涨幅
+		6 optional double dPreCallAmoutRatio;			//竞价昨日成交比(竞价成交总量/昨日成交量)
+    };
+    //股票最新的异动信息
+    struct FStkLastCaUnuAct
+    {
+        0 optional StkSimpInfo stk;                         //股票
+        1 optional FLastCaUnuActTypeInfo lastCaTypeInfo;    //最新异动信息
+    };
+    struct FBlkLastCaUnuAct
+    {
+        0 optional FBlockSimpleInfo blk;                    //板块
+        1 optional FLastCaUnuActTypeInfo lastCaTypeInfo;    //最新异动信息
+    };
+    //异动评级下的所有异动股票,板块
+    struct FLastCaUnuActLevelStk
+    {
+        0 optional int iDate;
+        1 optional E_CA_UNU_ACT_LEVEL eCaLevel;
+        2 optional map<string, FStkLastCaUnuAct> mapStkCaUnuAct;  //股票->最新异动
+        3 optional map<string, FBlkLastCaUnuAct> mapBlkCaUnuAct;  //板块->最新异动
+    };
+
+    //==========================================================================
+    // <主要数据结构> 异动类型->个股(板块)
+    //==========================================================================
+    //股票异动信息
+    struct FStkCaUnuActTypeInfo
+    {
+        0 optional StkSimpInfo stk;                     //股票
+        1 optional E_CALL_AUCTION_DATA_TYPE eCaType;    //异动类型
+        2 optional vector<FCaUnuActInfo> vecCaUnuAct;   //异动信息
+        3 optional double dOpenPrice;                   //开盘价
+        4 optional double dOpenChgRatio;                //开盘涨跌幅
+        5 optional double dOpenAmount;                  //开盘成交额
+        6 optional double dNowChgRatio;                 //最新涨幅
+		7 optional vector<FBlockSimpleInfo> vecBlk;		//对应板块
+		8 optional string strCaUnuActDesc;				//异动说明
+		9 optional bool bIsSTStk = false;				//是否是ST股
+		10 optional bool bSubNewStock = false;			//是否为次新股
+		11 optional double dPreCallAmoutRatio;			//竞价昨日成交比(竞价成交总量/昨日成交量)
+    };
+    //股票竞价行情分时
+    struct FStkCaTs
+    {
+        0 optional StkSimpInfo stk;
+        1 optional vector<FCaTsInfo> vecTs;           //分时数据
+    };
+    //板块异动信息(预留)
+    struct FBlkCaUnuActTypeInfo
+    {
+        0 optional FBlockSimpleInfo blk;                //板块
+        1 optional vector<FCaUnuActInfo> vecCaUnuAct;   //异动信息
+        2 optional double dOpenPrice;                   //开盘价
+        3 optional double dOpenChgRatio;                //开盘涨跌幅
+    };
+    //板块竞价行情分时(预留)
+    struct FBlkCaTs
+    {
+        0 optional FBlockSimpleInfo blk;
+        1 optional vector<FCaTsInfo> vecTs;           //分时数据
+    };
+    //异动类型和下的所有股票,板块异动信息
+    struct FCaUnuActTypeData
+    {
+        0 optional int iDate;
+        1 optional E_CALL_AUCTION_DATA_TYPE eCaType;   //异动类型
+        2 optional map<string, FStkCaUnuActTypeInfo> mapStkUnuActInfo;  //股票异动详细信息
+        3 optional map<string, FBlkCaUnuActTypeInfo> mapBlkUnuActInfo;  //板块异动详细信息
+    };
+
+    //所有股票,板块的竞价分时数据
+    struct FCaTsData
+    {
+        0 optional int iDate;
+        1 optional E_CALL_AUCTION_DATA_TYPE eCaType;
+        2 optional map<string, FStkCaTs> mapStkCaTs;  //股票->分时行情
+        3 optional map<string, FBlkCaTs> mapBlkCaTs;  //股票->分时行情
+    };
+    //涨跌分布
+    struct FMarketZdFenBu
+    {
+        0 optional int iMarket;
+        1 optional vector<int> vecZdFenBu;
+    };
+    //板块涨幅
+    struct FBlockChgRatio
+    {
+        0 optional FBlockSimpleInfo blk;
+        1 optional double dNowChgRatio;
+        2 optional double dOpenPrice;
+        3 optional double dOpenChgRatio;
+    };
+    //时间(91500),价格
+    struct FTimePrice
+    {
+        0 optional int iTime;
+        1 optional double dPrice;
+    };
+    //指数价格走势
+    struct FIndexPrice
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+        2 optional vector<FTimePrice> vecPrice;
+        3 optional double dPreClose;
+    };
+    //涨幅前N板块及涨幅前N成分股
+    struct FCaUnuAcTopBlkStk
+    {
+        0 optional FBlkLastCaUnuAct stCaUnuActblk;             //板块
+        1 optional vector<FStkLastCaUnuAct> vecCaUnuActStk;    //异动前3的股票异动信息
+    };
+	//竞价风口题材
+	struct FCaUnuActHotBlockInfo
+    {
+        0 optional FBlockSimpleInfo block;
+        1 optional double           dHot;
+        2 optional double           dChgRatio; //板块涨幅
+    };
+	//竞价风口个股信息
+	struct FCaUnuActHotStockInfo
+	{
+		0 optional StkSimpInfo stk;
+		1 optional E_CALL_AUCTION_DATA_TYPE eCaType;
+		2 optional double dCaUnuChgRatio;	//竞价涨幅
+		3 optional int iConnBoradNum;	//连板数
+		4 optional bool bIsActZT;		//是否竞价涨停
+	};
+	
+	struct FCaUnuActHotSubect
+	{
+		0 optional FCaUnuActHotBlockInfo blk;
+		1 optional vector<FCaUnuActHotStockInfo> vecHotStk;
+	};
+    struct FCaExternData
+    {
+        0 optional int iDate;
+        1 optional E_CALL_AUCTION_DATA_TYPE eCaType;
+        2 optional vector<FMarketZdFenBu> vecMarketZdNum;   //涨跌分布 2
+        3 optional vector<FBlockChgRatio> vecBlkRatio;      //板块涨幅(已排序) 3
+        4 optional vector<FIndexPrice> vecIdxPrice;         //指数价格走势 4
+        5 optional vector<FCaUnuAcTopBlkStk> vecTopBlkStk;  //涨幅前3板块及异动成分股 5
+		6 optional vector<FCaUnuActHotSubect> vecTopHotSubject;//竞价热门题材 6
+    };
+    //所有类型异动信息
+    struct FCaUnuActData
+    {
+        0 optional int iDate;
+        1 optional FCaTsData stCaTs;                            //分时数据
+        2 optional FCaExternData stExternData;                  //附加数据
+        3 optional vector<FCaUnuActTypeData> vecCaUnuActData;   //各个异动类型下的异动股票,板块
+    };
+
+    //==========================================================================
+    // <衍生数据结构> 个股(板块)->异动数据
+    //==========================================================================
+    //异动类型和所有异动信息
+    struct FCaUnuActTypeVecInfo
+    {
+        0 optional E_CALL_AUCTION_DATA_TYPE eCaType;    //异动类型
+        1 optional vector<FCaUnuActInfo> vecUnuActInfo; //所有异动详细信息
+    };
+    //股票所有的异动信息
+    struct FStkAllCaUnuAct
+    {
+        0 optional StockInfo stk;                           //股票
+        1 optional vector<FStkCaTs> vecTs;                  //分时数据
+        2 optional vector<FCaUnuActTypeVecInfo> vecUnuAct;  //各种最新异动信息
+        3 optional double dOpenPrice;                       //开盘价
+        4 optional double dOpenChgRatio;                    //开盘涨跌幅
+        5 optional double dOpenAmount;                      //开盘成交额
+        6 optional double dNowChgRatio;                     //最新涨幅
+    };
+    //板块所有异动信息(预留)
+    struct FBlkAllCaUnuAct
+    {
+        0 optional FBlockSimpleInfo blk;                    //板块
+        1 optional vector<FBlkCaTs> vecTs;                  //分时数据
+        2 optional vector<FCaUnuActTypeVecInfo> vecUnuAct;  //异动
+    };
+
+    //全部异动信息
+    struct FBlkStkAllCaUnuAct
+    {
+        0 optional int iDate;                                   //日期
+        1 optional map<string, FStkAllCaUnuAct> mapStkCaUnuAct; //股票所有异动信息
+        2 optional map<string, FBlkAllCaUnuAct> mapBlkCaUnuAct; //板块所有异动信息(预留)
+    };
+};

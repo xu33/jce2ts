@@ -1,0 +1,944 @@
+// #include "FuPanBasicData.jce"
+#include "FuPanCommon.jce"
+#include "FupanHisFactor.jce"
+#include "FupanBlock.jce"
+#include "FupanCallAuction.jce"
+#include "Common.jce"
+#include "PushHqData.jce"
+
+module FuPan 
+{
+    struct FStockPoolReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional E_STOCK_POOL_TYPE eStockType;    //股票池类型
+        2 optional bool bGetDetail = false;     //是否获取开板明细
+        3 optional int iBeg = 0;        //位置偏移
+        4 optional int iWantNum = -1;   //-1表示全部
+        5 optional int iDate = 0;       //0默认标识当天 表示要最新数据
+        6 optional long lRefreshTime = 0;       //数据刷新时间，精确到ms的时间戳
+    };
+
+    struct FStockPoolRsp
+    {
+        0 optional vector<FZDStockInfo> vecStock;
+        1 optional int iSize;                       //股票池股票总数量
+        2 optional long lTime;                      //数据刷新时间，精确到ms的时间戳
+        3 optional int iDate;                       //交易日期，解决清盘期间客户端不知道交易日日期问题
+    };
+
+    //股票池 批量接口
+    struct FBatchStockPoolReq
+    {
+        0 require vector<FStockPoolReq> vecStockPoolReq;       //股票池批量请求接口
+    };
+    struct FBatchStockPoolRsp
+    {
+        0 optional vector<FStockPoolRsp> vecStockPoolRsp;      //股票池批量返回接口
+    };
+
+    struct FBoardDetailReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iMarket;
+        2 optional string sCode;
+        3 optional int iDate = 0;           //请求数据的日期，默认0请求最新的数据
+        4 optional E_STOCK_POOL_TYPE eType = E_STOCK_ZT_POOL; //股票池类型
+    };
+
+    struct FBoardDetailRsp
+    {
+        0 optional vector<FOpenBoardDetail> vecDetail;
+    };
+
+    struct FTrendDataType
+    {
+        0 optional E_MARKET_TREND_TYPE eTrend;                                      //指标类型
+        1 optional E_TREND_DATE_TYPE eDate = E_TREND_CURRENT;                       //数据类型：当天或者近30日
+		2 optional int iDate = 0;                                                   //获取历史某一天的数据   
+        3 optional E_STOCK_FILTER_TYPE eFilterType = E_STOCK_ALL;                   //过滤类型，默认不过滤st股 跟新股          
+    };
+
+    struct FMarketTrendReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<FTrendDataType> vecType;
+    };
+
+    struct FMarketTrendRsp
+    {
+        0 optional FMarketTrendData stData;  //只返回请求的对应的市场风向指标数据，其它都是空值
+    };
+
+    struct FMarketTrendVecRsp
+    {
+        0 optional vector<FMarketTrendData> vecData;  //分别返回请求的对应的市场风向指标数据，其它都是空值
+    };
+
+    enum E_BLK_CURR_DATA_TYPE
+    {
+        E_BLK_CURR_NO_STOCK,    //无需股票明细
+        E_BLK_CURR_ZT_STOCK,    //涨停股票明细
+        E_BLK_CURR_UNZT_STOCK   //未涨停股票明细
+    };
+
+    struct FBlkCurrentReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iWantNum = 0;    //请求个数，默认为0时，后台会强制返回约定好的8条数据
+        2 optional int iPos = 0;        //请求起始位置，分页
+        3 optional E_BLK_CURR_DATA_TYPE eDetail;    //是否需要股票明细
+        4 optional int iDate = 0;       //请求板块数据的日期，默认值0为当日最新数据
+        5 optional long lBlkUpdteTime = 0; //数据更新时间戳
+        6 optional int iMinZTNum = 2;      //请求板块的最小涨停成分股个数,涨停家数小于iMinZTNum的直接过滤 不返回
+    };
+
+    struct FBlkCurrentRsp
+    {
+        0 optional vector<FBlockZTData> vecData;   //题材数据，已经按照涨停家数做好排序
+        1 optional int iDate;                       //当前日期
+        2 optional long lBlkUpdteTime = 0;          //数据更新时间戳
+    };
+
+    struct FBlkCurZTReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;  //带板块市场
+        1 optional string sCode;                //板块code
+        2 optional int iWantNum = 5;
+        3 optional int iPos = 0;
+        4 optional int iDate = 0;       //请求板块数据的日期，默认值0为当日最新数据
+    };
+
+    struct FBlkCurZTRsp
+    {
+        0 optional vector<FBlockStockZT> vecStock;  //默认已经按照涨停时间排序
+    };
+
+    struct FBlkCurUnZTReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;  //带板块市场
+        1 optional string sCode;                //板块code
+        2 optional int iWantNum = 5;
+        3 optional int iPos = 0;
+        4 optional int iDate = 0;       //请求板块数据的日期，默认值0为当日最新数据
+    };
+
+    struct FBlkCurUnZTRsp
+    {
+        0 optional vector<FBlockStockUnZT> vecStock;    //默认已经按照涨幅排序
+    };
+
+    struct FStockUnique
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+    };
+
+    struct FBlkLastHisReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<FStockUnique> vecStock;
+        2 optional int iDayNum = 5;     //数据天数 
+        3 optional int iDate = 0;       //请求板块数据的日期，默认值0为当日最新数据
+    };
+
+    struct FStockLastHisData
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+        2 optional vector<FStockLastHis> hisData;  
+    };
+
+    struct FBlkLastHisRsp
+    {
+        0 optional vector<FStockLastHisData> vecData;
+    };
+    
+    struct FBlkTimeHisReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional string sCode;
+        2 optional int iWantNum = 10;
+        3 optional int iPos = 0;    //起始位置
+        4 optional int iStockNum = -1;  //每天涨停数据中股票的个数，默认全部
+    };
+
+    struct FBlkTimeHisRsp
+    {
+        0 optional FBlockTimeTrail stData;
+    };
+
+    struct FBlkStockHisReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional string sCode;
+        2 optional int iWantNum;
+        3 optional int iPos;    //起始位置，逆序
+    };
+
+    struct FBlkStockHisRsp
+    {
+        0 optional FBlockStockTrail stData;
+    };
+
+    struct FBlkHisTurnReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iWantNum = 15;
+    };
+
+    struct FBlkHisTurnRsp
+    {
+        0 optional vector<FBlockZTStatic> vecData;  //返回的数据已经是按照涨停天数和累计涨幅排序
+    };
+
+    struct FLeadBlkReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iDate;
+		2 optional int iBlockType; //板块所属分类
+    };
+
+    struct FLeadBlkRsp
+    {
+        0 optional vector<IC::SLeadBlkInfo> vecData;
+    };
+
+    struct FBlkChangesReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iDate;                  //日期：YYYYMMDD
+        2 optional IC::BLOCKCHANGE_TYPE eType; //异动类型
+        3 optional int iBlkLeadStockNum = 2;  // 板块领涨股个数
+        4 optional int iWantNum;
+        5 optional int iPos;    //起始位置
+		6 optional int iBlockType; //板块所属分类
+    };
+
+    struct FBlkChangesRsp
+    {
+        0 optional vector<IC::SBlockChange> vecData;
+    };
+
+    //特定需求，请求股票列表，返回当日几天几板,(要求从当天涨停池里查找,不包含强势股股票池)
+    struct FStockPoolFBoardPeriodReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<FStockUnique> vecStock;       //股票列表
+    };
+
+    struct FStockPoolFBoardPeriodInfo
+    {
+        0 optional FStockUnique stock;                  //个股,只返回符合条件的
+        1 optional FBoardPeriod stBoard;                //几天几板数据
+    };
+    struct FStockPoolFBoardPeriodRsp
+    {
+        0 optional vector<FStockPoolFBoardPeriodInfo> vecStBoardPeriodData;   
+    };
+
+    //***********************历史因子模块
+    struct FHisFactorReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional E_HIS_FACTOR_TYPE eHisFactorType = E_HIS_FACTOR_HOT_SUBJECT;       //类型，目前只支持E_HIS_FACTOR_HOT_SUBJECT，后续可以根据需要放开
+        2 optional int nStartDate = 0;              //起始日期
+        3 optional int nEndDate = 0;                //结束日期
+        4 optional int nDayNum = 1;                 //天数
+                                                    //这里构成组合，1.起始日期有效，天数>0 ，以起始日期为基准点返回后nDayNum天数据 (不包含基准)
+                                                    //2.结束日期有效，天数>0 ，以结束日期为基准点返回前nDayNum天数据 (不包含基准)    这里结束日期为0的话，视同返回最新nDayNum天数据
+                                                    //3.天数<=0,起始日期有效（>0），结束日期 >起始日期 或为0时，返回起始日期倒结束日期（结束日期无效的话 视同返回到最新交易日）。（包含基准）     
+    };
+    //除了结果集vecHisFactorData，其余都是req 原样返回
+    struct FHisFactorRsp
+    {
+        0 optional E_HIS_FACTOR_TYPE eHisFactorType = E_HIS_FACTOR_MAKE_MONEY_EFFECT;       
+        1 optional int nStartDate;              
+        2 optional int nEndDate;                
+        3 optional int nDayNum;                 
+        4 optional vector<FHisFactorData> vecHisFactorData;
+    };
+
+    //题材龙头请求信息
+    struct FSubDragonHeadBlkInfo
+    {
+        0 optional StockInfo blk;       //题材信息
+    };
+    //批量题材龙头股请求信息
+    struct FBatchSubDragonHeadStockReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<FSubDragonHeadBlkInfo> vecSubject;//批量题材信息,传空表示获取所有题材的
+        2 optional long lRefreshTime;                       //刷新时间
+    };
+
+    //題材龙头回包信息
+    struct FSimpleStockInfo
+    {
+        0 optional int iMarket;                         //市场
+        1 optional string sCode;                        //代码
+    };
+    struct FSubDragonHeadBlkRspInfo
+    {
+        0 optional StockInfo blk;                       //题材信息
+        1 optional vector<FSimpleStockInfo> vecStk;     //排序后的题材所属龙头股信息
+    };
+    struct FSubDragonHeadStockRsp
+    {
+        0 optional vector<FSubDragonHeadBlkRspInfo> vecSubject; //题材龙头股信息
+        1 optional long lRefreshTime;                           //刷新时间
+    };
+
+    struct FZTTrendStockReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iCount = 1;                      //获取涨停风向股的数量
+        2 optional long lRefreshTime;                   //刷新时间
+    };
+    //简化涨停股信息
+    struct FSimpleZTStockInfo
+    {
+        0 optional int iMarket;                         //市场
+        1 optional string sCode;                        //代码
+        2 optional int iContinueBoard;                  //连板数
+        3 optional FBoardPeriod stBoard;                //几天几板
+        4 optional E_STOCK_ZT_TYPE eType;               //涨停类型
+        5 optional int iLastZTime;                      //最后涨停时间
+        6 optional vector<FHotBlockInfo> vecHotBlk;     //涨停股所属热门板块集合(已排序)
+        7 optional double dChgRatio;                    //涨跌幅
+        8 optional bool bUnOpenNewStock;                //是否是未开板新股
+    };
+    //涨停风向回包
+    struct FZTTrendStockRsp
+    {
+        0 optional vector<FSimpleZTStockInfo> vecStock;      //涨停风向股信息 
+        1 optional long lRefreshTime;                       //刷新时间
+    };
+    //涨停标杆请求
+    struct FZTModelStockReq{
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional int iCount = 3;          //获取涨停标杆股数量,最多3个
+        2 optional long lRefreshTime;       //刷新时间
+    };
+    //标杆信息
+    struct FZTModelBlkInfo
+    {
+        0 optional StockInfo blk;                       //涨停标杆所属板块信息
+        1 optional vector<FSimpleZTStockInfo> vecStock; //板块下连板数前3股票信息
+        2 optional int iHot;                            //题材热度
+    };
+    //涨停标杆股信息
+    struct FZTModelInfo
+    {
+        0 optional FSimpleZTStockInfo stkInfo;              //涨停标杆股信息
+        1 optional FZTModelBlkInfo modelInfo;               //标杆信息
+    };
+    //涨停标杆回包
+    struct FZTModelStockRsp{
+        0 optional vector<FZTModelInfo> vecModelInfo;
+        1 optional long lRefreshTime;
+    };
+
+    struct FSubNewStockReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        2 optional long lRefreshTime;                   //刷新时间
+    };
+
+    struct FSubNewStockInfo
+    {
+        0 optional FMDaySubNewStockInfo stkInfo;        //次新股信息
+        1 optional vector<FBlockSimpleInfo> vecBlk;     //次新股所属题材
+    };
+
+    struct FSubNewStockRsp
+    {
+        0 optional vector<FSubNewStockInfo> vecStk;      //次新股股信息 
+        1 optional long lRefreshTime;                    //刷新时间
+    };
+
+    //板块异动请求
+    struct FBlkUnuActReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+    };
+
+    struct FBlkUnuActDetailInfo
+    {
+        0 optional FBlkUnuActInfo blkUnuAct;            //异动信息
+        1 optional int iNDaysUnuActTime;                //30日炒作次数
+    };
+    //板块异动回包
+    struct FBlkUnuActRsp
+    {
+        0 optional vector<FBlkUnuActDetailInfo> vecBlkUnuActDetail; //所有板块异动信息(无序)
+        1 optional long lRefreshTime;
+    };
+
+    //板块异动标签请求
+    struct FBlkUnuActFlagReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+    };
+    //板块异动标签回包
+    struct FBlkUnuActFlagRsp
+    {
+        0 optional vector<FBlkUnuActTagInfo> vecBlkUnuActTag; //异动标签(有序)
+        1 optional long lRefreshTime;
+    };
+
+    //热点板块请求
+    struct FHotPointBlkStkReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+    };
+    //热点板块所属股票信息
+    struct FHotPointBlkStockInfo
+    {
+        0 optional FSimpleZTStockInfo stkInfo;
+        1 optional int iDragonHeadIdx;                  //股票龙头股标签(0:不是龙头股 1:龙一 2:龙二 ...)
+    };
+    struct FHotPointBlkRspInfo
+    {
+        0 optional StockInfo blk;                       //题材信息
+        1 optional vector<FHotPointBlkStockInfo> vecStk;//排序后的题材所属龙头股信息
+        2 optional int iHot;                            //题材热度
+    };
+    //热点板块回包
+    struct FHotPointBlkStkRsp
+    {
+        0 optional vector<FHotPointBlkRspInfo> vecHotPointBlkStk; //热点板块及股票
+        1 optional long lRefreshTime;
+    };
+
+    //超短大盘池请求
+    struct FUltraShortTermStkReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+    };
+    //超短大盘池回包
+    struct FUltraShortTermStkRsp
+    {
+        0 optional FUltraShorttermStkPool stUltraStkPool; //超短大盘
+        1 optional long lRefreshTime;
+    };
+
+    //擒牛股请求
+    struct FCatchBullStkReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+    };
+    //擒牛股回包
+    struct FCatchBullStkRsp
+    {
+        0 optional vector<FSimpleZTStockInfo> vecZtStk;     //涨停擒牛股
+        1 optional vector<FSimpleZTStockInfo> vecFbStk;     //反包擒牛股
+        2 optional vector<FSimpleZTStockInfo> vecSnStk;     //近端次新擒牛股
+        3 optional long lRefreshTime;                       //刷新时间
+    };
+    //超短大盘最新涨停股请求
+    struct FUltraShtLastZtStkReq 
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+    };
+    struct FUltraShtLastZtStkRspInfo
+    {
+        0 optional FSimpleZTStockInfo stkInfo;
+        1 optional E_UNITED_STK_POOL_TYPE eOriPool;     //来源股池
+        2 optional int iLastZTTimeRank;                 //最后涨停时间排名
+    };
+    //超短大盘最新涨停股回包
+    struct FUltraShtLastZtStkRsp
+    {
+        0 optional vector<FUltraShtLastZtStkRspInfo> vecStk;   //股票信息
+        1 optional long lRefreshTime;                          //刷新时间
+    };
+
+    //板块基础数据
+    struct FBlkBasicDataReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<StockInfo> vecBlk;
+        2 optional E_BLK_BASIC_DATA_TYPE eBasicDataType = E_BLK_BASIC_DATA_TYPE_ALL;
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+        5 optional int iCmd = 0;        //附加命令(用来过滤掉不用的字段 0:所有数据 1:只要基础数据 2:基础数据+涨停成分股列表 3:基础数据+未涨停成分股列表)
+    };
+    struct FDateBlkBasicData
+    {
+        0 optional int iDate;
+        1 optional vector<FBlockBasicData> vecData;
+    };
+    struct FBlkBasicDataRsp
+    {
+        0 optional E_BLK_BASIC_DATA_TYPE eBasicDataType;
+        1 optional vector<FDateBlkBasicData> vecDateData;
+    };
+
+    //板块成分股数据
+    struct FBlkStkDataReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<StockInfo> vecBlk;
+        2 optional int iStkType = 0;
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+    };
+    struct FDateBlkStkData
+    {
+        0 optional int iDate;
+        1 optional vector<FBlockStkCompData> vecBlkStk;
+    };
+    struct FBlkStkDataRsp
+    {
+        0 optional int iStkType;
+        1 optional vector<FDateBlkStkData> vecDateBlkStk;
+    };
+
+    //批量获取股票数据(支持沪深市场所有股票)
+    struct FBatchStkDataReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<StockInfo> vecStk;
+        2 optional int iDate = 0;    //结束日期,默认用当天日期(预留,暂时没用)
+    };
+    struct FBatchStkDataRsp
+    {
+        0 optional int iDate;
+        1 optional vector<FBlockStockInfo> vecStk;
+    };
+
+    //板块衍生数据
+    struct FBlkExtDataReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional E_BLOCK_DATA_TYPE eBlkDataType = E_BLOCK_DATA_TYPE_END;
+        2 optional int iStartDate = 0;  //预留(暂时无用)
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+        5 optional int iSubCmd = 0;     //子命令(每种E_BLOCK_DATA_TYPE代表的意义不同)
+    };
+
+    struct FBlkExtDataRsp
+    {
+        0 optional E_BLOCK_DATA_TYPE eBlkDataType;
+        1 optional vector<FBlockExternData> vecExtData;
+    };
+
+    enum STORM_EYE_IDX_TYPE
+    {
+        STORM_EYE_IDX_TYPE_NUM,     //风口数量指标
+        STORM_EYE_IDX_TYPE_LEVEL,   //板块风级指标
+    };
+    //板块风级指标
+    struct FBlkStormEyeIdxReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional STORM_EYE_IDX_TYPE eIdxType; //指标类型
+        2 optional int iStartDate;              //开始日期
+        3 optional int iEndDate;                //结束日期
+        4 optional vector<StockInfo> vecBlk;    //题材信息(类型为STORM_EYE_IDX_TYPE_LEVEL时必传)
+    };
+    struct FStromEyeNumIdx
+    {
+        0 optional int iDate;
+        1 optional FBlockStormNum stStormNum;
+    };
+    struct FStormEyeLv
+    {
+        0 optional int iDate;
+        1 optional int iZTStkNum;       //涨停股数量 <日内风级>
+        2 optional int iAccZTStkNum;    //累计涨停股数量(某交易日没有涨停股则重置计数) <连续风级>
+    };
+    struct FBlkStormEyeLvIdx
+    {
+        0 optional FBlockSimpleInfo blk;        //板块信息
+        1 optional vector<FStormEyeLv> vecLv;
+    };
+    struct FBlkStormEyeIdxRsp
+    {
+        0 optional vector<FStromEyeNumIdx> vecStormNum;    //风口数量
+        1 optional vector<FBlkStormEyeLvIdx> vecStormLv;//风级信息
+    };
+
+    //批量获取股票异动数据
+    struct FBatchStkCaUnuActReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<StockInfo> vecStk;
+    };
+    struct FBatchStkCaUnuActRsp
+    {
+        0 optional vector<FStkAllCaUnuAct> vecStkCaUnuAct;
+    };
+	
+	
+	struct FMultiCaUnuActTypeDataReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<E_CALL_AUCTION_DATA_TYPE> vecType;    //异动类型
+        2 optional int iStartDate = 0;  //预留(暂时无用)
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+    };
+	
+	struct FNumOfCaUnuActTypeStkReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<E_CALL_AUCTION_DATA_TYPE> vecType;    //异动类型
+        2 optional int iStartDate = 0;  //预留(暂时无用)
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+		5 optional bool bWantAll = false;	//全部异动
+    };
+	
+    //根据异动类型获取所有对应的信息
+    struct FCaUnuActTypeDataReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional E_CALL_AUCTION_DATA_TYPE eType;    //异动类型
+        2 optional int iStartDate = 0;  //预留(暂时无用)
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+        5 optional int iSubCmd = 0;     //子命令(每种 E_CALL_AUCTION_DATA_TYPE 代表的意义不同)
+    };
+    struct FCaUnuActTypeDataRsq
+    {
+        0 optional E_CALL_AUCTION_DATA_TYPE eType;    //原样返回
+        1 optional vector<FCaUnuActData> vecCaUnuAct;//异动信息
+    };
+
+    //根据异动评级获取异动股票
+    struct FCaUnuActLevelStkReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional E_CA_UNU_ACT_LEVEL eLevel;     //异动评级
+        2 optional int iStartDate = 0;  //预留(暂时无用)
+        3 optional int iEndDate = 0;    //结束日期,默认用当天日期
+        4 optional int iPreDayNum = 1;  //默认返回1天
+    };
+    struct FDateCaUnuActLevelStk
+    {
+        0 optional int iDate;
+        1 optional vector<FStkLastCaUnuAct> vecCaUnuActStk; //异动股票
+    };
+    struct FCaUnuActLevelStkRsp
+    {
+        1 optional E_CA_UNU_ACT_LEVEL eLevel;               //原样返回
+        2 optional vector<FDateCaUnuActLevelStk> vecCaLevel; //异动股票
+    };
+	
+	struct FAllCallAuctionDataRsp
+	{
+		0 optional vector<FCaUnuActTypeData> vecAllCaUnuAct;
+	};
+	
+	struct FNumOfCallAuctionStkRsp
+	{
+		0 optional map<E_CALL_AUCTION_DATA_TYPE,int> mapNumOfStk; //各个异动对应个股数
+		1 optional int iNumOfAllStk; //全部异动类型个股数
+	};
+	
+    //涨停盘口信息
+    struct FZDPanKouInfoReq
+    {
+	    0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<StockInfo> vecStk;  
+    };
+ 
+	struct FZDPanKouInfo
+	{
+		0 optional int iMarket;  
+        1 optional string strCode;
+	    2 optional string strStockZTReason;//涨停原因
+	    3 optional double dCurFDAmount; //当前封单金额
+	    4 optional double dFDRatio;	// 当前封成比
+	    5 optional double dHighFDAmout ; //最高封单金额
+	    6 optional double dZTTradeAmout ;//涨停成交金额
+	};
+    struct FZDPanKouInfoRsq
+    {
+	    0 optional vector<FZDPanKouInfo> vecFZDPanKouInfo;  
+    };
+
+    //所有股池
+    struct FBatchUnitedStockPoolReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional vector<E_UNITED_STK_POOL_TYPE> vecType;    //股池类型(仅支持部分)
+        2 optional long lRefreshTime = 0;           //刷新时间
+        3 optional int iDate = 0;
+    };
+
+    struct FUnitedPoolStock
+    {
+        0 optional E_UNITED_STK_POOL_TYPE eType;
+        1 optional vector<StockInfo> vecStk;
+    };
+
+    struct FBatchUnitedStockPoolRsq
+    {
+        0 optional vector<FUnitedPoolStock> vecStkPool;
+        1 optional long lRefreshTime;               //刷新时间
+        2 optional int iDate;                       //股池真实日期
+    };
+	
+	struct FZTTagReq
+	{
+		0 optional HQSys::HeaderInfo stHeader;
+		1 optional vector<E_ZT_TAG_TYPE> vecTagType;       //标签类型
+		2 optional E_TAG_DATA_TYPE eDataType;	 //类型:涨停分析3/盘面亮点0
+        3 optional int nStartDate = 0;           //起始日期
+        4 optional int nEndDate = 0;             //结束日期    
+	};
+	
+	struct FZTTagRsp
+	{
+		0 optional vector<FStockZTTag> vecTagData;
+	};
+	
+	//涨停标签请求
+    struct FZTAllTagTypeReq
+    {
+        0 optional HQSys::HeaderInfo stHeader;
+        1 optional long lRefreshTime;                   //刷新时间
+		2 optional E_TAG_DATA_TYPE eTagType; //请求标签类型(涨停/盘面亮点标签)
+    };
+	
+	struct FTagTypeInfo
+	{
+		0 optional E_ZT_TAG_TYPE eType;
+		1 optional string strTypeName;
+	};
+	
+	struct FZTAllTagTypeRsp
+	{ 
+		0 optional vector<FTagTypeInfo> vecType;	//返回标签
+		1 optional long lRefreshTime;
+	};
+	
+    interface ZTQuery
+    {
+        /*
+         * 历史因子
+         */
+        int getHisFactorData(FHisFactorReq stReq, out FHisFactorRsp stRsp);
+
+        /*
+         * 特定需求 获取几天几板
+         */
+        int getStockPoolFBoardPeriod(FStockPoolFBoardPeriodReq stReq, out FStockPoolFBoardPeriodRsp stRsp);
+
+        /*
+         * 获取股票池
+         */
+        int stockPool(FStockPoolReq stReq, out FStockPoolRsp stRsp);
+        /*
+         * 批量获取股票池 ,入参不要给太多，导致数据容量过大，或者接口超时
+         */
+        int batchStockPool(FBatchStockPoolReq stReq, out FBatchStockPoolRsp stRsp);
+
+        /*
+         *获取股票的开板明细数据
+         */
+        int boardDetail(FBoardDetailReq stReq, out FBoardDetailRsp stRsp);
+
+        /*
+        * 获取市场风向数据
+        */
+        int marketTrend(FMarketTrendReq stReq, out FMarketTrendRsp stRsp);
+
+        /*
+        * 获取市场风向数据列表
+        */
+        int marketTrendVec(FMarketTrendReq stReq, out FMarketTrendVecRsp stRsp);
+
+        /*
+        * 获取涨停题材当日数据
+        */
+        int blkCurrent(FBlkCurrentReq stReq, out FBlkCurrentRsp stRsp);
+
+        /*
+        * 获取涨停题材当日涨停股票
+        */
+        int blkCurZT(FBlkCurZTReq stReq, out FBlkCurZTRsp stRsp);
+
+        /*
+        * 获取涨停题材当日未涨停股票
+        */
+        int blkCurUnZT(FBlkCurUnZTReq stReq, out FBlkCurUnZTRsp stRsp);
+
+        /*
+        * 获取涨停题材近几日数据
+        * blkCurrent、blkCurZT、blkCurUnZT、blkLastHis四个api一起构成龙头挖掘页面内容
+        */
+        int blkLastHis(FBlkLastHisReq stReq, out FBlkLastHisRsp stRsp);
+
+        /*
+        * 获取板块历史轨迹，按时间
+        */
+        int blkTimeHis(FBlkTimeHisReq stReq, out FBlkTimeHisRsp stRsp);
+
+        /*
+        * 获取板块历史轨迹，按股票
+        */
+        int blkStockHis(FBlkStockHisReq stReq, out FBlkStockHisRsp stRsp);
+
+        /*
+        * 获取板块历史轮动数据
+        */
+        int blkHisTurn(FBlkHisTurnReq stReq, out FBlkHisTurnRsp stRsp);
+
+		/*
+        *  推送最新交易日期
+        */
+		int pushNewTradeDate(int iNewDate);
+		
+        /*
+        *  推送板块异动数据接口New
+        */
+        int pushBlockChangeDataNew(IC::SPushBlockChangeDataNew sPushBlockChangeDataNew);
+
+        /*
+        *  推送领涨板块数据接口
+        */
+        int pushLeadBlkInfo(IC::SPushLeadBlkInfo sPushLeadBlkInfo);
+
+        /*
+        * 获取领涨板块，按日期
+        */
+        int getLeadBlkByDate(FLeadBlkReq stReq, out FLeadBlkRsp stRsp);
+
+        /*
+        * 获取板块异动
+        */
+        int getBlkChanges(FBlkChangesReq stReq, out FBlkChangesRsp stRsp);
+
+        /*
+        * 批量获取题材龙头股(连板数最高的股票就是龙头股(股票的<抓取题材>和<所属题材>匹配,则连板数直接加100再排序))
+        */
+        int batchSubDragonHeadStock(FBatchSubDragonHeadStockReq stReq, out FSubDragonHeadStockRsp stRsp);
+
+        /*
+        * 获取涨停风向股
+        */
+        int getZTTrendStock(FZTTrendStockReq stReq, out FZTTrendStockRsp stRsp);
+
+        /*
+        * 获取涨停标杆股(前3热门题材下 涨停成分股 按连板数(降序)、最后涨停时间(升序)、涨停封成比(降序)排序)
+        */
+        int getZTModelStock(FZTModelStockReq stReq, out FZTModelStockRsp stRsp);
+
+        /*
+        * 获取所有次新股
+        */
+        int getSubNewStock(FSubNewStockReq stReq, out FSubNewStockRsp stRsp);
+
+        /*
+        * 获取所有异动板块(成分股涨停数>3)
+        */
+        int getBlkUnusualAction(FBlkUnuActReq stReq, out FBlkUnuActRsp stRsp);
+
+        /*
+        * 获取异动标签
+        */
+        int getBlkUnusualActionTag(FBlkUnuActFlagReq stReq, out FBlkUnuActFlagRsp stRsp);
+
+        /*
+        * 获取热点板块(前3热门题材+龙头股标签+涨幅+领涨股补齐)
+        */
+        int getHotPointBlkStock(FHotPointBlkStkReq stReq, out FHotPointBlkStkRsp stRsp);
+
+        /*
+        * 获取带标签的超短大盘池(收盘前返回昨日数据,盘后返回当日数据)
+        */
+        int getUltraShortTermStock(FUltraShortTermStkReq stReq, out FUltraShortTermStkRsp stRsp);
+
+        /*
+        * 获取擒牛股(涨停池最新封板3只;昨日反包率先涨停1只,涨幅最高2只;近端次新领涨3只)
+        */
+        int getCatchBullStock(FCatchBullStkReq stReq, out FCatchBullStkRsp stRsp);
+
+        /*
+        * 获取超短大盘最新涨停的一支股票(3秒刷新一次)
+        */
+        int getUltraShortLastZTStock(FUltraShtLastZtStkReq stReq, out FUltraShtLastZtStkRsp stRsp);
+
+        /*
+         * 板块基础数据
+         */
+        int getBlockBasicData(FBlkBasicDataReq stReq, out FBlkBasicDataRsp stRsp);
+
+        /*
+         * 板块成分股数据
+         */
+        int getBlockStockData(FBlkStkDataReq stReq, out FBlkStkDataRsp stRsp);
+
+        /*
+         * 沪深市场股票数据
+         */
+        int batchStockData(FBatchStkDataReq stReq, out FBatchStkDataRsp stRsp);
+
+        /*
+         * 板块衍生数据
+         */
+        int getBlockExternData(FBlkExtDataReq stReq, out FBlkExtDataRsp stRsp);
+
+        /*
+         * 批量板块风级
+         */
+        int batchBlkStormEyeIdx(FBlkStormEyeIdxReq stReq, out FBlkStormEyeIdxRsp stRsp);
+
+        /*
+         * 批量股票竞价异动
+         */
+        int batchStkCaUnuAct(FBatchStkCaUnuActReq stReq, out FBatchStkCaUnuActRsp stRsp);
+
+        /*
+         * 竞价异动分类数据
+         */
+        int getCaUnuActTypeData(FCaUnuActTypeDataReq stReq, out FCaUnuActTypeDataRsq stRsp);
+
+        /*
+         * 竞价异动趋势股票列表
+         */
+        int getCaUnuActLevelStk(FCaUnuActLevelStkReq stReq, out FCaUnuActLevelStkRsp stRsp);
+		
+		/*
+         * 所有竞价异动类型数据(去重)
+         */
+        int getAllCallAuctionData(FMultiCaUnuActTypeDataReq stReq, out FCaUnuActTypeDataRsq stRsp);
+		
+		/*
+         * 获取竞价异动/试盘股票总数
+         */
+        int getNumOfCallAuctionStk(FNumOfCaUnuActTypeStkReq stReq, out FNumOfCallAuctionStkRsp stRsp);
+
+        /*
+         * 获取涨停盘口信息
+         */
+        int getZTPanKouInfo(FZDPanKouInfoReq stReq, out FZDPanKouInfoRsq stRsp);
+
+        /*
+         * 获取各种类型股池(默认收盘前返回昨日，盘后返回当日的)
+         */
+        int batchUnitedStockPool(FBatchUnitedStockPoolReq stReq, out FBatchUnitedStockPoolRsq stRsp);
+		
+		/*
+		 *获取涨停标签(支持按单个类型来查询)
+		 */
+		int getTagTypeData(FZTTagReq stReq,out FZTTagRsp stRsp);
+		
+		/*
+		 *获取所有涨停标签
+		 */
+		int getAllTagType(FZTAllTagTypeReq stReq,out FZTAllTagTypeRsp stRsp);
+    };
+};
+

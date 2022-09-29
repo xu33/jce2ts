@@ -31,7 +31,7 @@ map { return "MAP"; }
 ";" return "SEMI"
 "," return "COMMA"
 "::" return "DOUBLE_COLON"
-"="\s*[^=;,]+ { /* DO NOTHING */ }
+"="\s*[^=;,//]+ { /* DO NOTHING */ }
 \d+ { return "PROPERTY_INDEX";}
 [a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
 <<EOF>> return "EOF"
@@ -121,6 +121,7 @@ enumitem
 enumitem: 
 IDENTIFIER COMMA COMMENT_LINE
 {
+    console.log("enum0", $1)
     $$ = {
         name: $1,
         comment: {
@@ -131,6 +132,8 @@ IDENTIFIER COMMA COMMENT_LINE
 }
 |IDENTIFIER COMMA
 {
+    console.log("enum1", $1)
+
     $$ = {
         name: $1,
         comment: null
@@ -138,6 +141,7 @@ IDENTIFIER COMMA COMMENT_LINE
 }
 |IDENTIFIER COMMENT_LINE
 {
+    console.log("enum2", $1)
     $$ = {
         name: $1,
         comment: {
@@ -145,7 +149,8 @@ IDENTIFIER COMMA COMMENT_LINE
             value: $COMMENT_LINE.replace('//', "")
         }
     }
-};
+}
+;
 
 struct: STRUCT IDENTIFIER itemlist 
 {

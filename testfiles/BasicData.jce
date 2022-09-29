@@ -1,0 +1,1157 @@
+#include "RadarData.jce"
+#include "CommonData.jce"
+
+module HQSys
+{  
+
+	//分时，日，多日资金流，Srv-Cli数据交互结构
+	struct HTolMoneyFlow
+	{
+		1 optional int iTime;				    //时间
+		2 optional short shtsetcode;               //市场代码
+		3 optional string sCode;                 //股票代码
+		4 optional double fSuperIn;				// 超大宗入  >50万股或者100万元
+		5 optional double fSuperOut;				// 超大宗出
+		6 optional double fBigIn;				// 大宗入		>10万股或者20万元
+		7 optional double fBigOut;				// 大宗出
+		8 optional double fMidIn;				// 中单入		>2万股或者4万元
+		9 optional double fMidOut;				// 中单出
+		10 optional double fSmallIn;				// 小单入		其他
+		11 optional double fSmallOut;			// 小单出
+		12 optional double dPrevClose;		//昨收，如果是前3日则对应前3日昨收
+	
+	};
+
+	struct HRTMinData								// 在.IFZ文件中读入的数据结构1
+    {
+        1 optional short shtMinute;					// 零点以来的分钟数
+        2 optional double fNow;						// 现价,现指数
+        3 optional double fAverage;					// 均价,动态结算价(期货),不含加权的指数
+        4 optional unsigned int uiNowVol;			// 现手,现成交金额(100元)
+        5 optional unsigned int uiBuyv;				// 买量,上涨家数
+        6 optional unsigned int uiSellv;			// 卖量,下跌家数
+        7 optional double dAmount;					//成交额
+        8 optional unsigned int uiVolInStock;		// 持仓量(期货)
+        9 optional double fLead;						// 领先指标(指数)
+    }; 
+
+    // 涨停数据
+    struct SZTData
+    {
+        0 optional   byte  bZT;                     // 涨停
+        1 optional   byte  bPreZT;                  // 昨日涨停
+        2 optional   int   iBoardDays;              // 连版天数
+        3 optional   int   iStrongDays;             // 强势天数
+        4 optional   int   iZDTDays;                // 涨跌停天数
+    };
+
+    struct BlockBasicInfo
+    {
+        1 optional string             sCode;
+        2 optional string             sName;
+    };
+
+	/**
+    * 此结构实际是union
+    */
+    struct HDateTime
+    {
+        1 optional int iDate;               // 日期YYYYMMDD(日线)
+        // 2, 3 分钟线 需要用
+        2 optional short shtDay;            // 日
+        3 optional short shtTime;           // 零点以来的分钟数
+    };
+
+    /**
+    * 此结构实际是union
+    */
+    struct HTogetherZhiShu                      //单位前收盘价(除权用)，期货的持仓量, 指数,涨跌家数
+    {
+        1 optional unsigned int uiVolInStock;   // 持仓量
+        2 optional double fYClose;               // 昨收
+        3 optional unsigned short usUp;       //上涨家数
+        4 optional unsigned short usDown;     //下跌家数
+    };
+
+    struct HAnalyData
+    {
+        1 optional HDateTime sttDateTime;        // 时间,历史原因, 存到盘上的数据都是 *100 以后的 DWORD 型数据
+        2 optional double fOpen;                 // 单位开盘价
+        3 optional double fHigh;                 // 单位最高价
+        4 optional double fLow;                  // 单位最低价
+        5 optional double fClose;                // 单位收盘价
+        6 optional double fAmount;               // 单位成交金额
+        7 optional long lVolume;                 // 成交量
+        9 optional double dSettlementPrice;      // 结算价
+        10 optional HTogetherZhiShu sttZhiShu;   // 指数信息
+    };
+    
+    struct HCQAnalyData
+    {
+        1 optional HAnalyData stLine;						//基本k线数据
+        2 optional long lOpenDate;							//开盘价取的不复权日期，日k级别以上才有效
+        3 optional long lCloseDate;						    //收盘价取的不复权日期，日k级别以上才有效
+        4 optional long lHighDate;						    //最高价取的不复权日期，日k级别以上才有效
+        5 optional long lLowDate;							//最低价取的不复权日期，日k级别以上才有效
+        6 optional double dHigh;							//根据复权确定最高价日期，再取不复权最高价
+        7 optional double dLow;								//根据复权确定最低价日期，再取不复权最低价
+    };
+
+    struct HTickData    
+    {
+        1 optional short shtMinute;         //零点以来的分钟数
+        2 optional double fNowPrice;        //现价
+        3 optional unsigned int uiNowVol;   //现手
+        4 optional short shtInOutFlag;      //买卖标志;期货市场增加性质分类：0-双开，1-多开，2-空开，3-双平，4-多平，5-空平，6-多换，7-空换
+		5 optional int iTime;               //hhmmss
+		6 optional int iTradeNum;				//分笔包含逐笔笔数
+		7 optional double dAvgPrice;			//超级盘口闪电图需要均价划线
+		8 optional unsigned int uiFrontTrans;   //该分笔前面逐笔汇总  
+		9 optional int iVolInStockDif; // 持仓量增减     
+    };
+
+	struct HMarketTradePeriod
+	{
+		1 optional vector<short> vTradePeriod;
+	};
+	
+	struct HStock  //股票信息（带名称）
+	{
+		1 optional short shtSetcode;
+		2 optional string sCode;
+		3 optional string sName;
+	};
+
+	struct HStockDatePeriod  //股票信息（包含时间段）
+	{
+		1 optional HStockUnique stStock;
+        2 optional int iStartDate = 11110101;                   //起始日期，数据类型YYYYMMDD
+        3 optional int iEndDate = 22220101;                     //结束日期，数据类型YYYYMMDD
+		/**
+		* iNum = 0表示不关心num，按照区间取
+		* iNum > 0 表示从iStartDate向后取数据，但不超过iEndDate
+		* iNum < 0 表示从iEndDate向前取数据，但不超过iStartDate
+		*/
+		4 optional int iNum=0;
+		5 optional long iStartDateTime = 0;//起始时间YYYYMMDDHHmm 日K往上以iStartDate为准，其他类型K线以这个为准
+		6 optional long iEndDateTime = 0;//结束时间YYYYMMDDHHmm 日K往上以iEndDate为准，其他类型K线以这个为准
+	};
+
+	struct HStockAnalyData
+	{
+		1 optional HStockUnique stStock;
+		2 optional vector<HAnalyData> vAnalayData;
+		3 optional int iSumCount;    //股票日k数据总根数
+	};
+
+	struct HMFlowTrend
+	{
+		1 optional double fMainMoneyInflow;     //主力资金净流入
+		2 optional double fMainMoneyRatio;      //主力资金净占比
+		3 optional double fRetailMoneyInflow;   //散户资金净流入
+		4 optional double fRetailMoneyRatio;    //散户资金净占比
+		5 optional double fSuperLargeInflow;    //超大单资金净流入
+		6 optional double fSuperLargeRatio;     //超大单资金净占比
+		7 optional double fLargeInflow;         //大单资金净流入
+		8 optional double fLargeRatio;          //大单资金净占比
+		9 optional double fMiddleInflow;        //中单资金净流入
+		10 optional double fMiddleRatio;        //中单资金净占比
+		11 optional double fSmallInflow;        //小单资金净流入
+		12 optional double fSmallRatio;         //小单资金净占比
+	};
+
+	struct HMFlowRank //资金排名数据
+	{
+		0 optional short shtSetcode;
+		1 optional string sCode;
+		2 optional string sName;
+		3 optional int iType;
+		4 optional double fNowPrice;    //最新价
+		5 optional double fChg;         //涨跌幅
+		6 optional double fChange;      //涨跌值
+
+		7 optional HMFlowTrend fDayMFlowTrend;      // 当日资金流动向
+		8 optional HMFlowTrend f3DayMFlowTrend;     // 3日资金流动向
+		9 optional HMFlowTrend f5DayMFlowTrend;     // 5日资金流动向
+		10 optional HMFlowTrend f10DayMFlowTrend;   // 10日资金流动向
+		11 optional byte bTransactionStatus;        // 交易状态标志：‘O’表示其它状态‘P’停牌‘C’集合竞价‘H’暂停交易‘T’连续交易‘B’休市‘E’闭市
+        12 optional HMFlowTrend f3MinMFlowTrend;    // 3分钟资金流动向
+        13 optional HMFlowTrend f5MinMFlowTrend;    // 5分钟资金流动向
+        14 optional SZTData ztData;                 // 涨停数据
+        15 optional BlockBasicInfo leadBlock;       // 领涨板块
+        16 optional HMFlowTrend f10MinMFlowTrend;   // 10分钟资金流动向
+        17 optional HMFlowTrend f30MinMFlowTrend;   // 30分钟资金流动向
+        18 optional HMFlowTrend f60MinMFlowTrend;   // 60分钟资金流动向
+	};
+
+	struct HDDERank  //DDE排名数据
+	{
+		1 optional short shtSetcode;
+		2 optional string sCode;
+		3 optional string sName;
+		4 optional double fNowPrice;     //最新价
+		5 optional double fChg;          //涨跌幅
+		6 optional double fTurnoverRate; //换手率
+
+		7 optional double fDDX;        //DDX
+		8 optional double fDDY;        //DDY
+		9 optional double fDDZ;        //DDZ
+		10 optional double fDDF;       //DDF
+
+		11 optional double fDDX5;       //5日DDX
+		12 optional double fDDY5;       //5日DDY
+
+		13 optional double fDDX60;      //60日DDX
+		14 optional double fDDY60;      //60日DDY
+	};
+
+	struct HDxjl  //短线精灵数据
+	{
+		1 optional short shtSetcode;   //股票市场
+		2 optional string sCode;       //股票代码
+		3 optional string sName;       //股票名称
+		4 optional int iOrderTime;    //挂单时间
+		5 optional int iShtType;      //挂单类型
+		6 optional double dOrderVol;  //每笔手数
+		7 optional double fNowPrice;  //现价
+		8 optional int iNum;          //挂单笔数
+	};
+
+	struct HOrderUnit  //L2委托单类别挂单明细
+	{
+		1 optional double dPadOrderPrice;   //托单价格(跳价委托价格)
+		2 optional int iPadOrderNum;        //托单量（跳价买委托量）
+		3 optional double dPressOrderPrice; //压单价格(跳价委托价格)
+		4 optional int iPressOrderNum;      //压单量（跳价卖委托量）
+		5 optional double dNowPrice;        //最新价（对倒单-成交价格）
+		6 optional int iVolume;             //成交量(对倒单)
+		7 optional double dBuyAmt;          //买入金额(跳价双开单)
+		8 optional double dSellAmt;         //卖出金额(跳价双开单)
+	};
+
+	struct HOrderClassify  //L2委托单类别-压单、托单、夹单、跳价出货单、对倒单
+	{
+		1 optional short shtSetcode;         //股票市场
+		2 optional string sCode;             //股票代码
+		3 optional string sName;             //股票名称
+		4 optional int iOrderTime;           //挂单时间
+		5 optional int iShtType;             //挂单类型
+		6 optional HOrderUnit stOrderUnit;   //挂单明细
+	};
+
+	//倍牛的融资标的
+	enum E_FINANCING_TARGET
+	{
+		E_FT_NULL,
+		E_FT_FINANCING,   //倍牛融资标的
+	};
+
+    struct TagInfo
+    {
+        0 optional short       shtType; // 类型 0:没有任何标签; 1:融资融券;2:新股;3:次新;4:高质押
+        1 optional string      sDesc;   // 描述
+    };
+
+	struct HStockBaseInfo  //个股基础数据
+	{
+		1 optional short shtSetcode;			   //股票市场
+		2 optional string sCode;                   //股票代码
+		3 optional string sName;                   //股票名称
+		4 optional double fPeRatio ;               //市盈率 = 股票价格 / 上年每股税后利润
+		5 optional byte cCoinType;			       //货币
+		6 optional double fCirculationStocks;      //流通股
+		7 optional double fTotalMarketValue;       //总市值
+		8 optional double fCirculationMarketValue; //流通市值
+		9 optional byte bMarginMark;               //融资股票标识：Y’’T’是‘N’’F’否
+		10 optional byte bSecuritiesMark;          //融券股票标识：‘Y’’T’是‘N’’F’否
+		11 optional double fPriceRatio;            //市净率
+		12 optional int iType;                     //股票类别
+		13 optional double dNetValue;              //净值，即每股净资产
+		14 optional double dZGB;                   //总股本
+        15 optional double dDTSY;                  //动态收益= 每股净利润*4 / 季度数  （季度数=报告期/3）
+		16 optional E_FINANCING_TARGET	eTarget = E_FT_NULL;//倍牛的融资标的
+        17 optional vector<TagInfo>  vTags;        // 标签
+		18 optional double dPreClose;              //昨日收盘价
+		19 optional double dZTPrice;               //涨停价
+		20 optional double dDTPrice;               //跌停价
+	};
+
+    // 个股静态数据
+    struct StockStaticData
+    {
+        0 optional short shtMarket;                                   // 市场
+        1 optional string sCode;                                      // 代码
+        2 optional string sName;                                      // 名称
+        3 optional short  shtType;                                    // 类型
+        4 optional double dLtg;                                       // 流通股(单位：万)
+        5 optional double dZgb;                                       // 总股本（单位：万）
+        6 optional double dJzc;                                       // 股东权益（净资产）
+        7 optional double dNetValue;                                  // 每股净收益
+        8 optional double dDTSY;                                      // 动态收益
+        9 optional double d5SumVol;                                   // 5日均量
+        10 optional double dZTPrice;                                  // 涨停价
+        11 optional double dDTPrice;                                  // 跌停价
+        12 optional double dPreClose;                                 // 昨收
+		13 optional byte bMarginMark;                                 // 融资股票标识
+		14 optional byte bSecuritiesMark;                             // 融券股票标识
+        15 optional byte cCoinType;			                          // 货币
+        16 optional E_FINANCING_TARGET	eTarget = E_FT_NULL;          // 倍牛的融资标的
+        17 optional vector<TagInfo>  vTags;                           // 标签
+    };
+
+    // 个股标签类型
+    enum E_STOCK_FLAG_TYPE
+    {
+        E_FLAG_TYPE_UNKNOWN = 0, // 未知
+        E_FLAG_TYPE_ZTG = 1,     // 涨停股
+    };
+
+	struct HStockSimHq
+	{
+		1 optional double fNowPrice;                      // 现价
+		2 optional double fOpen;                          // 开盘价
+		3 optional double fHigh;                          // 最高价
+		4 optional double fLow;                           // 最低价
+		5 optional double fClose;                         // 昨日收盘价
+		6 optional long lVolume;       			          // 成交量：股数
+		7 optional double fAmount;                        // 成交额
+		8 optional double fChgValue;                      // 涨跌金额 = (最新价－昨收价)
+		9 optional double fChgRatio;                      // 涨跌幅 = (最新价－昨收价) / 昨收价 * 100.f
+		10 optional double fZhenfu;                       // 振幅 = (最高价－最低价) / 昨收价 * 100.f
+        11 optional SZTData ztData;                       // 涨停数据
+        12 optional BlockBasicInfo leadBlock;             // 领涨板块
+	};
+
+	//期货市场和现货市场独有数据
+	struct HStockQhHq
+	{		
+		1 optional double dSettlementPrice;     //结算价
+		2 optional double dPreSettlementPrice;  //昨日结算价
+		3 optional double dOpenInterest;        //持仓量
+		4 optional double dPreOpenInterest;     //昨持仓量
+		5 optional int iEveryHand;              //每手
+		6 optional double dDayIncrease;         //日增
+	};
+
+    // 国债行情（目前只有国债逆回购）
+    struct HStockZQHq
+    {
+        0 optional      float     fRoRPerYear = 0;         // 收益率
+        1 optional      double    dRatePer10w = 0;         // 10万收益
+        2 optional      double    dRatePer1k = 0;          // 1千元收益
+        3 optional      short     shtDays = 0;             // 产品期数
+        4 optional      short     shtZkDays = 0;           // 占款天数
+        5 optional      int       iJxFrom = 0;             // 计息开始日期
+        6 optional      int       iJxTo = 0;               // 计息结束日期
+        7 optional      int       iTodayBuy = 0;           // 今日购买日期
+        8 optional      int       iZjUserDay = 0;          // 资金可用日期
+        9 optional      int       iZjFetchDay = 0;         // 资金可取日期
+    };
+
+	struct HStockExHq
+	{
+		//全市场公有字段
+		3 optional long  lNowVol;                //现手
+		4 optional long  lInside;                //内盘
+		5 optional long  lOutside;               //外盘
+		7 optional vector<double> vBuyp;         //叫买价
+		8 optional vector<long> vBuyv;           //叫买盘：股数
+		9 optional vector<double> vSellp;        //叫卖价
+		10 optional vector<long> vSellv;         //叫卖盘：股数
+		11 optional double fAveragePrice;        //均价
+		12 optional double fZTPrice;             //涨停价
+		13 optional double fDTPrice;             //跌停价
+		14 optional double fTurnoverRate;        //换手率 * 100.f
+		15 optional int iTradeMin;               //交易时间，凌晨到现在的分钟数
+		16 optional int iTradeDate;              //交易日YYYYMMDD
+		17 optional int iTradeTime;              //交易时间HHMMSS
+	
+		20 optional byte bZDMark;                //涨跌停标志：1正常交易 2涨停 3跌停
+		21 optional byte bTransactionStatus;     //交易状态标志：‘O’表示其它状态‘P’停牌‘C’集合竞价‘H’暂停交易‘T’连续交易‘B’休市‘E’闭市
+		//该结构尽量不要增加字段，优化调整前该结构后面的字段被占用的很多（如必须增加请从50开始）
+
+		50 optional vector<int> vBuyNum;         //买家个数
+		51 optional vector<int> vSellNum;        //卖家个数
+		52 optional int iBSFlag;                 //现手买卖方向，0-内盘（卖） 1-外盘（买）
+
+		//动态财务相关数据,需要兼容已有的排序逻辑需要放到这里
+		53 optional double dPeRatio;      //市盈率
+		54 optional double dPriceRatio;   //市净率
+		55 optional double dZSZ;          //总市值	
+		56 optional double dLTZS;         //流通市值
+	};
+
+    // 股票交易状态
+    enum E_STOCK_TRADE_STATUS
+    {
+        E_STATUS_UNKOWN = 0,            // 未知
+        E_STATUS_CLOSED = 1,            // 已收盘
+        E_STATUS_NOT_OPEN = 2,          // 未开盘
+        E_STATUS_AUTION = 3,            // 集合竞价
+        E_STATUS_UPCOMING = 4,          // 等待开盘
+        E_STATUS_TRADE = 5,             // 交易中
+        E_STATUS_AM_TRADE = 6,          // 早盘
+        E_STATUS_NOONTIME = 7,          // 午休
+        E_STATUS_PM_TRADE = 8,          // 午盘
+        E_STATUS_STOPPED = 9,           // 停牌
+        E_STATUS_TEMP_STOPPED = 10,     // 临时停牌         
+        E_STATUS_AFTER_TRADE = 11,      // 盘后交易
+        E_STATUS_VOLATILITY_STOPPED = 12,      // 波动性中断
+        E_STATUS_RECOVERABLE_FUSING = 13,      // 可恢复熔断
+        E_STATUS_NON_RECOVERABLE_FUSING = 14,  // 不可恢复熔断 
+    };
+
+    // 市场交易状态
+    // E_STOCK_TRADE_STATUS个股交易状态，历史原因，不能更改只能增加。
+    // 该枚举类型，目前主要给移动端使用，PC端主要使用其中的停牌和正常交易状态。
+    // E_MARKET_TRADE_STATUS市场交易状态，目前给PC使用，PM_AUCTION只有PC客户端需要这个状态
+    enum E_MARKET_TRADE_STATUS
+    {
+         E_MARKET_STATUS_UNKOWN = 0,          // 未知
+         E_MARKET_STATUS_CLOSED = 1,          // 已收盘
+         E_MARKET_STATUS_NOT_OPEN = 2,        // 未开盘
+         E_MARKET_STATUS_AUCTION = 3,         // 集合竞价
+         E_MARKET_STATUS_UPCOMING = 4,        // 等待开盘
+         E_MARKET_STATUS_TRADE = 5,           // 交易中
+         E_MARKET_STATUS_AM_TRADE = 6,        // 早盘
+         E_MARKET_STATUS_NOONTIME = 7,        // 午休
+         E_MARKET_STATUS_PM_TRADE = 8,        // 午盘
+         E_MARKET_STATUS_PM_AUCTION = 20      // sz下午集合竞价
+    };
+
+	//行情扩展行情之外的衍生数据，后续需要添加的扩展字段均在这个结构中添加
+	struct HStockDeriveHq
+	{
+		0 optional double dLiangBi;      //量比 = 成交量 / (五日均量 * 开盘分钟数)		
+		1 optional double dUpSpeed;	     //涨速
+		2 optional long lTradeNum;       //成交笔数
+		
+		//L2十档行情需要
+		3 optional double dBuyAvg;				//委买均价
+		4 optional double dSellAvg;				//委卖均价
+		5 optional long lBuyPriceNum;			//委买价位单数
+		6 optional long lSellPriceNum;		    //委卖价位单数
+		7 optional long lBuyVol;			    //委买总单量
+		8 optional long lSellVol;				//委卖总单量
+        9 optional E_STOCK_TRADE_STATUS eStatus;//交易状态
+
+		10 optional double dMainMoneyInflow5Min;//5分钟主力净买
+		11 optional unsigned int    uiItemNum;      //总分笔数
+	};
+
+	//板块和指数类股票相关信息
+	struct HBlockIndexHq
+	{
+		0 optional short sHeadMarket;           //领涨股市场
+		1 optional string sHeadCode;			//领涨股code
+		2 optional string sHeadName;            //领涨股名称
+		3 optional double fHeadNow;             //领涨股现价
+		4 optional double fHeadClose;           //领涨股前收
+		5 optional int iStockNum;     			//股票个数
+		6 optional int iEqualNum;				//平盘家数
+		7 optional int iZTNum;					//涨停家数
+		8 optional int iUpNum;                  //上涨家数
+		9 optional int iDownNum;                //下跌家数	
+
+		10 optional double dTotalMarketValue;       //板块个股总市值
+		11 optional double dCirculationMarketValue; //板块个股流通市值
+
+		12 optional int iUpNDay;       //连涨天数
+		13 optional double d3DayChg;   //3日涨幅
+		14 optional double d5DayChg;   //5日涨幅
+		15 optional double d10DayChg;  //10日涨幅
+	};
+
+	//个股财务数据相关行情（静态数据）
+	struct HStockCwHq
+	{
+		1 optional double dMGSY;         //每股收益
+		2 optional double dMGJZC;        //每股净资产
+		3 optional double dJZCSYL;       //净资产收益率
+		4 optional double dYSZZL3Y;      //3年营收增长率
+		5 optional double dJLSZZL3Y;     //3年净利润增长率
+	};
+
+	//按照StockHq结构体粒度划分的枚举
+    enum E_STOCK_HQ_DATA
+    {
+        E_SHD_NONE = 0,
+
+        E_SHD_SIMPLE = 0x01,       //HStockSimHq + HStockQhHq + HStockZQHq
+        E_SHD_ORDER  = 0x02,       //HStockExHq的数据
+        E_SHD_BLOCK  = 0x04,       //HBlockIndexHq板块指数相关数据
+        E_SHD_DERIVE = 0x08,       //HStockDeriveHq衍生数据
+
+        E_SHD_1DAY_ZJ = 0x020,     //1日资金行情字段 HTolMoneyFlow
+        E_SHD_3DAY_ZJ = 0x040,     //2日资金行情字段 HTolMoneyFlow
+        E_SHD_5DAY_ZJ = 0x080,     //5日资金行情字段 HTolMoneyFlow
+        E_SHD_10DAY_ZJ = 0x100,    //2日资金行情字段 HTolMoneyFlow
+        E_SHD_DDE = 0x200,         //DDE行情字段     HDDERank
+		E_SHD_CW = 0x400,          //财务行情字段    HStockCwHq
+        E_SHD_3MIN_ZJ = 0x800,     //近3分钟资金行情字段 HTolMoneyFlow
+        E_SHD_5MIN_ZJ = 0x1000,    //近5分钟资金行情字段 HTolMoneyFlow
+        E_SHD_10MIN_ZJ = 0x2000,   //近10分钟资金行情字段 HTolMoneyFlow
+        E_SHD_30MIN_ZJ = 0x4000,   //近30分钟资金行情字段 HTolMoneyFlow
+        E_SHD_60MIN_ZJ = 0x8000,   //近60分钟资金行情字段 HTolMoneyFlow
+    };
+    
+    //按业务使用场景定制字段
+    enum E_STOCK_DATA_ENV
+    {
+    	E_SHDE_NORMAL = 0,			//根据E_STOCK_HQ_DATA中定义枚举确定字段
+    	E_SHDE_PRICE = 1, 			//只给现价和昨收，push的时候只给现价
+    	E_SHDE_LIST_QT = 2,			//列表行情字段，附带当日资金
+		E_SHDE_LIST_1DAYZJ = 3,		//列表当日资金字段，附带现价行情
+		E_SHDE_LIST_3DAYZJ = 4,		//列表3日资金字段，附带现价行情
+		E_SHDE_LIST_5DAYZJ = 5,		//列表5日资金字段，附带现价行情
+		E_SHDE_LIST_10DAYZJ = 6,	//列表10日资金字段，附带现价行情
+		E_SHDE_SIMPLE_STATUS = 7,    //为移动端定制的简单行情+交易状态 
+        E_SHDE_LIST_3MINZJ = 8,	    // 列表3分钟资金字段，附带现价行情
+        E_SHDE_LIST_5MINZJ = 9,	    // 列表5分钟资金字段，附带现价行情
+        E_SHDE_LIST_10MINZJ = 10,	// 列表10分钟资金字段，附带现价行情
+        E_SHDE_LIST_30MINZJ = 11,	// 列表30分钟资金字段，附带现价行情
+        E_SHDE_LIST_60MINZJ = 12,	// 列表60分钟资金字段，附带现价行情
+    };
+    
+	struct HStockHq   //股票行情动态数据
+	{
+		0 optional unsigned short shtPrecise;   //精度
+		1 optional short shtSetcode;            //股票市场
+		2 optional string sCode;                //股票代码
+		3 optional string sName;                //股票名称
+
+		4 optional HStockSimHq  stSimHq;        //股票精简行情
+		5 optional HStockExHq   stExHq;         //股票扩展行情
+		6 optional HStockQhHq   stQhHq;			//期货精简行情
+		7 optional HTolMoneyFlow stMF;			//资金流
+		8 optional HDDERank stDDE;				//DDE数据
+		9 optional HBlockIndexHq stBlockHq;	    //板块指数行情
+		10 optional HStockDeriveHq stDeriveHq;	//衍生扩展行情
+		11 optional HStockCwHq stCwHq;          //个股财务相关行情	
+        12 optional HStockZQHq   stZQhq;        // 债券行情
+        13 optional HTolMoneyFlow st3MinMF;     // 近3分钟资金流
+        14 optional HTolMoneyFlow st5MinMF;     // 近5分钟资金流
+        15 optional HTolMoneyFlow st10MinMF;    // 近10分钟资金流
+        16 optional HTolMoneyFlow st30MinMF;    // 近30分钟资金流
+        17 optional HTolMoneyFlow st60MinMF;    // 近60分钟资金流
+	};
+
+	// 自选股行情扩展
+	struct OptStockHqEx
+	{
+		0  optional double fNowPrice;              // 最新价
+		1  optional double fChg;                   // 涨跌幅
+		2  optional double fChgValue;              // 涨跌金额 = (最新价－昨收价)
+		3  optional double dUpSpeed;	           // 涨速
+		4  optional double fTurnoverRate;          // 换手率
+		5  optional double fPeRatio ;              // 市盈率 = 股票价格 / 上年每股税后利润
+		6  optional short  shtSetcode;             // 股票市场
+		7  optional string sCode;                  // 股票代码
+		8  optional string sName;                  // 股票名称
+		9  optional double fDayMainMoneyInflow;    // 主力资金净流入
+		10 optional double fDayMainMoneyRatio;     // 主力资金净占比
+		11 optional double f3DayMainMoneyInflow;   // 3日主力资金净流入
+		12 optional double f3DayMainMoneyRatio;    // 3日主力资金净占比
+		13 optional double f5DayMainMoneyInflow;   // 5日主力资金净流入
+		14 optional double f5DayMainMoneyRatio;    // 5日主力资金净占比
+		15 optional byte   bTransactionStatus;     // 交易状态标志：‘O’表示其它状态‘P’停牌‘C’集合竞价‘H’暂停交易‘T’连续交易‘B’休市‘E’闭市
+		16 optional byte   precise;                // 精度
+		17 optional double f3MinMainMoneyInflow;   // 3分钟主力资金净流入
+		18 optional double f3MinMainMoneyRatio;    // 3分钟主力资金净占比
+        19 optional double f5MinMainMoneyInflow;   // 5分钟主力资金净流入
+		20 optional double f5MinMainMoneyRatio;    // 5分钟主力资金净占比
+        21 optional SZTData ztData;                // 涨停数据
+        22 optional BlockBasicInfo leadBlock;      // 领涨板块
+        23 optional double f10MinMainMoneyInflow;  // 10分钟主力资金净流入
+		24 optional double f10MinMainMoneyRatio;   // 10分钟主力资金净占比
+        25 optional double f30MinMainMoneyInflow;  // 30分钟主力资金净流入
+		26 optional double f30MinMainMoneyRatio;   // 30分钟主力资金净占比
+        27 optional double f60MinMainMoneyInflow;  // 60分钟主力资金净流入
+		28 optional double f60MinMainMoneyRatio;   // 60分钟主力资金净占比
+	};
+
+   	//除权除息信息
+    struct HCQCX
+    {
+    	1 optional string sCode;
+    	2 optional short shtSetCode;
+    	3 optional int iType;
+    	4 optional int iDate;
+    	5 optional double fDividend;			//红利
+    	6 optional double fAllotmentPrice;	//配股价
+    	7 optional double fBonusStock;		//送股
+    	8 optional double fAllotmentStock;	//配股
+    };
+
+	struct HAHItem
+	{
+		0 optional short shtMarket;
+		1 optional string sCode;
+		2 optional string sName;
+		3 optional double fNowPrice;         //现价
+		4 optional double fChg;              //涨跌幅
+		5 optional double fCurMarketValue;   //流通市值
+		6 optional double fTurnoverRate;     //换手率
+		7 optional int iTotalHand;          //总手
+		8 optional short shtOwnIndustry;    //所属行业
+		9 optional double dChangeValue;     //涨跌值
+	};
+
+	struct HAHStock
+	{
+		1 optional double fPremiumRate;            //溢价率
+		2 optional HAHItem stAItem;
+		3 optional HAHItem stHItem;
+	};
+
+	struct HTradePeriod
+	{
+		1 optional vector<short> vTradePeriod;
+	};
+
+	struct HHotPlateStock
+	{
+		0 optional short shtSetcode;   //股票市场
+		1 optional string sCode;       //股票代码
+		2 optional double fClose;       //前收价
+		3 optional double fPrice;       //现价
+		4 optional long lVolume;       //成交量
+		5 optional long lAmount;       //成交额
+		6 optional double fOpen;        //开盘价
+		7 optional double fHigh;        //最高价
+		8 optional double fLow;         //最低价
+		9 optional byte cDecimal;      //小数精度
+	};
+	
+	struct HL2Monit
+	{
+		0 optional short shtSetcode;   //股票市场
+		1 optional string sCode;       //股票代码
+		2 optional string sName;       //股票名称
+		3 optional double fPrice;      //现价
+		4 optional float fChg;         //涨跌幅
+		5 optional int iTime;          //时间
+		6 optional int iType;          //类型
+		7 optional double djb;         //顶级买单
+		8 optional double djs;         //顶级卖单
+		9 optional double tljb;        //拖拉机买
+		10 optional double tljs;       //拖拉机卖
+		11 optional double dbcb;       //大笔撤买
+		12 optional double dbcs;       //大笔撤卖
+		13 optional double cdb;        //超大买单
+		14 optional double cds;        //超大卖单
+		15 optional double dbb;        //大笔买入
+		16 optional double dbs;        //大笔卖出
+		17 optional int fzt;           //封涨停板
+		18 optional int dkzt;          //打开涨停
+		19 optional int fdt;           //封跌停板
+		20 optional int dkdt;          //打开跌停
+		21 optional double ydb;        //有大买盘
+		22 optional double yds;        //有大卖盘
+		23 optional int hjfs;          //火箭发射
+		24 optional int jsxd;          //加速下跌
+		25 optional int ksft;          //快速反弹
+		26 optional int gtts;          //高台跳水
+	};
+	
+	struct HSZDetail
+	{
+		0 optional int iTime;//时间
+		1 optional int iNum;//笔数
+		2 optional double dPrice;//价格
+		3 optional double dVol;//每笔手数
+	};
+	
+	struct HSZFY
+	{
+	    0 optional short shtSetcode;   //股票市场
+		1 optional string sCode;       //股票代码
+		2 optional string sName;       //股票名称
+		3 optional double fPrice;      //现价
+		4 optional float fChg;         //涨跌幅
+		5 optional int iNum;           //次数
+		6 optional double vol;         //总量
+		7 optional double value;       //总额
+		8 optional vector<HSZDetail> vDetail; //明细
+	};
+
+	struct DxjlUnit
+	{
+		1 optional int iCount;        //次数
+		2 optional double dVol;       //总量
+		3 optional double dAmt;       //总额
+	};
+
+	struct HSZFYCom
+	{
+	    0 optional short shtSetcode;   //股票市场
+		1 optional string sCode;       //股票代码
+		2 optional string sName;       //股票名称
+		3 optional double fPrice;      //现价
+		4 optional float fChg;         //涨跌幅
+		5 optional DxjlUnit stBuyUnit;          //买单信息
+		6 optional DxjlUnit stSellUnit;         //卖单信息
+	};
+
+	struct HCPTMin
+	{
+		1 optional unsigned int uiTradeSeq;		//交易序列号
+    	2 optional unsigned int uiTradeDate;	//交易日期
+    	3 optional unsigned int uiTradeTime;	//交易时间
+	};
+	
+	struct HTradeTime
+	{
+		1 optional int iTradeDate;
+		2 optional int iBegTime;
+		3 optional int iEndTime;
+	};
+	
+	struct HTradePeriodTime
+	{
+		1 optional vector<HTradeTime> vPeriod;
+        2 optional map<short, vector<HTradeTime>> mPeriod; // 市场特殊分类对应的交易时间段，key为类型
+	};
+
+    //财务数据
+    struct HFinData
+    {
+        0 optional short shtSetCode;           //市场类型
+        1 optional string sCode;            //股票代码
+        2 optional double dFlowStock;       //流通股本（万股）
+        3 optional short shtAddr;           //所属省份
+        4 optional short shtHy;             //所属行业
+        5 optional long lNewDate;           //更新日期
+        6 optional long lStartDate;         //上市日期
+        7 optional double dTotalStock;      //总股本（万股）
+        8 optional double dNatinalStock;    //国家股（千股）
+        9 optional double dFounderStock;   //法人股（千股）
+        10 optional double dBStock;         //B股（千股）
+        11 optional double dHStock;         //H股（千股）
+        12 optional double dWorkerStock;    //职工股（千股）
+        13 optional double dTotalValue;     //总资产（千元）
+        14 optional double dFixedValue;     //固定资产（千元）
+        15 optional double dFlowValue;      //流动资产（千元）
+        16 optional double dWxValue;            //无形资产（千元）
+        17 optional double dLongValue;          //长期投资（千元）
+        18 optional double dFlowLoad;           //流动负债（千元）
+        19 optional double dLongLoad;           //长期负债（千元）
+        20 optional double dCapitalValue;       //资本公积金（千元）
+        21 optional double dRightValue;         //股东权益（千元）
+        22 optional double dMainValue;          //主营收入（千元）
+        23 optional double dMainInterest;       //主营利益（千元）
+        24 optional double dOtherInterest;      //其他利益（千元）
+        25 optional double dBusInterest;        //营业利益（千元）
+        26 optional double dInvestInterest;     //投资收益（千元）
+        27 optional double dBuTieValue;         //补贴收入（千元）
+        28 optional double dOutValue;           //营业外收支（元）
+        29 optional double dLoseAdjust;         //上年损益调整（元）
+        30 optional double dProfitValue;        //利益总额（千元）
+        31 optional double dAfterTaxValue;      //税后利益（千元）
+        32 optional double dNetValue;           //净利益（千元）
+        33 optional double dUnDistibuteValue;   //未分配利益（千元）
+        34 optional double dAdjustValue;        //调整每股净资产（元）
+        35 optional double dHalfYearFlag;       //半年标记
+    };
+
+    struct HMarketInit                                                      
+    {
+        1 optional short shtSetCode;                                              
+        2 optional unsigned int uiTradeSeq;                                       
+        3 optional unsigned int uiTradeDate;                                      
+    }; 
+    
+	struct HStockIndustry
+	{
+		1 optional short shtSetcode;            //股票市场
+		2 optional string sCode;                //股票代码
+		3 optional string sName;                //股票名称
+		4 optional double dNowPrice;            //现价
+		5 optional double dChgValue;            //涨跌金额 = (最新价－昨收价)
+		6 optional double dChgRatio;            //涨跌幅 = (最新价－昨收价) / 昨收价 * 100.f
+		7 optional byte bTransactionStatus;     //交易状态标志：‘O’表示其它状态‘P’停牌‘C’集合竞价‘H’暂停交易‘T’连续交易‘B’休市‘E’闭市
+		8 optional string sIndustryName;        //股票对应的行业名称
+	};
+	
+	// 获取市场码表，基础结构 -> SStockInfoUp
+	struct HStockDictInfo
+	{
+		0 optional string Code;
+		1 optional short Unit;
+		2 optional string Name;
+		3 optional int VolBase;
+		4 optional byte precise;
+		5 optional float Close;
+		6 optional short Market;
+		7 optional short BaseFreshCount;
+		8 optional short GbbqFreshCount;
+		9 optional short iType;
+	};
+		
+	enum E_ORDER_ITEM_TYPE
+	{
+			E_ORDER_ITEM_NO = 0x0,					//普通
+			E_ORDER_ITEM_TRADE = 0x1,				//交易
+			E_ORDER_ITEM_CANCEL = 0x2,			//撤销
+			E_ORDER_ITEM_BIG = 0x4,					//大单
+			E_ORDER_ITEM_ADD = 0x8,					//拖拉机单
+			E_ORDER_ITEM_PARTTRADE = 0x10,	//部分交易
+	};
+
+	enum E_ORDER_OPERATE_TYPE
+	{
+			E_BUY_ORDER = 0,			//买单
+			E_SELL_ORDER = 1,		//卖单
+			E_CANCAL_ORDER = 2,	//撤销
+	};
+
+	enum E_ORDER_TRADE_KINDE
+	{	
+			E_ORDER_MARKET_PRICE = 0,		//市价
+			E_ORDER_FIXED_PRICE = 1,		//限价
+			E_ORDER_BEST_SCHEME = 2,		//最优方案
+	};
+		
+	//委托数据
+	struct HOrderItem
+	{
+		0 optional long lVolume;		//委托单量
+		1 optional E_ORDER_ITEM_TYPE eStatus;		//委托单状态
+	};
+	
+	//委托队列
+	struct HOrderQueue
+	{
+		0 optional long lTime;				//时间
+		1 optional double dPrice;		//价位
+		2 optional long lVolume;		//委托量
+		3 optional byte bBuySell;		//买卖标志，买1/卖2
+		4 optional long lOrderNum;	//总单数
+		5 optional vector<HOrderItem> vOrder;	//委托单数据
+	};
+	
+	//逐笔交易数据
+	struct HTransaction
+	{
+		0 optional long lTime;			//时间
+		1 optional long lTradeNo;		//同一秒内的成交序号
+		2 optional byte bType;			//内外盘标志，1内盘，2外盘
+		3 optional double dPrice;		//价格
+		4 optional long lVolume;		//成交量
+		5 optional long lBuyNo;			//买入序号
+		6 optional long lSellNo;		//卖出序号
+		7 optional long lBargainNo;	//成交序号	
+	};
+	
+	//委托单信息
+	struct HOrderRec
+	{
+		0 optional long lTime;			//时间
+		1 optional long lTradeNo;		//同一秒内的成交序号
+		2 optional double dPrice;		//价格
+		3 optional long lVolume;		//成交量
+		4 optional E_ORDER_TRADE_KINDE eTradeKind;	//交易类型
+		5 optional E_ORDER_OPERATE_TYPE eOPType;	//挂单操作类型
+		6 optional long lOrderNo;
+	};
+	
+	//委托单汇总数据
+	struct HOrderSumStat
+	{
+			0 optional double dBuyAvgPrice;			//委托买入均价
+			1 optional long lBuyVol;						//委托买入总量（股）
+			2 optional long lBuyOrderCount;			//委托买入价位总数
+			3 optional long lBuyNum;						//委托买入总笔数
+			4 optional long lBigBuyVol;					//委托大单买入总量(单位股)
+			5 optional long lAllBuyNum;					//累计委托买入总笔数
+			6 optional long lBuyCancelNum;			//委托买入撤单总笔数
+			7 optional long lBigBuyCancelNum;		//委托大单买入撤单总笔数
+			
+			8 optional double dSellAvgPrice;		//委托卖出均价
+			9 optional long lSellVol;						//委托卖出总量(单位股)
+			10 optional long lSellOrderCount;		//委托卖出价位总数
+			11 optional long lSellNum;					//委托卖出总笔数
+			12 optional long lBigSellVol;				//委托大单卖出总量(单位股)
+			13 optional long lAllSellNum;				//累计委托卖出总笔数
+			14 optional long lSellCancelNum;		//委托卖出撤单总笔数
+			15 optional long lBigSellCancelNum;	//委托大单卖出撤单总笔数
+	}; 
+	
+	//价格委托数据
+	struct HOrderQueuePrice
+	{
+			0 optional double dPrice;		//价位
+			1 optional long lSumVol;
+			2 optional long lBigVol;
+			3 optional long lTotalOrder;		//总单数
+			4 optional E_ORDER_ITEM_TYPE eStatus;	//状态
+	};
+	
+	//价位委托队列的委托变化
+	struct HPriceAmount
+	{
+			0 optional long lOrderNo;		//序号
+			1 optional long lVolume;		//委托单量
+			2 optional E_ORDER_ITEM_TYPE eStatus;
+	};
+	
+	//综合排名的类型枚举
+	enum H_ZH_RANK_TYPE
+	{
+			E_ZH_RANK_UP = 0x01,					//涨幅排名
+			E_ZH_RANK_DROP = 0x02,				//跌幅排名
+			E_ZH_RANK_SPEED_TOP = 0x04,		//涨速正向排名
+			E_ZH_RANK_SPEED_LAST = 0x08,	//涨速倒数排名
+			E_ZH_RANK_WEIBI_TOP = 0x10,	//委比正向排名
+			E_ZH_RANK_WEIBI_LAST = 0x20,	//委比倒数排名			
+			E_ZH_RANK_LIANGBI = 0x40,		//量比排名
+			E_ZH_RANK_AMOUNT = 0x80,			//成交额排名	
+			E_ZH_RANK_ZHENFU = 0x100,			//振幅排名
+			
+			E_ZH_RANK_ALL = 0x0fff,			//成交额排名				
+	};
+	
+	//综合排名数据
+	struct HZHRankData
+	{
+			0 optional H_ZH_RANK_TYPE eRankType;		//排名类型
+			1 optional short shtSetcode;   					//股票市场
+			2 optional string sCode;       					//股票代码
+			4 optional double dNowPrice;						//现价
+			5 optional double dRankValue;						//用来排名的具体值
+	};
+	
+	//个股涨幅数据
+	struct HStockRankData
+	{
+			0 optional short shtSetCode;
+			1 optional string sCode;
+			2 optional double dRankValue;
+	};
+	
+	//板块领涨数据
+	struct HBKLedData
+	{
+			0 optional short shtSetCode;
+			1 optional string sCode;
+			2 optional double dRankValue;
+			3 optional int iUpNum;
+			4 optional int iEqualNum;
+			5 optional int iDownNum;
+			6 optional vector<HStockRankData> vStock;
+	};
+	
+	struct HDDZData
+	{
+		1 optional HTolMoneyFlow stMfAmt;
+		2 optional HTolMoneyFlow stMfVol;
+		3 optional HTolMoneyFlow stMfNum;
+		4 optional int iTime;
+	};
+
+    // 市场类型划分
+    enum E_MARKET_TYPE
+    {
+        E_TYPE_SZ_AB = 0,
+        E_TYPE_SH_AB = 1,
+        E_TYPE_BK_ZS = 2,
+
+		E_TYPE_NONE = 99,
+    };
+    
+    struct HTypeStatusData
+    {
+        // 市场类型
+        0 optional E_MARKET_TYPE eType;
+        // 市场状态，具体值对应E_MARKET_TRADE_STATUS 结构
+        1 optional int iStatus;
+    };
+
+	struct HFileInfo
+    {
+        1 optional string sFileName;        //获取的文件名
+        2 optional int iPos;                //文件偏移
+        3 optional string sCheckSum;        //文件md5
+        4 optional int iLen;                //本次获取内容长度
+        5 optional bool bCompress;          //获取压缩或者非压缩文件,默认是返回压缩文件
+    };
+
+	struct HFileData
+    {
+		1 require string sFileName;         //文件名
+		2 optional bool bCompress;          //获取压缩或者非压缩文件,默认是压缩文件
+        3 require bool bChg = false;        //文件是否发生变化          
+        4 optional vector<byte> vBuf;       //文件内容
+        5 require bool bRemain = false;     //是否还有内容未发送, 保证每次都下发这个值，避免死循环
+        6 optional string sCheckSum;        //bRemain为false的时候会返回整个文件checksum
+    };
+
+  	enum E_LOGIN_CLIENT_TYPE
+    {
+        EPC_LOGIN = 0,
+        EMOBILE_LOGIN = 1,
+		EWEB_LOGIN = 2,
+    };
+
+    enum E_KICK_OUT_STATUS
+    {
+        E_NOT_KICK_OUT = 0,
+        E_DO_KICK_OUT = 1,
+    };
+
+    enum E_KICK_OUT_REASON
+    {
+        E_KICK_REPEAT = 0,
+        E_KICK_OVERDUE = 1,
+    };
+	
+	//权限单元
+	struct HRigthUnit
+	{
+	    1 optional string sRightId;        //权限id,比如301、303权限
+        2 optional string sBeginDate;      //该权限的起始日期YYYYMMDD
+        3 optional string sEndDate;        //该权限的结束日期YYYYMMDD
+	};
+
+	//用户权限信息,相当于以前的token
+	struct HUserRight
+	{
+        1 optional string sUserId;             //用户id
+        2 optional vector<HRigthUnit> vRight;  //用户权限信息
+		3 optional string sRd;                 //用来解密Req的vUserId，类似于token的rd
+		4 optional string sSsoDate;            //用户服务下发的日期YYYYMMDD，类似于token的t
+		5 optional bool bAllowRepeatLogin = false;     //是否容许重复登录，类似于token的u
+    };
+
+	//登录认证类型
+	enum E_LOGIN_AUTH_TYPE
+	{
+		E_LOGIN_AUTH_SZ_SH = 1,  // 深沪L2用户登录验证
+		E_LOGIN_AUTH_HK_US = 2,  // 港美股L2用户登录验证
+		E_LOGIN_AUTH_LST   = 3,  // 罗塞塔L2用户登录验证
+        E_LOGIN_AUTH_XW    = 4,  // 心吾版用户登录验证
+        E_LOGIN_AUTH_AC    = 5,  // 阿财版用户登录验证
+        E_LOGIN_AUTH_CLS   = 6,  // 财联社用户登录验证
+        E_LOGIN_AUTH_GNN   = 7,  // 股牛牛用户登录验证
+	};
+    
+    //用户Login信息
+    struct HLoginInfo
+    {
+        1 optional string sUserId;
+        2 optional string sRd;
+        3 optional string sPermission;
+        4 optional string sSsoTime;
+        5 optional string sCltTime;
+        6 optional long lCltConId;
+        7 optional E_LOGIN_CLIENT_TYPE eCltType;
+        8 optional short shtDelFlag;
+		9 optional HUserRight stUserRight;   //港美股L2新的jce结构
+		10 optional E_LOGIN_AUTH_TYPE eAuthType = E_LOGIN_AUTH_SZ_SH; //选择走深沪L2认证还是港美股L2认证
+		11 optional string sSvrId;
+		12 optional string sGuid;
+    };
+    
+	struct HKickOutInfo
+	{    
+		1 optional HLoginInfo stInfo;
+		2 optional string sSvrId;                                                                                                                                       
+		3 optional E_KICK_OUT_STATUS eStatus;
+		4 optional E_KICK_OUT_REASON eReason; 
+	};
+
+	//新股上市表现
+	struct HNewStockPerform
+	{
+		1 optional HStock stStock;     //股票信息
+		2 optional double dSignProfit; //每签获利
+		3 optional int iZtNDay;        //发行日后连续涨停天数
+		4 optional bool bBreakPlate;   //是否破板
+		5 optional string sListDate;   //上市日期
+	};
+	
+	struct HRadarQt
+	{
+		1 optional int iMarket;
+		2 optional string sCode;
+		3 optional RadarData::RadarQt stQt;	
+	};
+	
+	struct HRadarChg
+	{
+		1 optional int iMarket;
+		2 optional string sCode;
+		3 optional RadarData::RadarChg stChg;	
+	};
+	
+	struct HSyntInfo
+	{
+		1 optional int iMarket;      //市场
+		2 optional string sCode;     //代码
+		3 optional double dPrice;	 //现价
+		4 optional double dZdf;      //涨跌幅 
+		5 optional double dltsz;     //流通市值
+		6 optional double  dMainBuy; //主力净买
+		7 optional float  fMainBuyRatio; //主力买入占比
+		8 optional float  fMainSellRatio; //主力卖出占比
+		9 optional float  fDDX; //DDX
+		10 optional float  fDDY; //DDY
+		11 optional float  fDDZ; //DDZ
+		12 optional int   intVol500; //买入大于500手次数
+		13 optional int   intVol1000; //买入大于1000手次数
+		14 optional int   intVol5000; //买入大于5000手次数
+		15 optional int   intVol9999; //买入大于9999手次数
+		16 optional int   intAmt100;  //买入金额大于100万次数
+		17 optional int   intAmt200;  //买入金额大于200万次数
+		18 optional int   intAmt500;  //买入金额大于500万次数
+		19 optional double  dMainBuy3; //3日主力净买
+		20 optional double  dMainBuy5; //5日主力净买
+		21 optional double  dMainBuy10; //10日主力净买
+		22 optional int  iMainBuyRedDay; //主力净买连红天数
+		23 optional int  iMainBuyRedDay5; //5日主力净买飘红天数
+		24 optional int  iMainBuyRedDay10; //10日主力净买飘红天数
+		25 optional float  fDDX3;          //3日DDX
+		26 optional float  fDDX5;          //5日DDX
+		27 optional float  fDDX10;         //10日DDX
+		28 optional int  iDDXRedDay;       //DDX连红天数
+		29 optional int  iDDXRedDay5;       //DDX5日飘红天数
+		30 optional int  iDDXRedDay10;       //DDX10日飘红天数
+		31 optional float fMainFlowTrend;    //机构动向
+	};
+
+	struct HPankouRadio
+	{
+		1 optional int iOrderLevel;  //档位
+		2 optional double dPrice;    //对应档位的价格
+		3 optional double dVolume;   //对应档位的成交量
+	};
+
+	//港股权证类型
+	enum E_HK_WARRANT_TYPE
+	{
+		E_HWT_NONE = 0,
+		   
+		E_HWT_WL = 1,   //涡轮
+		E_HWT_NX = 2,   //牛熊
+	};
+
+	struct HWarrantData
+	{
+		1 optional short shtMarket;   					//股票市场
+		2 optional string sCode;       					//股票代码
+		3 optional string sName;       					//股票代码
+		4 optional double dNowPrice;					//现价
+		5 optional double dAmount;					    //成交额
+	};
+
+	struct HWarrantHkData
+	{
+		1 optional short shtMarket;   			   //股票市场
+		2 optional string sCode;       			   //股票代码
+		3 optional string sName;       			   //股票代码
+		4 optional double dNowPrice;               //最新价
+		5 optional double dChgValue;               //涨跌金额 = (最新价－昨收价)
+		6 optional double dChg;                    //涨跌幅
+	};
+
+};

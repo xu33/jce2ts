@@ -1,0 +1,134 @@
+    
+module IC
+{
+    struct SShortLineStrategyNew
+	{
+        1 optional int m_uMsgType; 	// 单个消息类型
+		2 optional int m_nTime;     // 时间，开盘的小时分钟和秒，小时两位：分钟两位：秒两位＝＝HHMMSS
+		3 optional int m_nSerialId; // 序列号
+		4 optional int m_dwStockID; // 股票唯一ID
+		5 optional string m_strMsg; // 消息内容，以逗号分隔
+		6 optional short shtMarket; // 股票市场
+		7 optional string sCode;	// 股票代码
+	};
+
+	struct SPushShortLineData
+	{
+		1 optional map<int, vector<SShortLineStrategyNew> > mData;
+	};
+
+    enum BLOCKCHANGE_TYPE
+    {
+	    E_TYPE_BKALL = 0,            //全部类型
+        E_TYPE_BKUP = 1,             //向上异动
+		E_TYPE_BKDOWN = 2,           //向下异动
+		E_TYPE_BKRAPIDLYUP = 3,      //急速拉升
+		E_TYPE_BKQUICKLYBACKUP = 4,  //快速反弹
+		E_TYPE_BKQUICKLYDOWN = 5,    //加速下跌
+    };
+	
+	struct SStocksInfo
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+		2 optional string sName;
+        3 optional float fRise;  // 涨幅
+    };
+
+    struct SBlockChange
+    {
+        1 optional short shtMarket;           // 市场
+        2 optional string sCode;              // 代码
+		3 optional int iTime;                 // 触发时刻格式：HHMMSS
+        4 optional BLOCKCHANGE_TYPE eType;    // 类型
+        5 optional float fRiseSpeed;          // 5分钟涨速
+        6 optional float fRise;               // 涨幅
+		7 optional float fPre5MinRise;        // 5分钟前涨幅
+		8 optional float fPre30MinRise;       // 30分钟前涨幅
+		9 optional float fRiseSpeed30;        // 30分钟涨速
+		10 optional string sName;             // 名称
+		11 optional vector<SStocksInfo> vLeadStocks; //板块领涨股
+		12 optional int iBlockType; //板块所属分类
+		13 optional int iDate; //日期 YYYYMMDD
+		14 optional long lTimestamp; //时间戳
+    };
+
+    struct SPushBlockChangeData
+    {
+        1 optional vector<SBlockChange> vData;
+    };
+	
+	struct SPushBlockChangeDataNew
+    {
+		1 optional map<int, vector<SBlockChange> > mData;
+    };
+	
+	struct SLeadBlkInfo
+    {
+        0 optional int iMarket;
+        1 optional string sCode;
+		2 optional string sName; //名称
+        3 optional int iTime;    //时刻：HHMMSS
+		4 optional int iBlockType; //板块所属分类
+		5 optional int iDate; //日期 YYYYMMDD
+		6 optional BLOCKCHANGE_TYPE eType;    // 异动类型
+    };
+	
+	struct SPushLeadBlkInfo
+    {
+		1 optional map<int, vector<SLeadBlkInfo> > mData;
+    };
+	
+	struct SQtRec
+	{
+		1 optional int iMarket;
+		2 optional string sCode;
+		3 optional string sName;
+		4 optional int iTime;
+		5 optional double fPreClose;    //昨收
+		6 optional double fOpen;
+		7 optional double fHigh;
+		8 optional double fLow;
+		9 optional double fPrice;      //最新价
+		10 optional double fPercent;   //涨跌幅
+	};
+	
+	struct SPushQtRec
+	{
+		1 optional map<string, SQtRec> mData;
+	};
+
+    interface PushHqData
+    {
+	    /*
+        *  推送最新交易日期
+        */
+		int pushNewTradeDate(int iNewDate);
+		
+		/*
+        *  推送动态行情数据
+        */
+		int pushStockQtRec(SPushQtRec sPushQtRec);
+		
+	    /*
+        *  推送短线精灵数据接口
+        */
+		int pushShortLineData(SPushShortLineData sPushShortLineData);
+		
+        /*
+        *  推送板块异动数据接口
+        */
+        int pushBlockChangeData(SPushBlockChangeData sPushBlockChangeData);
+		
+		/*
+        *  推送板块异动数据接口New
+        */
+        int pushBlockChangeDataNew(SPushBlockChangeDataNew sPushBlockChangeDataNew);
+		
+		/*
+        *  推送领涨板块数据接口
+        */
+        int pushLeadBlkInfo(SPushLeadBlkInfo sPushLeadBlkInfo);
+    };
+
+};

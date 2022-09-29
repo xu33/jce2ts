@@ -1,44 +1,21 @@
 declare global {
   namespace ABC {
-    interface XXX {
-      count: string; //风口数量指标
+    //财务权息版本数据
+    interface HCWVerData {
+      shtSetCode?: string;
+      sCode?: string;
+      lCWVersion?: string; //财务数据最新版本
 
-      name?: string;
-      age: string;
-    }
-    enum STORM_EYE_IDX_TYPE {
-      STORM_EYE_IDX_TYPE_NUM, //风口数量指标
+      lQXVersion?: string; //权息数据最新版本
 
-      STORM_EYE_IDX_TYPE_LEVEL, //板块风级指标
-
-    }
-    enum E_STOCK_FILTER_TYPE {
-      E_STOCK_ALL, //全部
-
-      E_STOCK_FILTER_ST, //过滤ST
-
-      E_STOCK_FILTER_NEWSTOCK, //过滤未开板新股
-
-      E_STOCK_FILTER_ST_NEWSTOCK, //过滤ST跟未开板新股
+      lLTGChgVersion?: string; //变动流通股最新版本
 
     }
-    interface BBB {
-      count: string;
-      name?: string;
-      age: string;
-      vx?: XXX[];
-      b: boolean;
-    }
-    interface ZZZ {
-      count: string;
-      name?: string;
-      age: string;
-      zb: STORM_EYE_IDX_TYPE;
-      bage: ABC.BBB;
-    }
-    interface FLeadBlkRsp {
-      vecData?: ABC.ZZZ[];
-      mapNumOfStk?: Record<string, ZZZ>; //各个异动对应个股数
+    // 股票类型
+    enum E_STOCK_TYPE {
+      E_STOCK_TYPE_A, // A股
+
+      E_STOCK_TYPE_B, // B股
 
     }
   }

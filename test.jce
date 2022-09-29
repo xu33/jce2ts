@@ -1,43 +1,18 @@
 module ABC {
-    struct XXX {
-        0 require int count;//风口数量指标
-        1 optional string name;
-        2 require float age;
-    };
+    //财务权息版本数据
+	struct HCWVerData
+	{
+			0 optional short shtSetCode;
+			1 optional string sCode;
+			2 optional long lCWVersion;			//财务数据最新版本
+			3 optional long lQXVersion;		    //权息数据最新版本
+			4 optional long lLTGChgVersion;	    //变动流通股最新版本
+	};
 
-    enum STORM_EYE_IDX_TYPE
+    // 股票类型
+    enum E_STOCK_TYPE
     {
-        STORM_EYE_IDX_TYPE_NUM,     //风口数量指标
-        STORM_EYE_IDX_TYPE_LEVEL,   //板块风级指标
-    };
-    
-    enum E_STOCK_FILTER_TYPE
-    {
-        E_STOCK_ALL = 0,                //全部
-        E_STOCK_FILTER_ST,              //过滤ST
-        E_STOCK_FILTER_NEWSTOCK,        //过滤未开板新股
-        E_STOCK_FILTER_ST_NEWSTOCK,     //过滤ST跟未开板新股
-    };
-
-    struct BBB {
-        0 require int count;
-        1 optional string name;
-        2 require float age;
-        3 optional vector<XXX> vx;
-        4 require bool b;
-    };
-
-    struct ZZZ {
-        0 require int count;
-        1 optional string name;
-        2 require float age;
-        4 require STORM_EYE_IDX_TYPE zb;
-        5 require ABC::BBB bage;
-    };
-
-    struct FLeadBlkRsp
-    {
-        0 optional vector<ABC::ZZZ> vecData;
-		1 optional map<string, ZZZ> mapNumOfStk; //各个异动对应个股数
+        E_STOCK_TYPE_A = 1,             // A股
+        E_STOCK_TYPE_B = 2,           // B股
     };
 };
