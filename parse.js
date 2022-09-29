@@ -60,12 +60,17 @@ const createTypeRecursion = (typeInfo) => {
           createTypeRecursion(typeInfo.params[1]),
         ])
       );
-    } else if (typeInfo.type === "IndexedAccessTypes") {
-      // console.log("IndexedAccessTypes:", typeInfo.params);
-
-      const objectType = createTypeRecursion(typeInfo.params[0]);
-      const indexType = createTypeRecursion(typeInfo.params[1]);
-      return t.tsIndexedAccessType(objectType, indexType);
+    }
+    // else if (typeInfo.type === "IndexedAccessTypes") {
+    //   // console.log("IndexedAccessTypes:", typeInfo.params);
+    //   const objectType = createTypeRecursion(typeInfo.params[0]);
+    //   const indexType = createTypeRecursion(typeInfo.params[1]);
+    //   return t.tsIndexedAccessType(objectType, indexType);
+    // }
+    else if (typeInfo.type === "QualifiedName") {
+      const left = t.identifier(typeInfo.params[0].type);
+      const right = t.identifier(typeInfo.params[1].type);
+      return t.tsTypeReference(t.tsQualifiedName(left, right));
     } else if (typeInfo.type === "stringLiteral") {
       return t.tsLiteralType(t.stringLiteral(typeInfo.value));
     } else {
@@ -110,6 +115,10 @@ const createInterfaceBody = (list) => {
 const createEnumMemberList = (list) => {
   // console.log("createEnumMemberList:", list);
   return list.map((enumMember) => {
+    // const node = t.tsEnumMember(
+    //   t.identifier(enumMember.name),
+    //   t.numericLiteral(1)
+    // );
     const node = t.tsEnumMember(t.identifier(enumMember.name));
     // 如果有注释，则插入注释
     if (enumMember.comment && enumMember.comment.value) {
@@ -141,7 +150,7 @@ const createInterfaceDeclarationList = (list) => {
         if (o.comment && o.comment.value) {
           t.addComment(
             node,
-            o.comment.type === "BLOCK" ? "leading" : "trailing",
+            "leading",
             o.comment.value,
             o.comment.type === "BLOCK" ? false : true
           );
@@ -153,6 +162,16 @@ const createInterfaceDeclarationList = (list) => {
           t.identifier(o.name),
           createEnumMemberList(o.members)
         );
+
+        // 如果有注释，则插入注释
+        if (o.comment && o.comment.value) {
+          t.addComment(
+            node,
+            "leading",
+            o.comment.value,
+            o.comment.type === "BLOCK" ? false : true
+          );
+        }
 
         return node;
       } else {

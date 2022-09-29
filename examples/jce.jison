@@ -25,13 +25,13 @@
 "{" { return "LEFT"; }
 "}" { return "RIGHT"; }
 (require|optional) {return "REQUIRED"}
-(string|bool|int|float|long|double|signed\s+int|unsigned\s+int) { return "TYPE";}
+(string|short|bool|int|float|long|double|signed\s+int|unsigned\s+int) { return "TYPE";}
 vector { return "VECTOR"; }
 map { return "MAP"; }
 ";" return "SEMI"
 "," return "COMMA"
 "::" return "DOUBLE_COLON"
-"="\s*[^=;]+ { /* DO NOTHING */ }
+"="\s*[^=;,]+ { /* DO NOTHING */ }
 \d+ { return "PROPERTY_INDEX";}
 [a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
 <<EOF>> return "EOF"
@@ -86,11 +86,24 @@ def
 }
 ;
 
-enum: ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
+enum: 
+COMMENT_LINE ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
+    $$ = {
+        type: 'ENUM',
+        name: $3,
+        members: $enumitems,
+        comment: {
+            type: 'LINE',
+            value: $COMMENT_LINE.replace('//', "")
+        }
+    }
+}
+|ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
     $$ = {
         type: 'ENUM',
         name: $2,
-        members: $enumitems
+        members: $enumitems,
+        comment: null
     }
 };
 
@@ -106,14 +119,7 @@ enumitem
 ;
 
 enumitem: 
-IDENTIFIER COMMA
-{
-    $$ = {
-        name: $1,
-        comment: null
-    }
-}
-|IDENTIFIER COMMENT_LINE
+IDENTIFIER COMMA COMMENT_LINE
 {
     $$ = {
         name: $1,
@@ -123,7 +129,14 @@ IDENTIFIER COMMA
         }
     }
 }
-|IDENTIFIER COMMA COMMENT_LINE
+|IDENTIFIER COMMA
+{
+    $$ = {
+        name: $1,
+        comment: null
+    }
+}
+|IDENTIFIER COMMENT_LINE
 {
     $$ = {
         name: $1,
@@ -264,15 +277,15 @@ t
 }
 | IDENTIFIER DOUBLE_COLON IDENTIFIER 
 {
+    // module::struct => namespace.interface
     $$ = {
-        type:'IndexedAccessTypes',
+        type:'QualifiedName',
         params:[{
             type: $1,
             params:[],
             isPrimitive: false
         }, {
-            type: "stringLiteral",
-            value: $3,
+            type: $3,
             params:[],
             isPrimitive: false
         }],

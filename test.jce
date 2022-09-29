@@ -10,6 +10,14 @@ module ABC {
         STORM_EYE_IDX_TYPE_NUM,     //风口数量指标
         STORM_EYE_IDX_TYPE_LEVEL,   //板块风级指标
     };
+    
+    enum E_STOCK_FILTER_TYPE
+    {
+        E_STOCK_ALL = 0,                //全部
+        E_STOCK_FILTER_ST,              //过滤ST
+        E_STOCK_FILTER_NEWSTOCK,        //过滤未开板新股
+        E_STOCK_FILTER_ST_NEWSTOCK,     //过滤ST跟未开板新股
+    };
 
     struct BBB {
         0 require int count;
@@ -24,12 +32,12 @@ module ABC {
         1 optional string name;
         2 require float age;
         4 require STORM_EYE_IDX_TYPE zb;
-        5 require BBB::age bage;
+        5 require ABC::BBB bage;
     };
 
     struct FLeadBlkRsp
     {
-        0 optional vector<ZZZ::bage> vecData;
+        0 optional vector<ABC::ZZZ> vecData;
 		1 optional map<string, ZZZ> mapNumOfStk; //各个异动对应个股数
     };
 };
