@@ -72,12 +72,12 @@
   }
 */
 var jce = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,14],$V1=[1,13],$V2=[1,11],$V3=[1,12],$V4=[10,15,19,20,22],$V5=[1,27],$V6=[1,30],$V7=[10,25],$V8=[7,10],$V9=[1,40],$Va=[1,39],$Vb=[1,41],$Vc=[1,42],$Vd=[7,18,31];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,14],$V1=[1,13],$V2=[1,11],$V3=[1,12],$V4=[10,15,19,20,22],$V5=[1,27],$V6=[1,30],$V7=[10,25],$V8=[7,10],$V9=[1,41],$Va=[1,40],$Vb=[1,42],$Vc=[1,43],$Vd=[7,18,31];
 var parser = {trace: function trace () { },
 yy: {},
 symbols_: {"error":2,"expressions":3,"e":4,"EOF":5,"MODULE":6,"IDENTIFIER":7,"LEFT":8,"structlist":9,"RIGHT":10,"SEMI":11,"def":12,"struct":13,"enum":14,"ENUM":15,"enumitems":16,"enumitem":17,"COMMA":18,"COMMENT_LINE":19,"STRUCT":20,"itemlist":21,"COMMENT_BLOCK":22,"items":23,"item":24,"PROPERTY_INDEX":25,"REQUIRED":26,"t":27,"TYPE":28,"VECTOR":29,"OPEN":30,"CLOSE":31,"MAP":32,"DOUBLE_COLON":33,"$accept":0,"$end":1},
 terminals_: {2:"error",5:"EOF",6:"MODULE",7:"IDENTIFIER",8:"LEFT",10:"RIGHT",11:"SEMI",15:"ENUM",18:"COMMA",19:"COMMENT_LINE",20:"STRUCT",22:"COMMENT_BLOCK",25:"PROPERTY_INDEX",26:"REQUIRED",28:"TYPE",29:"VECTOR",30:"OPEN",31:"CLOSE",32:"MAP",33:"DOUBLE_COLON"},
-productions_: [0,[3,2],[4,6],[9,1],[9,2],[12,1],[12,1],[14,6],[16,1],[16,2],[17,2],[17,3],[13,3],[13,2],[13,2],[21,4],[23,1],[23,2],[24,5],[24,6],[27,1],[27,1],[27,4],[27,6],[27,3]],
+productions_: [0,[3,2],[4,6],[9,1],[9,2],[12,1],[12,1],[14,6],[16,1],[16,2],[17,2],[17,2],[17,3],[13,3],[13,2],[13,2],[21,4],[23,1],[23,2],[24,5],[24,6],[27,1],[27,1],[27,4],[27,6],[27,3]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -103,7 +103,7 @@ case 2:
         }
     
 break;
-case 3: case 8: case 16:
+case 3: case 8: case 17:
 
     this.$ = [$$[$0]];
 
@@ -142,7 +142,7 @@ case 10:
     }
 
 break;
-case 11:
+case 12:
 
     this.$ = {
         name: $$[$0-2],
@@ -153,7 +153,7 @@ case 11:
     }
 
 break;
-case 12:
+case 13:
 
     this.$ = {
         name:$$[$0-1],
@@ -163,7 +163,7 @@ case 12:
     }
 
 break;
-case 13:
+case 14:
 
     // this.$ = {
     //     name:$IDENTIFIER,
@@ -184,7 +184,7 @@ case 13:
     })
 
 break;
-case 14:
+case 15:
 
     // this.$ = {
     //     name:$IDENTIFIER,
@@ -204,19 +204,19 @@ case 14:
     })
 
 break;
-case 15:
+case 16:
 
     this.$ = $$[$0-2]
 
 break;
-case 17:
+case 18:
 
     // console.log('ERROR', $$[$0-1], $$[$0]);
 
     this.$ = $$[$0-1].concat($$[$0])
 
 break;
-case 18:
+case 19:
 
     this.$ = {
         required: $$[$0-3],
@@ -226,7 +226,7 @@ case 18:
     }
 
 break;
-case 19:
+case 20:
 
     this.$ = {
         required: $$[$0-4],
@@ -239,59 +239,63 @@ case 19:
     }
 
 break;
-case 20:
-
-    this.$ = {
-        type: $$[$0],
-        // childType: null,
-        params:[],
-        isPrimitive: true
-    }
-
-break;
 case 21:
 
     this.$ = {
         type: $$[$0],
-        // childType: $$[$0],
         params:[],
-        isPrimitive: false
+        isPrimitive: true
     }
 
 break;
 case 22:
 
     this.$ = {
-        type: 'Array',
-        // childType: $$[$0-1],
-        params: [$$[$0-1]],
-        isReference: false
+        type: $$[$0],
+        params:[],
+        isPrimitive: false
     }
 
 break;
 case 23:
 
     this.$ = {
-        type: 'Record',
-        params: [$$[$0-3], $$[$0-3]],
-        isReference: true
+        type: 'Array',
+        params: [$$[$0-1]],
+        isPrimitive: false
     }
 
 break;
 case 24:
 
     this.$ = {
-        // type: $$[$0-2] + "[" + $$[$0] + "]",
-        // childType: null,
+        type: 'Record',
+        params: [$$[$0-3], $$[$0-1]],
+        isPrimitive: false
+    }
+
+break;
+case 25:
+
+    this.$ = {
         type:'IndexedAccessTypes',
-        params:[$$[$0-2], $$[$0]],
-        isReference: true
+        params:[{
+            type: $$[$0-2],
+            params:[],
+            isPrimitive: false
+        }, {
+            type: "stringLiteral",
+            value: $$[$0],
+            params:[],
+            isPrimitive: false
+        }],
+        isPrimitive: false
     }
 
 break;
 }
 },
-table: [{3:1,4:2,6:[1,3]},{1:[3]},{5:[1,4]},{7:[1,5]},{1:[2,1]},{8:[1,6]},{9:7,12:8,13:9,14:10,15:$V0,19:$V1,20:$V2,22:$V3},{10:[1,15],12:16,13:9,14:10,15:$V0,19:$V1,20:$V2,22:$V3},o($V4,[2,3]),o($V4,[2,5]),o($V4,[2,6]),{7:[1,17]},{13:18,19:$V1,20:$V2,22:$V3},{13:19,19:$V1,20:$V2,22:$V3},{7:[1,20]},{11:[1,21]},o($V4,[2,4]),{8:[1,23],21:22},o($V4,[2,13]),o($V4,[2,14]),{8:[1,24]},{5:[2,2]},o($V4,[2,12]),{23:25,24:26,25:$V5},{7:$V6,16:28,17:29},{10:[1,31],24:32,25:$V5},o($V7,[2,16]),{26:[1,33]},{7:$V6,10:[1,34],17:35},o($V8,[2,8]),{18:[1,36]},{11:[1,37]},o($V7,[2,17]),{7:$V9,27:38,28:$Va,29:$Vb,32:$Vc},{11:[1,43]},o($V8,[2,9]),o($V8,[2,10],{19:[1,44]}),o($V4,[2,15]),{7:[1,45]},o($Vd,[2,20]),o($Vd,[2,21],{33:[1,46]}),{30:[1,47]},{30:[1,48]},o($V4,[2,7]),o($V8,[2,11]),{11:[1,49]},{7:[1,50]},{7:$V9,27:51,28:$Va,29:$Vb,32:$Vc},{7:$V9,27:52,28:$Va,29:$Vb,32:$Vc},o($V7,[2,18],{19:[1,53]}),o($Vd,[2,24]),{31:[1,54]},{18:[1,55]},o($V7,[2,19]),o($Vd,[2,22]),{7:$V9,27:56,28:$Va,29:$Vb,32:$Vc},{31:[1,57]},o($Vd,[2,23])],
+table: [{3:1,4:2,6:[1,3]},{1:[3]},{5:[1,4]},{7:[1,5]},{1:[2,1]},{8:[1,6]},{9:7,12:8,13:9,14:10,15:$V0,19:$V1,20:$V2,22:$V3},{10:[1,15],12:16,13:9,14:10,15:$V0,19:$V1,20:$V2,22:$V3},o($V4,[2,3]),o($V4,[2,5]),o($V4,[2,6]),{7:[1,17]},{13:18,19:$V1,20:$V2,22:$V3},{13:19,19:$V1,20:$V2,22:$V3},{7:[1,20]},{11:[1,21]},o($V4,[2,4]),{8:[1,23],21:22},o($V4,[2,14]),o($V4,[2,15]),{8:[1,24]},{5:[2,2]},o($V4,[2,13]),{23:25,24:26,25:$V5},{7:$V6,16:28,17:29},{10:[1,31],24:32,25:$V5},o($V7,[2,17]),{26:[1,33]},{7:$V6,10:[1,34],17:35},o($V8,[2,8]),{18:[1,36],19:[1,37]},{11:[1,38]},o($V7,[2,18]),{7:$V9,27:39,28:$Va,29:$Vb,32:$Vc},{11:[1,44]},o($V8,[2,9]),o($V8,[2,10],{19:[1,45]}),o($V8,[2,11]),o($V4,[2,16]),{7:[1,46]},o($Vd,[2,21]),o($Vd,[2,22],{33:[1,47]}),{30:[1,48]},{30:[1,49]},o($V4,[2,7]),o($V8,[2,12]),{11:[1,50]},{7:[1,51]},{7:$V9,27:52,28:$Va,29:$Vb,32:$Vc},{7:$V9,27:53,28:$Va,29:$Vb,32:$Vc},o($V7,[2,19],{19:[1,54]}),o($Vd,[2,25]),{31:[1,55]},{18:[1,56]},o($V7,[2,20]),o($Vd,[2,23]),{7:$V9,27:57,28:$Va,29:$Vb,32:$Vc},{31:[1,58]},o($Vd,[2,24])],
 defaultActions: {4:[2,1],21:[2,2]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {

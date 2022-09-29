@@ -31,23 +31,38 @@ const output = parser.parse(content);
 
 // 递归创建引用类型
 // todo:实现递归创建类型
-const createTypeAnnotationRecursion = (typeInfo) => {
+const createTypeRecursion = (typeInfo) => {
   // console.log({ typeInfo });
-  if (typeInfo.params) {
-    typeInfo.params.forEach((t) => {
-      createTypeAnnotationRecursion(t);
-    });
-  }
+  // if (typeInfo.params) {
+  //   typeInfo.params.forEach((t) => {
+  //     createTypeRecursion(t);
+  //   });
+  // }
 
   if (typeInfo.isPrimitive) {
-    return t.tsTypeAnnotation(t.tsStringKeyword());
+    return t.tsStringKeyword();
   } else {
     if (typeInfo.type === "Array") {
-      return t.tsTypeAnnotation(
-        t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.params[0])))
+      return t.tsArrayType(createTypeRecursion(typeInfo.params[0]));
+    } else if (typeInfo.type === "Record") {
+      console.log("Record:", typeInfo);
+      return t.tsTypeReference(
+        t.identifier(typeInfo.type),
+        t.tsTypeParameterInstantiation([
+          createTypeRecursion(typeInfo.params[0]),
+          createTypeRecursion(typeInfo.params[1]),
+        ])
       );
+    } else if (typeInfo.type === "IndexedAccessTypes") {
+      // console.log("IndexedAccessTypes:", typeInfo.params);
+
+      const objectType = createTypeRecursion(typeInfo.params[0]);
+      const indexType = createTypeRecursion(typeInfo.params[1]);
+      return t.tsIndexedAccessType(objectType, indexType);
+    } else if (typeInfo.type === "stringLiteral") {
+      return t.tsLiteralType(t.stringLiteral(typeInfo.value));
     } else {
-      return t.tsTypeAnnotation(t.tsTypeReference(t.identifier(typeInfo.type)));
+      return t.tsTypeReference(t.identifier(typeInfo.type));
     }
   }
 };
@@ -61,7 +76,7 @@ const createInterfaceBody = (list) => {
     const { typeInfo } = o;
     let node;
 
-    createTypeAnnotationRecursion(typeInfo);
+    // createTypeRecursion(typeInfo);
 
     if (typeInfo.isPrimitive) {
       node = t.tsPropertySignature(
@@ -69,28 +84,9 @@ const createInterfaceBody = (list) => {
         t.tsTypeAnnotation(t.tsStringKeyword())
       );
     } else {
-      // if (typeInfo.type === "Array") {
-      //   node = t.tsPropertySignature(
-      //     t.identifier(o.name),
-      //     // t.tsTypeAnnotation(
-      //     //   t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.childType)))
-      //     // )
-      //     createTypeAnnotationRecursion(typeInfo)
-      //   );
-      // } else {
-      //   node = t.tsPropertySignature(
-      //     t.identifier(o.name),
-      //     t.tsTypeAnnotation(
-      //       t.tsTypeReference(t.identifier(typeInfo.childType))
-      //     )
-      //   );
-      // }
       node = t.tsPropertySignature(
         t.identifier(o.name),
-        // t.tsTypeAnnotation(
-        //   t.tsArrayType(t.tsTypeReference(t.identifier(typeInfo.childType)))
-        // )
-        createTypeAnnotationRecursion(typeInfo)
+        t.tsTypeAnnotation(createTypeRecursion(typeInfo))
       );
     }
 

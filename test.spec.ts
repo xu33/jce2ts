@@ -16,12 +16,19 @@ declare global {
       count: string;
       name?: string;
       age: string;
+      vx?: XXX[];
     }
     interface ZZZ {
       count: string;
       name?: string;
       age: string;
       zb: STORM_EYE_IDX_TYPE;
+      bage: BBB["age"];
+    }
+    interface FLeadBlkRsp {
+      vecData?: ZZZ["bage"][];
+      mapNumOfStk?: Record<string, ZZZ>; //各个异动对应个股数
+
     }
   }
 }

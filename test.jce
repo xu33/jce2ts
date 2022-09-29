@@ -15,6 +15,7 @@ module ABC {
         0 require int count;
         1 optional string name;
         2 require float age;
+        3 optional vector<XXX> vx;
     };
 
     struct ZZZ {
@@ -22,5 +23,12 @@ module ABC {
         1 optional string name;
         2 require float age;
         4 require STORM_EYE_IDX_TYPE zb;
+        5 require BBB::age bage;
+    };
+
+    struct FLeadBlkRsp
+    {
+        0 optional vector<ZZZ::bage> vecData;
+		1 optional map<string, ZZZ> mapNumOfStk; //各个异动对应个股数
     };
 };

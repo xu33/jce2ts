@@ -113,6 +113,7 @@ IDENTIFIER COMMA
         comment: null
     }
 }
+|IDENTIFIER COMMENT_LINE
 |IDENTIFIER COMMA COMMENT_LINE
 {
     $$ = {
@@ -237,17 +238,24 @@ t
 {
     $$ = {
         type: 'Record',
-        params: [$3, $3],
-        isPrimitive: true
+        params: [$3, $5],
+        isPrimitive: false
     }
 }
 | IDENTIFIER DOUBLE_COLON IDENTIFIER 
 {
     $$ = {
-        // type: $1 + "[" + $3 + "]",
-        // childType: null,
         type:'IndexedAccessTypes',
-        params:[$1, $3],
+        params:[{
+            type: $1,
+            params:[],
+            isPrimitive: false
+        }, {
+            type: "stringLiteral",
+            value: $3,
+            params:[],
+            isPrimitive: false
+        }],
         isPrimitive: false
     }
 }
