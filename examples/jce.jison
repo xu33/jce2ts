@@ -25,7 +25,7 @@
 "{" { return "LEFT"; }
 "}" { return "RIGHT"; }
 (require|optional) {return "REQUIRED"}
-(string|int|float|long|double|signed\s+int|unsigned\s+int) { return "TYPE";}
+(string|bool|int|float|long|double|signed\s+int|unsigned\s+int) { return "TYPE";}
 vector { return "VECTOR"; }
 map { return "MAP"; }
 ";" return "SEMI"
@@ -114,6 +114,15 @@ IDENTIFIER COMMA
     }
 }
 |IDENTIFIER COMMENT_LINE
+{
+    $$ = {
+        name: $1,
+        comment: {
+            type: 'LINE',
+            value: $COMMENT_LINE.replace('//', "")
+        }
+    }
+}
 |IDENTIFIER COMMA COMMENT_LINE
 {
     $$ = {
@@ -187,7 +196,8 @@ items
 }
 ;
 
-item : PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI 
+item 
+: PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI 
 {{
     $$ = {
         required: $REQUIRED,
@@ -196,7 +206,7 @@ item : PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI
         comment: null
     }
 }}
-| PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI COMMENT_LINE
+| PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI cl
 {{
     $$ = {
         required: $REQUIRED,
@@ -204,10 +214,20 @@ item : PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI
         typeInfo: $t,
         comment: {
             type: 'LINE',
-            value: $COMMENT_LINE.replace('//', "")
+            value: $cl.replace('//', "")
         }
     }
-}};
+}}
+;
+
+cl
+:COMMENT_LINE
+{
+    $$ = $1
+}
+| cl COMMENT_LINE {
+    $$ = $1 + $2.replace('//', "")
+};
 
 t
 : TYPE

@@ -27,7 +27,7 @@ const content = fs.readFileSync(fileName, {
 
 const output = parser.parse(content);
 
-// console.log(output);
+// console.log(output.structList[0].members);
 
 // 递归创建引用类型
 // todo:实现递归创建类型
@@ -40,12 +40,19 @@ const createTypeRecursion = (typeInfo) => {
   // }
 
   if (typeInfo.isPrimitive) {
-    return t.tsStringKeyword();
+    // console.log("xxx", typeInfo);
+    if (typeInfo.type === "string") {
+      return t.tsStringKeyword();
+    } else if (typeInfo.type === "bool") {
+      return t.tsBooleanKeyword();
+    } else {
+      return t.tsStringKeyword();
+    }
   } else {
     if (typeInfo.type === "Array") {
       return t.tsArrayType(createTypeRecursion(typeInfo.params[0]));
     } else if (typeInfo.type === "Record") {
-      console.log("Record:", typeInfo);
+      // console.log("Record:", typeInfo);
       return t.tsTypeReference(
         t.identifier(typeInfo.type),
         t.tsTypeParameterInstantiation([
@@ -74,21 +81,11 @@ const createInterfaceBody = (list) => {
     // console.log("createPropertySignatureList");
     // console.log(o.name);
     const { typeInfo } = o;
-    let node;
 
-    // createTypeRecursion(typeInfo);
-
-    if (typeInfo.isPrimitive) {
-      node = t.tsPropertySignature(
-        t.identifier(o.name),
-        t.tsTypeAnnotation(t.tsStringKeyword())
-      );
-    } else {
-      node = t.tsPropertySignature(
-        t.identifier(o.name),
-        t.tsTypeAnnotation(createTypeRecursion(typeInfo))
-      );
-    }
+    const node = t.tsPropertySignature(
+      t.identifier(o.name),
+      t.tsTypeAnnotation(createTypeRecursion(typeInfo))
+    );
 
     // 如果有注释，则插入注释
     if (o.comment && o.comment.value) {

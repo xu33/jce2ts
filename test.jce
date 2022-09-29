@@ -16,6 +16,7 @@ module ABC {
         1 optional string name;
         2 require float age;
         3 optional vector<XXX> vx;
+        4 require bool b;
     };
 
     struct ZZZ {
