@@ -350,7 +350,6 @@ module HQSys
 
 	struct HStockExHq
 	{
-		//全市场公有字段
 		3 optional long  lNowVol;                //现手
 		4 optional long  lInside;                //内盘
 		5 optional long  lOutside;               //外盘

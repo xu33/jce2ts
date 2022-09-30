@@ -8,21 +8,20 @@ declare global {
     interface HCWVerData {
       shtSetCode?: string;
       sCode?: string;
-      lCWVersion?: string; //财务数据最新版本
+      lCWVersion?: string; ////财务数据最新版本
 
-      lQXVersion?: string; //权息数据最新版本
+      lQXVersion?: string; ////权息数据最新版本
 
-      lLTGChgVersion?: string; //变动流通股最新版本
+      lLTGChgVersion?: string; ////变动流通股最新版本
 
     }
-    // 股票类型
     enum E_STOCK_TYPE {
       E_STOCK_TYPE_A, // A股
 
       E_STOCK_TYPE_B, // B股
 
-    }
-    // 股票简称变动类型
+    } // 股票类型
+
     enum E_SHT_NAME_CHG_TYPE {
       E_OTHER_CHG, // 其他
 
@@ -60,61 +59,62 @@ declare global {
 
       E_HFSSCR_CHG, // 恢复上市次日
 
-    }
+    } // 股票简称变动类型
+
     // 股票简称变动结构
     interface HNameChgData {
       shtMarket?: string;
       sCode?: string;
-      lChgDate?: string; // 变更日期
+      lChgDate?: string; //// 变更日期
 
-      sOldName?: string; // 变更前名字
+      sOldName?: string; //// 变更前名字
 
-      sNewName?: string; // 变更后名字
+      sNewName?: string; //// 变更后名字
 
-      eType?: E_SHT_NAME_CHG_TYPE; // 变更类型
+      eType?: E_SHT_NAME_CHG_TYPE; //// 变更类型
 
     }
     // 返回客户端的曾用名结构
     interface HNameUsedBefore {
-      lChgDate?: string; // 变更日期
+      lChgDate?: string; //// 变更日期
 
-      sOldName?: string; // 变更前名字
+      sOldName?: string; //// 变更前名字
 
-      eType?: E_SHT_NAME_CHG_TYPE; // 变更类型
+      eType?: E_SHT_NAME_CHG_TYPE; //// 变更类型
 
     }
     interface HStockUpInfo {
-      sCode?: string; //股票代码
+      sCode?: string; ////股票代码
 
-      shtUnit?: string; //最小成交单元
+      shtUnit?: string; ////最小成交单元
 
-      sName?: string; //股票名称
+      sName?: string; ////股票名称
 
       iVolBase?: string;
       cPrecise?: byte;
       shtType?: string;
-      vChgData?: Array<HNameUsedBefore>; // 股票名称变更历史
+      vChgData?: Array<HNameUsedBefore>; //// 股票名称变更历史
 
-      iBaseFreshCount?: string; //给线上老版本客户端使用，极智版无用
+      iBaseFreshCount?: string; ////给线上老版本客户端使用，极智版无用
 
-      iGbFreshCount?: string; //给线上老版本客户端使用，极智版无用
+      iGbFreshCount?: string; ////给线上老版本客户端使用，极智版无用
 
     }
     interface HStockDelistInfo {
       stInfo?: HStockUpInfo;
-      lTsDate?: string; // 退市日期
+      lTsDate?: string; //// 退市日期
 
     }
     interface HStockSuspendInfo {
       stInfo?: HStockUpInfo;
-      lSuspendDate?: string; //暂停上市日期
+      lSuspendDate?: string; ////暂停上市日期
 
     }
     interface HStockUpcomingInfo {
       stInfo?: HStockUpInfo;
-      lUpcomingDate?: string; // 上市日期
+      lUpcomingDate?: string; //// 上市日期
 
-      dPrice?: string; // 上市发行价格
+      dPrice?: string; //// 上市发行价格
 
     }
     interface HMarketCodes {
@@ -122,115 +122,114 @@ declare global {
       shtFlag?: string;
       sCheckSum?: string;
       vInfo?: Array<HStockUpInfo>;
-      vDelist?: Array<HStockDelistInfo>; // 退市股票
+      vDelist?: Array<HStockDelistInfo>; //// 退市股票
 
-      vUpcoming?: Array<HStockUpcomingInfo>; // 即将上市
+      vUpcoming?: Array<HStockUpcomingInfo>; //// 即将上市
 
-      vSuspend?: Array<HStockSuspendInfo>; // 暂停上市
+      vSuspend?: Array<HStockSuspendInfo>; //// 暂停上市
 
     }
     // 财务数据
     interface SCWData {
       shtMarket: string;
       sCode: string;
-      iUpdateDate?: string; // 更新日期
+      iUpdateDate?: string; //// 更新日期
 
-      iIPODate?: string; // 首次公开募股 Initial Public Offerings  上市日期
+      iIPODate?: string; //// 首次公开募股 Initial Public Offerings  上市日期
 
-      dZGB?: string; // 总股本
+      dZGB?: string; //// 总股本
 
-      dLTGB?: string; // 流通股本
+      dLTGB?: string; //// 流通股本
 
-      dBShare?: string; // B 股
+      dBShare?: string; //// B 股
 
-      dHShare?: string; // H 股
+      dHShare?: string; //// H 股
 
-      dPerCapitaHold?: string; // 人均持股
+      dPerCapitaHold?: string; //// 人均持股
 
-      dMGSY?: string; // 每股收益（earnings per share）
+      dMGSY?: string; //// 每股收益（earnings per share）
 
-      dMGJZC?: string; // 每股净资产(BVPS)
+      dMGJZC?: string; //// 每股净资产(BVPS)
 
-      dTZMGJZC?: string; // 调整每股净资产
+      dTZMGJZC?: string; //// 调整每股净资产
 
-      dMGGJJ?: string; // 每股公积金 Accumulation fund per share
+      dMGGJJ?: string; //// 每股公积金 Accumulation fund per share
 
-      dMGWFPLR?: string; // 每股未分配
+      dMGWFPLR?: string; //// 每股未分配
 
-      dYYSRTB?: string; // 营业收入同比
+      dYYSRTB?: string; //// 营业收入同比
 
-      dJLRTB?: string; // 净利润同比
+      dJLRTB?: string; //// 净利润同比
 
-      dJZCSYL?: string; // 净资产收益率
+      dJZCSYL?: string; //// 净资产收益率
 
-      dJLL?: string; // 净利率
+      dJLL?: string; //// 净利率
 
-      dYYLRL?: string; // 营业利润率
+      dYYLRL?: string; //// 营业利润率
 
-      dXSMLL?: string; // 销售毛利率
+      dXSMLL?: string; //// 销售毛利率
 
-      dLDBL?: string; // 流动比率
+      dLDBL?: string; //// 流动比率
 
-      dZCFZBL?: string; // 资产负债比率
+      dZCFZBL?: string; //// 资产负债比率
 
-      dGDQYB?: string; // 股东权益比
+      dGDQYB?: string; //// 股东权益比
 
-      dYYSR?: string; // 营业收入
+      dYYSR?: string; //// 营业收入
 
-      dYYCB?: string; // 营业成本
+      dYYCB?: string; //// 营业成本
 
-      dTZSY?: string; // 投资收益
+      dTZSY?: string; //// 投资收益
 
-      dYYLR?: string; // 营业利润
+      dYYLR?: string; //// 营业利润
 
-      dYYWSZ?: string; // 营业外收支
+      dYYWSZ?: string; //// 营业外收支
 
-      dLRZE?: string; // 利润总额
+      dLRZE?: string; //// 利润总额
 
-      dJLR?: string; // 净利润
+      dJLR?: string; //// 净利润
 
-      dZZC?: string; // 总资产
+      dZZC?: string; //// 总资产
 
-      dLDZC?: string; // 流动资产
+      dLDZC?: string; //// 流动资产
 
-      dGDZC?: string; // 固定资产
+      dGDZC?: string; //// 固定资产
 
-      dWXZC?: string; // 无形资产
+      dWXZC?: string; //// 无形资产
 
-      dCQGQTZ?: string; // 长期股权投资
+      dCQGQTZ?: string; //// 长期股权投资
 
-      dZFZ?: string; // 总负债
+      dZFZ?: string; //// 总负债
 
-      dLDFZ?: string; // 流动负债
+      dLDFZ?: string; //// 流动负债
 
-      dCQFZ?: string; // 长期负债
+      dCQFZ?: string; //// 长期负债
 
-      dJZC?: string; // 净资产
+      dJZC?: string; //// 净资产
 
-      dZBGJJ?: string; // 资本公积金
+      dZBGJJ?: string; //// 资本公积金
 
-      dWFPLR?: string; // 未分配利润
+      dWFPLR?: string; //// 未分配利润
 
-      lBGQ?: string; // 报告期
+      lBGQ?: string; //// 报告期
 
-      sSSHY?: string; // 所属行业
+      sSSHY?: string; //// 所属行业
 
-      dFXJ?: string; // 发行价
+      dFXJ?: string; //// 发行价
 
-      lVer?: string; // 版本号
+      lVer?: string; //// 版本号
 
-      dMGSYDT?: string; // 每股收益动态
+      dMGSYDT?: string; //// 每股收益动态
 
-      dMGJZCDT?: string; // 每股净资产动态
+      dMGJZCDT?: string; //// 每股净资产动态
 
-      dYYSRZZL?: string; // 3年营业收入增长率
+      dYYSRZZL?: string; //// 3年营业收入增长率
 
-      dJLRZZL?: string; // 3年净利润增长率
+      dJLRZZL?: string; //// 3年净利润增长率
 
-      sSSHYCode?: string; // 所属行业代码，与sSSHY对应
+      sSSHYCode?: string; //// 所属行业代码，与sSSHY对应
 
     }
-    // 权息变动类型  对应数据库中的类型
     enum EQXChgType {
       E_PX, // 派息
 
@@ -244,127 +243,128 @@ declare global {
 
       E_FGKZF, // 非公开增发
 
-    }
+    } // 权息变动类型  对应数据库中的类型
+
     // 权息变动数据
     interface SQXChgData {
-      lChanDate: string; // 变更日期
+      lChanDate: string; //// 变更日期
 
-      dCashBt?: string; // 每10股派现
+      dCashBt?: string; //// 每10股派现
 
-      dBonusShr?: string; // 每10股送股
+      dBonusShr?: string; //// 每10股送股
 
-      dCapShr?: string; // 每10股转增
+      dCapShr?: string; //// 每10股转增
 
-      dAllotPct?: string; // 10配几
+      dAllotPct?: string; //// 10配几
 
-      dAllotPrice?: string; // 配股价
+      dAllotPrice?: string; //// 配股价
 
-      dIssPri?: string; // 增发价格
+      dIssPri?: string; //// 增发价格
 
-      dIssShareNum?: string; // 发行数量
+      dIssShareNum?: string; //// 发行数量
 
-      eType?: EQXChgType; // 权息变动类型
+      eType?: EQXChgType; //// 权息变动类型
 
     }
     interface SQXData {
       shtMarket: string;
       sCode: string;
       mChgData?: Array<SQXChgData>;
-      lVer?: string; // 版本号
+      lVer?: string; //// 版本号
 
     }
     // 退市股票返回结构
     interface HTSStock {
-      shtMarket?: string; // 市场
+      shtMarket?: string; //// 市场
 
-      sCode?: string; // 股票代码
+      sCode?: string; //// 股票代码
 
-      sName?: string; // 股票名称
+      sName?: string; //// 股票名称
 
-      lTsDate?: string; // 退市日期 格式 YYYYMMDD
+      lTsDate?: string; //// 退市日期 格式 YYYYMMDD
 
-      eType?: E_STOCK_TYPE; // 股票类型
+      eType?: E_STOCK_TYPE; //// 股票类型
 
-      iBlockType?: string; // 股票板块类别
+      iBlockType?: string; //// 股票板块类别
 
     }
     // 即将上市股票数据结构
     interface HJjssStockData {
       shtMarket?: string;
       sCode?: string;
-      sName?: string; // 股票名称
+      sName?: string; //// 股票名称
 
-      dPrice?: string; // 发行价
+      dPrice?: string; //// 发行价
 
-      lDate?: string; // 上市日期
+      lDate?: string; //// 上市日期
 
-      eType?: E_STOCK_TYPE; // 股票类型
+      eType?: E_STOCK_TYPE; //// 股票类型
 
     }
     interface HLTGChgData {
-      lChgTime?: string; // 变动时间
+      lChgTime?: string; //// 变动时间
 
-      lAFloatShare?: string; // 流通A股
+      lAFloatShare?: string; //// 流通A股
 
-      lBFloatShare?: string; // 流通B股
+      lBFloatShare?: string; //// 流通B股
 
-      lHFloatShare?: string; // 流通H股
+      lHFloatShare?: string; //// 流通H股
 
-      dZGB?: string; // 总股本
+      dZGB?: string; //// 总股本
 
     }
     interface HLTGChg {
-      shtMarket?: string; // 市场
+      shtMarket?: string; //// 市场
 
-      sCode?: string; // 股票代码
+      sCode?: string; //// 股票代码
 
-      lVer?: string; // 版本号
+      lVer?: string; //// 版本号
 
-      vData?: Array<HLTGChgData>; // 变动数据
+      vData?: Array<HLTGChgData>; //// 变动数据
 
     }
     //新股信息
     interface HNewStockInfo {
       shtMarket?: string;
       sCode?: string;
-      dFXJ?: string; //发行价
+      dFXJ?: string; ////发行价
 
-      sListDate?: string; //上市日期
+      sListDate?: string; ////上市日期
 
-      sName?: string; // 股票名称     
+      sName?: string; //// 股票名称     
 
-      iAPLDate?: string; // 申购起始日 (YYYYMMDD)
+      iAPLDate?: string; //// 申购起始日 (YYYYMMDD)
 
     }
     // 经纪商数据
     interface HBrokerData {
-      sId?: string; // 经纪代号
+      sId?: string; //// 经纪代号
 
-      sEnName?: string; // 英文名
+      sEnName?: string; //// 英文名
 
-      sEnShtName?: string; // 英文名简称
+      sEnShtName?: string; //// 英文名简称
 
-      sChName?: string; // 中文名
+      sChName?: string; //// 中文名
 
-      sChShtName?: string; // 中文名简称
+      sChShtName?: string; //// 中文名简称
 
     }
     //港股经纪人队列
     interface HBrokerQueue {
-      shtSetcode?: string; //股票市场
+      shtSetcode?: string; ////股票市场
 
-      sCode?: string; //股票代码
+      sCode?: string; ////股票代码
 
-      buySide?: Record<string, Array<HBrokerData>>; //level对应的买方经纪人列表
+      buySide?: Record<string, Array<HBrokerData>>; ////level对应的买方经纪人列表
 
-      sellSide?: Record<string, Array<HBrokerData>>; //level对应的卖方经纪人列表
+      sellSide?: Record<string, Array<HBrokerData>>; ////level对应的卖方经纪人列表
 
     }
     // 交易日历
     interface TradeCale {
-      iDate?: string; // 日期，格式：YYYYMMDD
+      iDate?: string; //// 日期，格式：YYYYMMDD
 
-      shtStatus?: string; // 1：交易日；2：非交易日；3：提前闭市；4：半日交易
+      shtStatus?: string; //// 1：交易日；2：非交易日；3：提前闭市；4：半日交易
 
     }
   }

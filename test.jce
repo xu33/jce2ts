@@ -3,7 +3,7 @@ module ABC {
 	struct HCWVerData
 	{
 			0 optional short shtSetCode;
-			1 optional string sCode;
+			1 optional string stringCode;
 			2 optional long lCWVersion;			//财务数据最新版本
 			3 optional long lQXVersion;		    //权息数据最新版本
 			4 optional long lLTGChgVersion;	    //变动流通股最新版本

@@ -1,21 +1,17 @@
 %{
-    // var module = {}
-    // var temp = []
-    
-    // module.structs = {}
-
-    // function addStruct(IDENTIFIER, props) {
-    //     module.structs[IDENTIFIER] = props
-    // }
+    const t = require('@babel/types');
 %}
 
 %lex
 %%
 
 \s+ /* skip whitespace */
-"//"(.*)                                    { return "COMMENT_LINE" }
-[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { return "COMMENT_BLOCK" }
+"//"(.*)                                    { /* DO NOTHING */ }
+[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */ }
+"#include" return "INCLUDE";
+".jce" return "JCE"
 <<EOF>> return 'EOF'
+"\"" return "QUOTE";
 "module" { return "MODULE";}
 "struct" { return "STRUCT";}
 "enum" { return "ENUM";}
@@ -25,7 +21,8 @@
 "{" { return "LEFT"; }
 "}" { return "RIGHT"; }
 (require|optional) {return "REQUIRED"}
-(string|short|bool|int|float|long|double|signed\s+int|unsigned\s+int) { return "TYPE";}
+[a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
+(string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short) { return "TYPE";}
 vector { return "VECTOR"; }
 map { return "MAP"; }
 ";" return "SEMI"
@@ -33,34 +30,56 @@ map { return "MAP"; }
 "::" return "DOUBLE_COLON"
 "="\s*[^=;,//]+ { /* DO NOTHING */ }
 \d+ { return "PROPERTY_INDEX";}
-[a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
 <<EOF>> return "EOF"
 
 /lex
 
-%start expressions
+%start jce
 
 %% /* language grammar */
 
-expressions : e EOF
+jce
+: deplist expressions EOF 
 {
-    // typeof console !== 'undefined' ? console.log($1) : print($1);
-    //       return $e;
-    // console.log(JSON.stringify($e));
-    // console.log($e);
-    return $e;
-}
-;
+    return {
+        deps: $deplist,
+        module: $expressions
+    }
+};
 
-e : MODULE IDENTIFIER LEFT structlist RIGHT SEMI
+deplist
+: /* empty */
+{
+    $$ = [];
+}
+| deplist dep
+{
+    $$ = $deplist.concat($dep)
+};
+
+
+dep
+: INCLUDE QUOTE IDENTIFIER JCE QUOTE
+{
+    console.log($IDENTIFIER);
+    $$ = [$IDENTIFIER + $JCE];
+};
+
+expressions 
+: MODULE IDENTIFIER LEFT structlist RIGHT SEMI
     {
         // console.log('MODULE:', $IDENTIFIER)
-        module.IDENTIFIER = $IDENTIFIER;
+        // module.IDENTIFIER = $IDENTIFIER;
 
-        $$ = {
-            name: $IDENTIFIER,
-            structList: $4
-        }
+        // $$ = {
+        //     name: $IDENTIFIER,
+        //     structList: $4
+        // }
+        
+        $$ = t.tsModuleDeclaration(
+            t.identifier($IDENTIFIER),
+            t.tsModuleBlock($4)
+        );
     }
 ;
 
@@ -70,7 +89,6 @@ structlist
 }
 | structlist def {
     // console.log('STRUCT:', $1, $2)
-
     $$ = $1.concat($2)
 }
 ;
@@ -87,24 +105,13 @@ def
 ;
 
 enum: 
-COMMENT_LINE ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
-    $$ = {
-        type: 'ENUM',
-        name: $3,
-        members: $enumitems,
-        comment: {
-            type: 'LINE',
-            value: $COMMENT_LINE.replace('//', "")
-        }
-    }
+ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
+{
+    $$ = t.tsEnumDeclaration(
+        t.identifier($IDENTIFIER),
+        $enumitems
+    );
 }
-|ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
-    $$ = {
-        type: 'ENUM',
-        name: $2,
-        members: $enumitems,
-        comment: null
-    }
 };
 
 enumitems:
@@ -112,92 +119,34 @@ enumitem
 {
     $$ = [$1];
 }
-|enumitems enumitem
+| enumitems enumitem
 {
     $$ = $1.concat($2);
 }
 ;
 
-enumitem: 
-IDENTIFIER COMMA COMMENT_LINE
+enumitem
+: IDENTIFIER COMMA
 {
-    console.log("enum0", $1)
-    $$ = {
-        name: $1,
-        comment: {
-            type: 'LINE',
-            value: $COMMENT_LINE.replace('//', "")
-        }
-    }
+    $$ = t.tsEnumMember(t.identifier($1));
 }
-|IDENTIFIER COMMA
+| IDENTIFIER
 {
-    console.log("enum1", $1)
-
-    $$ = {
-        name: $1,
-        comment: null
-    }
-}
-|IDENTIFIER COMMENT_LINE
-{
-    console.log("enum2", $1)
-    $$ = {
-        name: $1,
-        comment: {
-            type: 'LINE',
-            value: $COMMENT_LINE.replace('//', "")
-        }
-    }
+    $$ = t.tsEnumMember(t.identifier($1));
 }
 ;
 
-struct: STRUCT IDENTIFIER itemlist 
+struct
+: STRUCT IDENTIFIER itemlist 
 {
-    $$ = {
-        name:$IDENTIFIER,
-        type: "interface",
-        members: $itemlist,
-        comment: null
-    }
+    $$ = t.tsInterfaceDeclaration(
+        t.identifier($IDENTIFIER),
+        undefined,
+        undefined,
+        t.tsInterfaceBody($itemlist)
+    );
 }
-| COMMENT_BLOCK struct {
-    // $$ = {
-    //     name:$IDENTIFIER,
-    //     members: $itemlist,
-    //     comment: {
-    //         type:'BLOCK',
-    //         value: $COMMENT_BLOCK.replace(/^\/\*/, '').replace(/\*\/$/, "")
-    //     }
-    // }
-    
-    // console.log("$1", $1)
-
-    $$ = Object.assign({}, $2, {
-        comment: {
-            type:'BLOCK',
-            value: $COMMENT_BLOCK.replace(/^\/\*/, '').replace(/\*\/$/, "")
-        }
-    })
-}
-| COMMENT_LINE struct {
-    // $$ = {
-    //     name:$IDENTIFIER,
-    //     members: $itemlist,
-    //     comment: {
-    //         type:'LINE',
-    //         value: $COMMENT_LINE.replace('//', "")
-    //     }
-    // }
-    // console.log("$1", $1)
-
-    $$ = Object.assign({}, $2, {
-        comment: {
-            type:'LINE',
-            value: $COMMENT_LINE.replace('//', "")
-        }
-    })
-};
+;
 
 itemlist : LEFT items RIGHT SEMI {
     $$ = $items
@@ -216,85 +165,60 @@ items
 
 item 
 : PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI 
-{{
-    $$ = {
-        required: $REQUIRED,
-        name: $IDENTIFIER,
-        typeInfo: $t,
-        comment: null
-    }
-}}
-| PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI cl
-{{
-    $$ = {
-        required: $REQUIRED,
-        name: $IDENTIFIER,
-        typeInfo: $t,
-        comment: {
-            type: 'LINE',
-            value: $cl.replace('//', "")
-        }
-    }
-}}
-;
-
-cl
-:COMMENT_LINE
 {
-    $$ = $1
+    {
+        const node = t.tsPropertySignature(
+            t.identifier($IDENTIFIER),
+            t.tsTypeAnnotation($t)
+        );
+
+        if ($REQUIRED === 'optional') {
+            node.optional = true;
+        }
+
+        $$ = node;
+    }
 }
-| cl COMMENT_LINE {
-    $$ = $1 + $2.replace('//', "")
-};
+;
 
 t
 : TYPE
 {
-    $$ = {
-        type: $1,
-        params:[],
-        isPrimitive: true
+    console.log('TYPE:', $1 + '_x');
+    if ($1 === 'bool') {
+        $$ = t.tsBooleanKeyword();
+    } else {
+        $$ = t.tsStringKeyword();
     }
 }
 | IDENTIFIER
 {
-    $$ = {
-        type: $1,
-        params:[],
-        isPrimitive: false
-    }
+    $$ = t.tsTypeReference(t.identifier($1));
 }
 | VECTOR OPEN t CLOSE
 {
-    $$ = {
-        type: 'Array',
-        params: [$3],
-        isPrimitive: false
-    }
+    $$ = t.tsTypeReference(
+        t.identifier('Array'),
+        t.tsTypeParameterInstantiation([
+          $3
+        ])
+      );
 }
 | MAP OPEN t COMMA t CLOSE
 {
-    $$ = {
-        type: 'Record',
-        params: [$3, $5],
-        isPrimitive: false
-    }
+    $$ = t.tsTypeReference(
+        t.identifier('Record'),
+        t.tsTypeParameterInstantiation([
+            $3,
+            $5
+        ])
+    );
 }
 | IDENTIFIER DOUBLE_COLON IDENTIFIER 
 {
     // module::struct => namespace.interface
-    $$ = {
-        type:'QualifiedName',
-        params:[{
-            type: $1,
-            params:[],
-            isPrimitive: false
-        }, {
-            type: $3,
-            params:[],
-            isPrimitive: false
-        }],
-        isPrimitive: false
-    }
+    const left = t.identifier($1);
+    const right = t.identifier($3);
+    $$ = t.tsTypeReference(t.tsQualifiedName(left, right));
 }
 ;

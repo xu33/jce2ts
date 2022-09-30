@@ -72,12 +72,12 @@
   }
 */
 var jce = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,13],$V1=[1,14],$V2=[1,11],$V3=[1,12],$V4=[10,15,16,20,22],$V5=[1,19],$V6=[1,30],$V7=[1,34],$V8=[10,25],$V9=[7,10],$Va=[1,46],$Vb=[1,45],$Vc=[1,47],$Vd=[1,48],$Ve=[7,19,32],$Vf=[10,15,25];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[8,12],$V1=[1,17],$V2=[1,16],$V3=[15,20,24],$V4=[1,30],$V5=[1,33],$V6=[15,28],$V7=[10,15],$V8=[1,43],$V9=[1,42],$Va=[1,44],$Vb=[1,45],$Vc=[10,23,34];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"expressions":3,"e":4,"EOF":5,"MODULE":6,"IDENTIFIER":7,"LEFT":8,"structlist":9,"RIGHT":10,"SEMI":11,"def":12,"struct":13,"enum":14,"COMMENT_LINE":15,"ENUM":16,"enumitems":17,"enumitem":18,"COMMA":19,"STRUCT":20,"itemlist":21,"COMMENT_BLOCK":22,"items":23,"item":24,"PROPERTY_INDEX":25,"REQUIRED":26,"t":27,"cl":28,"TYPE":29,"VECTOR":30,"OPEN":31,"CLOSE":32,"MAP":33,"DOUBLE_COLON":34,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",6:"MODULE",7:"IDENTIFIER",8:"LEFT",10:"RIGHT",11:"SEMI",15:"COMMENT_LINE",16:"ENUM",19:"COMMA",20:"STRUCT",22:"COMMENT_BLOCK",25:"PROPERTY_INDEX",26:"REQUIRED",29:"TYPE",30:"VECTOR",31:"OPEN",32:"CLOSE",33:"MAP",34:"DOUBLE_COLON"},
-productions_: [0,[3,2],[4,6],[9,1],[9,2],[12,1],[12,1],[14,7],[14,6],[17,1],[17,2],[18,3],[18,2],[18,2],[13,3],[13,2],[13,2],[21,4],[23,1],[23,2],[24,5],[24,6],[28,1],[28,2],[27,1],[27,1],[27,4],[27,6],[27,3]],
+symbols_: {"error":2,"jce":3,"deplist":4,"expressions":5,"EOF":6,"dep":7,"INCLUDE":8,"QUOTE":9,"IDENTIFIER":10,"JCE":11,"MODULE":12,"LEFT":13,"structlist":14,"RIGHT":15,"SEMI":16,"def":17,"struct":18,"enum":19,"ENUM":20,"enumitems":21,"enumitem":22,"COMMA":23,"STRUCT":24,"itemlist":25,"items":26,"item":27,"PROPERTY_INDEX":28,"REQUIRED":29,"t":30,"TYPE":31,"VECTOR":32,"OPEN":33,"CLOSE":34,"MAP":35,"DOUBLE_COLON":36,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",8:"INCLUDE",9:"QUOTE",10:"IDENTIFIER",11:"JCE",12:"MODULE",13:"LEFT",15:"RIGHT",16:"SEMI",20:"ENUM",23:"COMMA",24:"STRUCT",28:"PROPERTY_INDEX",29:"REQUIRED",31:"TYPE",32:"VECTOR",33:"OPEN",34:"CLOSE",35:"MAP",36:"DOUBLE_COLON"},
+productions_: [0,[3,3],[4,0],[4,2],[7,5],[5,6],[14,1],[14,2],[17,1],[17,1],[19,6],[21,1],[21,2],[22,2],[22,1],[18,3],[25,4],[26,1],[26,2],[27,5],[30,1],[30,1],[30,4],[30,6],[30,3]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -85,257 +85,171 @@ var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
 
-    // typeof console !== 'undefined' ? console.log($$[$0-1]) : print($$[$0-1]);
-    //       return $$[$0-1];
-    // console.log(JSON.stringify($$[$0-1]));
-    // console.log($$[$0-1]);
-    return $$[$0-1];
+    return {
+        deps: $$[$0-2],
+        module: $$[$0-1]
+    }
 
 break;
 case 2:
 
-        // console.log('MODULE:', $$[$0-4])
-        module.IDENTIFIER = $$[$0-4];
-
-        this.$ = {
-            name: $$[$0-4],
-            structList: $$[$0-2]
-        }
-    
-break;
-case 3: case 9: case 18:
-
-    this.$ = [$$[$0]];
+    this.$ = [];
 
 break;
-case 4:
-
-    // console.log('STRUCT:', $$[$0-1], $$[$0])
+case 3:
 
     this.$ = $$[$0-1].concat($$[$0])
 
 break;
-case 5: case 6:
+case 4:
 
-    this.$ = $$[$0];
+    console.log($$[$0-2]);
+    this.$ = [$$[$0-2] + $$[$0-1]];
+
+break;
+case 5:
+
+        // console.log('MODULE:', $$[$0-4])
+        // module.IDENTIFIER = $$[$0-4];
+
+        // this.$ = {
+        //     name: $$[$0-4],
+        //     structList: $$[$0-2]
+        // }
+        
+        this.$ = t.tsModuleDeclaration(
+            t.identifier($$[$0-4]),
+            t.tsModuleBlock($$[$0-2])
+        );
+    
+break;
+case 6: case 11: case 17:
+
+    this.$ = [$$[$0]];
 
 break;
 case 7:
 
-    this.$ = {
-        type: 'ENUM',
-        name: $$[$0-4],
-        members: $$[$0-2],
-        comment: {
-            type: 'LINE',
-            value: $$[$0-6].replace('//', "")
-        }
-    }
+    // console.log('STRUCT:', $$[$0-1], $$[$0])
+    this.$ = $$[$0-1].concat($$[$0])
 
 break;
-case 8:
+case 8: case 9:
 
-    this.$ = {
-        type: 'ENUM',
-        name: $$[$0-4],
-        members: $$[$0-2],
-        comment: null
-    }
+    this.$ = $$[$0];
 
 break;
 case 10:
 
-    this.$ = $$[$0-1].concat($$[$0]);
-
-break;
-case 11:
-
-    console.log("enum0", $$[$0-2])
-    this.$ = {
-        name: $$[$0-2],
-        comment: {
-            type: 'LINE',
-            value: $$[$0].replace('//', "")
-        }
-    }
+{
+    this.$ = t.tsEnumDeclaration(
+        t.identifier($$[$0-4]),
+        $$[$0-2]
+    );
+}
 
 break;
 case 12:
 
-    console.log("enum1", $$[$0-1])
-
-    this.$ = {
-        name: $$[$0-1],
-        comment: null
-    }
+    this.$ = $$[$0-1].concat($$[$0]);
 
 break;
 case 13:
 
-    console.log("enum2", $$[$0-1])
-    this.$ = {
-        name: $$[$0-1],
-        comment: {
-            type: 'LINE',
-            value: $$[$0].replace('//', "")
-        }
-    }
+    this.$ = t.tsEnumMember(t.identifier($$[$0-1]));
 
 break;
 case 14:
 
-    this.$ = {
-        name:$$[$0-1],
-        type: "interface",
-        members: $$[$0],
-        comment: null
-    }
+    this.$ = t.tsEnumMember(t.identifier($$[$0]));
 
 break;
 case 15:
 
-    // this.$ = {
-    //     name:$IDENTIFIER,
-    //     members: $itemlist,
-    //     comment: {
-    //         type:'BLOCK',
-    //         value: $$[$0-1].replace(/^\/\*/, '').replace(/\*\/$/, "")
-    //     }
-    // }
-    
-    // console.log("$$[$0-1]", $$[$0-1])
-
-    this.$ = Object.assign({}, $$[$0], {
-        comment: {
-            type:'BLOCK',
-            value: $$[$0-1].replace(/^\/\*/, '').replace(/\*\/$/, "")
-        }
-    })
+    this.$ = t.tsInterfaceDeclaration(
+        t.identifier($$[$0-1]),
+        undefined,
+        undefined,
+        t.tsInterfaceBody($$[$0])
+    );
 
 break;
 case 16:
 
-    // this.$ = {
-    //     name:$IDENTIFIER,
-    //     members: $itemlist,
-    //     comment: {
-    //         type:'LINE',
-    //         value: $$[$0-1].replace('//', "")
-    //     }
-    // }
-    // console.log("$$[$0-1]", $$[$0-1])
-
-    this.$ = Object.assign({}, $$[$0], {
-        comment: {
-            type:'LINE',
-            value: $$[$0-1].replace('//', "")
-        }
-    })
-
-break;
-case 17:
-
     this.$ = $$[$0-2]
 
 break;
-case 19:
+case 18:
 
     // console.log('ERROR', $$[$0-1], $$[$0]);
 
     this.$ = $$[$0-1].concat($$[$0])
 
 break;
+case 19:
+
+    {
+        const node = t.tsPropertySignature(
+            t.identifier($$[$0-1]),
+            t.tsTypeAnnotation($$[$0-2])
+        );
+
+        if ($$[$0-3] === 'optional') {
+            node.optional = true;
+        }
+
+        this.$ = node;
+    }
+
+break;
 case 20:
 
-    this.$ = {
-        required: $$[$0-3],
-        name: $$[$0-1],
-        typeInfo: $$[$0-2],
-        comment: null
+    console.log('TYPE:', $$[$0] + '_x');
+    if ($$[$0] === 'bool') {
+        this.$ = t.tsBooleanKeyword();
+    } else {
+        this.$ = t.tsStringKeyword();
     }
 
 break;
 case 21:
 
-    this.$ = {
-        required: $$[$0-4],
-        name: $$[$0-2],
-        typeInfo: $$[$0-3],
-        comment: {
-            type: 'LINE',
-            value: $$[$0].replace('//', "")
-        }
-    }
+    this.$ = t.tsTypeReference(t.identifier($$[$0]));
 
 break;
 case 22:
 
-    this.$ = $$[$0]
+    this.$ = t.tsTypeReference(
+        t.identifier('Array'),
+        t.tsTypeParameterInstantiation([
+          $$[$0-1]
+        ])
+      );
 
 break;
 case 23:
 
-    this.$ = $$[$0-1] + $$[$0].replace('//', "")
+    this.$ = t.tsTypeReference(
+        t.identifier('Record'),
+        t.tsTypeParameterInstantiation([
+            $$[$0-3],
+            $$[$0-1]
+        ])
+    );
 
 break;
 case 24:
 
-    this.$ = {
-        type: $$[$0],
-        params:[],
-        isPrimitive: true
-    }
-
-break;
-case 25:
-
-    this.$ = {
-        type: $$[$0],
-        params:[],
-        isPrimitive: false
-    }
-
-break;
-case 26:
-
-    this.$ = {
-        type: 'Array',
-        params: [$$[$0-1]],
-        isPrimitive: false
-    }
-
-break;
-case 27:
-
-    this.$ = {
-        type: 'Record',
-        params: [$$[$0-3], $$[$0-1]],
-        isPrimitive: false
-    }
-
-break;
-case 28:
-
     // module::struct => namespace.interface
-    this.$ = {
-        type:'QualifiedName',
-        params:[{
-            type: $$[$0-2],
-            params:[],
-            isPrimitive: false
-        }, {
-            type: $$[$0],
-            params:[],
-            isPrimitive: false
-        }],
-        isPrimitive: false
-    }
+    const left = t.identifier($$[$0-2]);
+    const right = t.identifier($$[$0]);
+    this.$ = t.tsTypeReference(t.tsQualifiedName(left, right));
 
 break;
 }
 },
-table: [{3:1,4:2,6:[1,3]},{1:[3]},{5:[1,4]},{7:[1,5]},{1:[2,1]},{8:[1,6]},{9:7,12:8,13:9,14:10,15:$V0,16:$V1,20:$V2,22:$V3},{10:[1,15],12:16,13:9,14:10,15:$V0,16:$V1,20:$V2,22:$V3},o($V4,[2,3]),o($V4,[2,5]),o($V4,[2,6]),{7:[1,17]},{13:18,15:$V5,20:$V2,22:$V3},{13:20,15:$V5,16:[1,21],20:$V2,22:$V3},{7:[1,22]},{11:[1,23]},o($V4,[2,4]),{8:[1,25],21:24},o($V4,[2,15]),{13:20,15:$V5,20:$V2,22:$V3},o($V4,[2,16]),{7:[1,26]},{8:[1,27]},{5:[2,2]},o($V4,[2,14]),{23:28,24:29,25:$V6},{8:[1,31]},{7:$V7,17:32,18:33},{10:[1,35],24:36,25:$V6},o($V8,[2,18]),{26:[1,37]},{7:$V7,17:38,18:33},{7:$V7,10:[1,39],18:40},o($V9,[2,9]),{15:[1,42],19:[1,41]},{11:[1,43]},o($V8,[2,19]),{7:$Va,27:44,29:$Vb,30:$Vc,33:$Vd},{7:$V7,10:[1,49],18:40},{11:[1,50]},o($V9,[2,10]),o($V9,[2,12],{15:[1,51]}),o($V9,[2,13]),o($V4,[2,17]),{7:[1,52]},o($Ve,[2,24]),o($Ve,[2,25],{34:[1,53]}),{31:[1,54]},{31:[1,55]},{11:[1,56]},o($V4,[2,8]),o($V9,[2,11]),{11:[1,57]},{7:[1,58]},{7:$Va,27:59,29:$Vb,30:$Vc,33:$Vd},{7:$Va,27:60,29:$Vb,30:$Vc,33:$Vd},o($V4,[2,7]),o($V8,[2,20],{28:61,15:[1,62]}),o($Ve,[2,28]),{32:[1,63]},{19:[1,64]},o($V8,[2,21],{15:[1,65]}),o($Vf,[2,22]),o($Ve,[2,26]),{7:$Va,27:66,29:$Vb,30:$Vc,33:$Vd},o($Vf,[2,23]),{32:[1,67]},o($Ve,[2,27])],
-defaultActions: {4:[2,1],23:[2,2]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,8:[1,6],12:[1,5]},{6:[1,7]},o($V0,[2,3]),{10:[1,8]},{9:[1,9]},{1:[2,1]},{13:[1,10]},{10:[1,11]},{14:12,17:13,18:14,19:15,20:$V1,24:$V2},{11:[1,18]},{15:[1,19],17:20,18:14,19:15,20:$V1,24:$V2},o($V3,[2,6]),o($V3,[2,8]),o($V3,[2,9]),{10:[1,21]},{10:[1,22]},{9:[1,23]},{16:[1,24]},o($V3,[2,7]),{13:[1,26],25:25},{13:[1,27]},o($V0,[2,4]),{6:[2,5]},o($V3,[2,15]),{26:28,27:29,28:$V4},{10:$V5,21:31,22:32},{15:[1,34],27:35,28:$V4},o($V6,[2,17]),{29:[1,36]},{10:$V5,15:[1,37],22:38},o($V7,[2,11]),o($V7,[2,14],{23:[1,39]}),{16:[1,40]},o($V6,[2,18]),{10:$V8,30:41,31:$V9,32:$Va,35:$Vb},{16:[1,46]},o($V7,[2,12]),o($V7,[2,13]),o($V3,[2,16]),{10:[1,47]},o($Vc,[2,20]),o($Vc,[2,21],{36:[1,48]}),{33:[1,49]},{33:[1,50]},o($V3,[2,10]),{16:[1,51]},{10:[1,52]},{10:$V8,30:53,31:$V9,32:$Va,35:$Vb},{10:$V8,30:54,31:$V9,32:$Va,35:$Vb},o($V6,[2,19]),o($Vc,[2,24]),{34:[1,55]},{23:[1,56]},o($Vc,[2,22]),{10:$V8,30:57,31:$V9,32:$Va,35:$Vb},{34:[1,58]},o($Vc,[2,23])],
+defaultActions: {7:[2,1],24:[2,5]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -483,14 +397,7 @@ parse: function parse(input) {
     return true;
 }};
 
-    // var module = {}
-    // var temp = []
-    
-    // module.structs = {}
-
-    // function addStruct(IDENTIFIER, props) {
-    //     module.structs[IDENTIFIER] = props
-    // }
+    const t = require('@babel/types');
 /* generated by jison-lex 0.3.4 */
 var lexer = (function(){
 var lexer = ({
@@ -821,54 +728,60 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* skip whitespace */
 break;
-case 1: return "COMMENT_LINE" 
+case 1: /* DO NOTHING */ 
 break;
-case 2: return "COMMENT_BLOCK" 
+case 2: /* DO NOTHING */ 
 break;
-case 3:return 5
+case 3:return "INCLUDE";
 break;
-case 4: return "MODULE";
+case 4:return "JCE"
 break;
-case 5: return "STRUCT";
+case 5:return 6
 break;
-case 6: return "ENUM";
+case 6:return "QUOTE";
 break;
-case 7: /* DO NOTHING */ 
+case 7: return "MODULE";
 break;
-case 8: return "OPEN"; 
+case 8: return "STRUCT";
 break;
-case 9: return "CLOSE"; 
+case 9: return "ENUM";
 break;
-case 10: return "LEFT"; 
+case 10: /* DO NOTHING */ 
 break;
-case 11: return "RIGHT"; 
+case 11: return "OPEN"; 
 break;
-case 12:return "REQUIRED"
+case 12: return "CLOSE"; 
 break;
-case 13: return "TYPE";
+case 13: return "LEFT"; 
 break;
-case 14: return "VECTOR"; 
+case 14: return "RIGHT"; 
 break;
-case 15: return "MAP"; 
+case 15:return "REQUIRED"
 break;
-case 16:return "SEMI"
+case 16: return "IDENTIFIER";
 break;
-case 17:return "COMMA"
+case 17: return "TYPE";
 break;
-case 18:return "DOUBLE_COLON"
+case 18: return "VECTOR"; 
 break;
-case 19: /* DO NOTHING */ 
+case 19: return "MAP"; 
 break;
-case 20: return "PROPERTY_INDEX";
+case 20:return "SEMI"
 break;
-case 21: return "IDENTIFIER";
+case 21:return "COMMA"
 break;
-case 22:return "EOF"
+case 22:return "DOUBLE_COLON"
+break;
+case 23: /* DO NOTHING */ 
+break;
+case 24: return "PROPERTY_INDEX";
+break;
+case 25:return "EOF"
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:$)/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:(string|short|bool|int|float|long|double|signed\s+int|unsigned\s+int))/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,//]+)/,/^(?:\d+)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:(string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short))/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,//]+)/,/^(?:\d+)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],"inclusive":true}}
 });
 return lexer;
 })();
