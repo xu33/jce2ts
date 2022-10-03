@@ -19,32 +19,45 @@ if (args.length <= 0) {
 }
 
 const fileName = args[0];
-const outputName = path.parse(fileName).name + ".spec.ts";
-const content = fs.readFileSync(fileName, {
-  encoding: "utf-8",
-});
 
-const output = parser.parse(content);
+function parseRecursion(fileName) {
+  const { name, dir } = path.parse(fileName);
+  const outputName = name + ".spec.ts";
+  const content = fs.readFileSync(fileName, {
+    encoding: "utf-8",
+  });
 
-console.log(output);
+  const output = parser.parse(content);
 
-const topLevelDeclaration = t.tsModuleDeclaration(
-  t.identifier("global"),
-  t.tsModuleBlock([output.module])
-);
+  console.log(output);
 
-topLevelDeclaration.declare = true;
-topLevelDeclaration.global = true;
-
-const exportNamedDeclaration = t.exportNamedDeclaration();
-const program = t.program([topLevelDeclaration, exportNamedDeclaration]);
-const ast = generate(program);
-// console.log(ast.code);
-
-fs.writeFile(outputName, ast.code, {}, (err) => {
-  if (err) {
-    console.log("error write file");
-  } else {
-    console.log("Success!");
+  const deps = output.deps;
+  if (deps?.length) {
+    for (let i = 0; i < deps.length; i++) {
+      parseRecursion(path.join(dir, deps[i]));
+    }
   }
-});
+
+  const topLevelDeclaration = t.tsModuleDeclaration(
+    t.identifier("global"),
+    t.tsModuleBlock([output.module])
+  );
+
+  topLevelDeclaration.declare = true;
+  topLevelDeclaration.global = true;
+
+  const exportNamedDeclaration = t.exportNamedDeclaration();
+  const program = t.program([topLevelDeclaration, exportNamedDeclaration]);
+  const ast = generate(program);
+  // console.log(ast.code);
+
+  fs.writeFile(outputName, ast.code, {}, (err) => {
+    if (err) {
+      console.log("error write file");
+    } else {
+      console.log("Success!");
+    }
+  });
+}
+
+parseRecursion(fileName);

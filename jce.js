@@ -204,7 +204,7 @@ case 19:
 break;
 case 20:
 
-    console.log('TYPE:', $$[$0] + '_x');
+    // console.log('TYPE:', $$[$0] + '_x');
     if ($$[$0] === 'bool') {
         this.$ = t.tsBooleanKeyword();
     } else {
@@ -758,30 +758,50 @@ case 14: return "RIGHT";
 break;
 case 15:return "REQUIRED"
 break;
-case 16: return "IDENTIFIER";
+case 16:return 31
 break;
-case 17: return "TYPE";
+case 17:return "TYPE"
 break;
-case 18: return "VECTOR"; 
+case 18:return "TYPE"
 break;
-case 19: return "MAP"; 
+case 19:return "TYPE"
 break;
-case 20:return "SEMI"
+case 20:return "TYPE"
 break;
-case 21:return "COMMA"
+case 21:return "TYPE"
 break;
-case 22:return "DOUBLE_COLON"
+case 22:return "TYPE"
 break;
-case 23: /* DO NOTHING */ 
+case 23:return "TYPE"
 break;
-case 24: return "PROPERTY_INDEX";
+case 24:return "TYPE"
 break;
-case 25:return "EOF"
+case 25:return "TYPE"
+break;
+case 26:return "TYPE"
+break;
+case 27: return "VECTOR"; 
+break;
+case 28: return "MAP"; 
+break;
+case 29: return "IDENTIFIER";
+break;
+case 30:return "SEMI"
+break;
+case 31:return "COMMA"
+break;
+case 32:return "DOUBLE_COLON"
+break;
+case 33: /* DO NOTHING */ 
+break;
+case 34: return "PROPERTY_INDEX";
+break;
+case 35:return "EOF"
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:(string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short))/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,//]+)/,/^(?:\d+)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,//]+)/,/^(?:\d+)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35],"inclusive":true}}
 });
 return lexer;
 })();

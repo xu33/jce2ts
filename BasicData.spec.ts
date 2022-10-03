@@ -79,7 +79,7 @@ declare global {
       iVolInStockDif?: string;
     }
     interface HMarketTradePeriod {
-      vTradePeriod?: Array<short>;
+      vTradePeriod?: Array<string>;
     }
     interface HStock {
       shtSetcode?: string;
@@ -270,10 +270,10 @@ declare global {
       lNowVol?: string;
       lInside?: string;
       lOutside?: string;
-      vBuyp?: Array<double>;
-      vBuyv?: Array<long>;
-      vSellp?: Array<double>;
-      vSellv?: Array<long>;
+      vBuyp?: Array<string>;
+      vBuyv?: Array<string>;
+      vSellp?: Array<string>;
+      vSellv?: Array<string>;
       fAveragePrice?: string;
       fZTPrice?: string;
       fDTPrice?: string;
@@ -283,8 +283,8 @@ declare global {
       iTradeTime?: string;
       bZDMark?: string;
       bTransactionStatus?: string;
-      vBuyNum?: Array<int>;
-      vSellNum?: Array<int>;
+      vBuyNum?: Array<string>;
+      vSellNum?: Array<string>;
       iBSFlag?: string;
       dPeRatio?: string;
       dPriceRatio?: string;
@@ -471,7 +471,7 @@ declare global {
       stHItem?: HAHItem;
     }
     interface HTradePeriod {
-      vTradePeriod?: Array<short>;
+      vTradePeriod?: Array<string>;
     }
     interface HHotPlateStock {
       shtSetcode?: string;
@@ -557,7 +557,7 @@ declare global {
     }
     interface HTradePeriodTime {
       vPeriod?: Array<HTradeTime>;
-      mPeriod?: Record<short, Array<HTradeTime>>;
+      mPeriod?: Record<string, Array<HTradeTime>>;
     }
     interface HFinData {
       shtSetCode?: string;
@@ -757,14 +757,14 @@ declare global {
       iPos?: string;
       sCheckSum?: string;
       iLen?: string;
-      bCompress?: string;
+      bCompress?: boolean;
     }
     interface HFileData {
       sFileName: string;
-      bCompress?: string;
-      bChg: string;
-      vBuf?: Array<byte>;
-      bRemain: string;
+      bCompress?: boolean;
+      bChg: boolean;
+      vBuf?: Array<string>;
+      bRemain: boolean;
       sCheckSum?: string;
     }
     enum E_LOGIN_CLIENT_TYPE {
@@ -790,7 +790,7 @@ declare global {
       vRight?: Array<HRigthUnit>;
       sRd?: string;
       sSsoDate?: string;
-      bAllowRepeatLogin?: string;
+      bAllowRepeatLogin?: boolean;
     }
     enum E_LOGIN_AUTH_TYPE {
       E_LOGIN_AUTH_SZ_SH,
@@ -825,7 +825,7 @@ declare global {
       stStock?: HStock;
       dSignProfit?: string;
       iZtNDay?: string;
-      bBreakPlate?: string;
+      bBreakPlate?: boolean;
       sListDate?: string;
     }
     interface HRadarQt {

@@ -21,10 +21,21 @@
 "{" { return "LEFT"; }
 "}" { return "RIGHT"; }
 (require|optional) {return "REQUIRED"}
-[a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
-(string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short) { return "TYPE";}
+// (string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short) { return "TYPE";}
+"string" return 'TYPE'
+"byte" return "TYPE"
+"short" return "TYPE"
+"bool" return "TYPE"
+"int" return "TYPE"
+"float" return "TYPE"
+"long" return "TYPE"
+"double" return "TYPE"
+"signed"\s+"int" return "TYPE"
+"unsigned"\s+"int" return "TYPE"
+"unsigned"\s+"short" return "TYPE"
 vector { return "VECTOR"; }
 map { return "MAP"; }
+[a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
 ";" return "SEMI"
 "," return "COMMA"
 "::" return "DOUBLE_COLON"
@@ -184,7 +195,7 @@ item
 t
 : TYPE
 {
-    console.log('TYPE:', $1 + '_x');
+    // console.log('TYPE:', $1 + '_x');
     if ($1 === 'bool') {
         $$ = t.tsBooleanKeyword();
     } else {
