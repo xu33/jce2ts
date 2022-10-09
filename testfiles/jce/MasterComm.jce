@@ -1,0 +1,115 @@
+#include "ATGComm.jce"
+
+module ATG
+{
+	// 客户端类别
+	enum E_TC_CLNT_TYPE
+	{
+		ETCT_INNER_WIN_PC 	= 1,	// 场内WIN-PC客户端
+		ETCT_WIN_PC_CLNT	= 2,	// WIN-PC客户端
+		ETCT_PHONE_CLNT		= 3,	// 手机客户端
+		ETCT_WEB_ENTRUST	= 4,	// 网页委托
+		ETCT_MONITOR_CLNT	= 5		// 监控客户端
+	};
+
+	// 客户类别
+	enum E_TC_ACCOUNT_TYPE
+	{
+		ETAT_CAPTICAL_ACC 		= 1,	// 资金账号
+		ETAT_STOCKHOLD_ACC 		= 2,	// 股东内码
+		ETAT_TRADE_ACC			= 3,	// 交易卡号
+		ETAT_BANK_ACC			= 4,	// 银行账号
+		ETAT_BOND_ACC			= 5,	// 证券账号
+		ETAT_CLNTL_ACC			= 6,	// 客户标示
+		ETAT_TTN_ACC			= 7 	// 天天牛
+	};
+
+	// 交易会话cookie，服务端产生
+	struct TradeCookie
+	{
+		0 require 	string 			featureCode;	// 设备featureCode
+		1 require 	unsigned int 	createTime;		// cookie生成时间戳
+		2 require 	string 			seq; 			// 请求id
+		3 optional	unsigned int 	updateTime;		// 最后一次更新seq的时间戳
+	};
+
+	enum E_RET_CODE
+	{
+		EARC_SUCC 	= 0,
+		EARC_SYS_ERR  	= -1,
+	};
+
+	enum E_CLIENT_TYPE
+	{
+		E_APP_CLIENT 	= 0,
+		E_CRM_CLIENT  	= 1,
+	};
+
+	struct TQHead
+	{
+		0 optional 	int                 cmd;	 		// 请求命令字
+		1 optional 	int 		    	compressed=0;		// 是否压缩,0-不压缩 1-压缩，天风不传		
+		2 optional	int                 encrypted=0;		// 是否加密，0-不加密 1-加密，天风不传
+		3 optional	int                 packetLen;      // 现有长度 ，天风不传
+		4 optional	int                 rawLen;			// 压缩前长度(明文压缩)[具体需要跟现有客户端协商是否解密再解压\还是解压再解密:以客户端来定]，天风不传
+		5 optional   int			    cookie;			// 保存session_id(body维护token)，天风不传
+		6 optional   int				mainid;			// 业务或板块类型，天风不传
+		7 optional   int				assisid;		// 异步号，天风不传
+		8 optional   int 				custId;			// 天风鉴权id,CRM平台不传
+		9 optional   string 			license; 		// 鉴权凭证,CRM平台不传
+		10 optional  int 				subCustId = 0; 	// 模拟交易使用的子custId,管理端批量查询不传
+		11 optional  E_CLIENT_TYPE 		clientType;		// 0-app客户端 1-CRM平台
+		12 optional  int                bussId = 0;     // 业务类别，0:普通用户 1:大赛用户 2:投顾组合
+		13 optional  unsigned int       stcId = 0;      // 大赛ID，非大赛用户此id为0
+		14 optional  EAccountType       subTransType;   // 子账号交易业务类型，0-表示操作母账号，一般用于收益查询 
+		15 optional  int                otherCustrId = 0;    // 访问其他用户收益等数据,用于母账户访问，非0
+	};
+
+	struct CookieInfo
+	{
+		0 optional	string 			aesKey;
+		1 optional	int				serialNumber;
+		2 optional	int				userCode;
+		3 optional	int				clientType;
+		4 optional	int				accountType;
+		5 optional	unsigned int 	createTime;		// cookie生成时间戳
+		6 optional	unsigned int	updateTime;		// 最后一次更新seq的时间戳
+	};
+
+	struct CheckAuthReq
+	{
+		0 optional string clientVersion;//客户端版本
+		1 optional int custId;//客户编号
+		2 optional string license;//登录凭证
+		3 optional string machineCode;//机器码 
+	};
+
+	struct customerBaseInfoSubAccount
+	{
+		0 optional string account;
+		1 optional int custId;
+		2 optional int type;
+	};
+
+	struct customerBaseInfo
+	{
+		0 optional vector<customerBaseInfoSubAccount> subs;//子账号
+		1 optional string mobileNo;//手机号
+	};
+
+	struct CheckAuthRspData
+	{
+		0 optional int custId;//客户ID
+		1 optional string license;//登录凭证
+		2 optional bool login;//是否登陆
+		3 optional customerBaseInfo customerBaseVo;//用户基础信息
+	};
+
+	struct CheckAuthRsp
+	{
+		0 optional  int code;//状态码
+		1 optional string message;//描述信息
+		2 optional bool success;//是否需要登陆
+		3 optional CheckAuthRspData data;//响应数据
+	};
+};

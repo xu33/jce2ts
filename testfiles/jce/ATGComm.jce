@@ -1,0 +1,1369 @@
+module ATG
+{
+	// 用户基本信息
+	struct UserBaseInfo
+	{
+		0 require	unsigned int	userCode;	 	// 用户代码
+		1 optional	string			userName;		// 客户标识 同userId 
+		2 optional	string			secuAccSHA;		// 股东代码上海
+		3 optional	string			secuAccSZA; 	// 股东代码深圳
+		4 optional  string			createDate;		// 创建日期
+		5 optional  string			lastLoginDate;	// 最后登录日期
+		6 optional	string			lastLoginTime;	// 最后登录时间
+		7 optional	string			lastLoginMac;	// 最后登录mac
+		8 optional	string			lastLoginIp;	// 最后登录ip
+	    9 optional 	string 	        beginDateTime;	// 开始日期
+		10 optional string 	        endDateTime;	// 结束日期
+		11 optional	double 	        stopProfitRate;	// 止盈收益率
+		12 optional	double 	        stopLossRate;	// 止损收益
+        13 optional double          beginFund;      // 初始资产
+        14 optional string          tmpEndDate;     // 结束日期，结束日期后组合将不列入衍生数据计算范围
+		15 optional int 			userIDCls;		// 用户标识类（0:投顾 1：用户)
+		16 optional	int 			bussId;			// 业务类别，标识账号体系，默认为  0:组合、模拟社区 ,1: 其他的由客户端生成传入的大赛标识
+		17 optional int				accountType;	// 账户类型 普通账户/期权/期货/融资融券
+		18 optional string			kind;			// 支持品种类型
+		19 optional int				riskUserType;	// 是否是风控类型 默认0/风控1
+		20 optional int             tempId;			// 模板类型
+		21 optional unsigned int    stcID = 0;		// 模拟大赛ID
+		22 optional string          masterId;       // 母账户
+		23 optional	string			secuAcc;		// 股东代码         
+	};
+
+	//用户属性
+	struct DataBaseInfo
+	{
+		0 optional 		string  		sUserId;				// 客户标识	
+		1 optional 		int  			iUserCode = -1;			// 账户代码
+		2 optional 		int  			iBussId = -1;			// 账户类型
+		3 optional		int				iUserType = -1;			// 用户类型（0：投顾，1：用户）
+		4 optional		string			sClientType;			// 客户端类型（"C"：app端，默认：其他客户端）
+	};
+
+
+	// 资金信息
+	struct FundInfo
+	{
+		0 require	double	available;				// 可用资金
+		1 require	double	trdFrz;					// 冻结资金
+		2 require	double	balance;				// 资金余额
+		3 optional	double	stkValue;				// 股票市值
+		4 optional	double	sumAsset;				// 总资产
+		5 optional	byte	currency;				// 货币类型
+		6 optional  byte 	isCloseOut;				// 强平标志
+		7 optional  double  yestdaySumAsset;		// 昨日总资产
+	   	8 optional  double  initAsset;              // 初始化资金
+		9 optional  double  usedBailBalance;		// 占用保证金(期权、期货)
+        10 optional double  todayCloseBalance;      // 当日平仓盈亏
+		12 optional double  openingBalance;			// 期初资产(期货)
+		13 optional double  risk;					// 风险度(期货)
+		14 optional double  dayProfit;				// 未平仓盈亏
+		15 optional double  hisCloseBalance;		// 历史平仓盈亏
+	};
+	
+	enum EStockType
+	{
+		E_ST_STOCK = 0,		// A股
+		E_ST_FUND = 1,		// 基金
+		E_ST_QZ = 2,        // 权证
+		E_ST_GZ = 3,        // 国债
+		E_ST_ZQ = 4,        // 企债
+		E_ST_ZZ = 5,        // 转债
+		E_ST_HG = 6,        // 回购
+		E_ST_B = 7,         // B股
+		E_ST_OTHER = 8,     // 其他
+		E_ST_KCB = 9,       // 科创板
+		E_ST_QQ = 10,       // 期权
+		E_ST_GGT = 11,      // 港股通
+		E_ST_QH = 12		// 期货
+	};
+
+	enum EAccountType
+	{
+		E_DEFAULT_ACCOUNT = 0,		// 普通交易
+		E_CREDIT_ACCOUNT = 1,		// 信用交易
+		E_OPTION_ACCOUNT = 2,       // 期权交易
+		E_FUTURE_ACCOUNT = 3,		// 期货交易
+		E_HS_ACCOUNT     = 4,		// 沪深(中华通)交易
+		E_HK_ACCOUNT     = 5,       // 港股交易
+		E_US_ACCOUNT     = 6,       // 美股交易
+	};
+	
+	// 持仓
+	struct HoldInfo
+	{
+		0 require 	byte			market;			// 市场
+		1 require 	string			secuCode;		// 股票代码
+		2 require 	string			secuName;		// 股票名称
+		3 require 	unsigned int	shareAvl;		// 可用股份
+		4 require 	unsigned int	shareTrdFrz;	// 冻结股份
+		5 require 	unsigned int	shareBln;		// 股份余额
+		6 optional 	double			costPrice;		// 持仓成本
+		7 optional 	double			currentPrice;	// 当前价格
+		8 optional 	double			currentCost;	// 当前成本
+		9 optional 	double			floatProfit;	// 浮动盈亏
+		10 optional double			mktVal;			// 参考市值
+		11 optional	string			secuAcc; 		// 股东代码
+		12 optional byte			isShow;			// 是否显示
+		13 optional	EStockType		stockType;		// 证券大类
+		14 optional double			YestPrice;	    // 昨日收盘价
+		15 optional	int             ShareOtd;       // 在途数量
+		16 optional double		    RealHoldMargin; // 持仓实时保证金
+		17 optional byte		    OptHoldType;	// 期权/货 持仓类别 买开:多:0 ;卖开:空:1
+        18 optional double          InitHoldMargin; // 初始占用保证金
+		19 optional double			dayProfit;		// 盯市浮盈((currentCost-costPrice)*shareBln - 期初浮盈)  currentCost:平仓价格or当前价格     shareBln:平仓数量or股份余额 暂未使用
+		20 optional double			yesProfit;		// 期初浮盈 每日结算时按收盘价格计算 暂未使用
+		21 optional unsigned int	shareDay;		// 今仓
+		22 optional unsigned int	shareAvlDay;	// 今仓可用
+		23 optional unsigned int	expirMonth;		// 合约到期月份
+		24 optional	byte			subType=0;		// 
+		25 optional unsigned int	createDate;		// 建仓日期
+		26 optional vector<string>  vecTradeData;    // 清仓数据20200922_uid_tradeId
+		27 optional unsigned int  	settlePriceLowerCount;    // 收盘价格低于成本价天数
+		28 optional unsigned int  	buySumCount;    // 购买总量
+	};
+	// 委托单
+	struct OrderInfo
+	{
+		0 	require 	byte			market;		// 市场
+		1 	require 	string			secuCode;	// 股票代码
+		2 	require 	string			secuName;	// 股票名称
+		3 	require 	byte			trdID;		// 买卖方向
+		4 	require 	double			price;		// 委托价格
+		5 	require 	unsigned int	qty;		// 委托数量
+		6 	optional	byte			isWithdraw;	// 委托状态
+		7 	optional	unsigned int	orderDate;	// 委托日期
+		8 	optional	double			orderFrzAmt;// 委托冻结
+		9 	optional	unsigned int	matchedQty;	// 成交数量
+		10 	optional	double			matchedAmt;	// 成交金额
+		11 	optional 	unsigned int	withDrawn;	// 撤单数量
+		12  optional 	unsigned int	orderID;	// 委托编号
+		13  optional	string			secuAcc;	// 股东代码
+		14	optional	unsigned int	trdDate;	// 成交日期
+		15  optional	EStockType		stockType;	// 品种
+		16  optional    int             way=0;      // 渠道
+		17  optional    double          OrderAmount;// 申购金额、期货保证金
+		18  optional    string			opRemark;	// 备注
+		19  optional    int             iBussId;	// 业务类别
+		20  optional    byte			OptionOC;   // 期货开平 开、平、平今  开：'O' 平：'C' 平今：'T'
+        21  optional    byte			OrderProp;  // 委托品种属性	期权:10  期货:12
+        22  optional    int             ContractMutiplierUnit; //合约单位
+		23 optional		byte			subType=0;		// 证券子类
+		24 optional		string     		property;		// 委托属性 预留
+	};
+
+	// 成交信息
+	struct TradeInfo
+	{
+		0 require 	byte			market;			// 市场
+		1 require 	string			secuName;		// 股票名称
+		2 require 	string			secuCode;		// 股票代码
+		3 require 	byte			trdID;			// 买卖方向
+		4 require 	double			matchedPrice;	// 成交价格
+		5 require 	unsigned int	matchedQty;		// 成交数量
+		6 require 	double			matchedAmt;		// 成交金额
+		7 require 	unsigned int	matchedSn;		// 成交编号
+		8 optional 	unsigned int	matchedTime;	// 成交时间
+		9 optional 	unsigned int	orderID;		// 委托编号
+		10 optional	unsigned int	trdDate;		// 成交日期
+		11 optional	string			secuAcc;		// 股东代码
+		12 optional unsigned int	orderDate;		// 委托时间
+		13 optional	EStockType		stockType;		// 品种
+		14 optional double          beforeHoldValue;// 成交前仓位
+		15 optional double          beforeFund;     // 成交前总资金
+		16 optional double          afterHoldValue; // 成交后仓位
+		17 optional double          afterFund;      // 成交后总资金
+		18 optional string			opRemark;       // 备注
+		19 optional double		    OptMargin;		// 占用保证金
+        20 optional  byte			OptionOC;       // 期货开平 开、平、平今  开：'O' 平：'C' 平今：'T'
+		21 optional double			HandlingFee;	// 手续费
+		22 optional unsigned int	winOrLose;		// 0为默认、1为盈利、2为亏损
+		23 optional	byte			subType=0;		// 证券子类
+		24 optional	string     		property;		// 委托属性 预留
+	};
+	
+	// 资金流水
+	struct FlowInfo
+	{
+		0 require string			secuName;		// 股票名称
+		1 require string			secuCode;		// 股票代码
+		2 require unsigned int		serialNo;		// 业务序号
+		3 require double			balance;		// 资金余额
+		4 require double			matchedPrice;	// 成交价格
+		5 require unsigned int		matchedQty;		// 成交数量
+		6 require double			cptlAmt;		// 成交金额
+		7 require unsigned int		occurDate;		// 成交时间
+		8 optional string			secuAcc;		// 股东代码
+		9 optional byte				bizCode;		// 业务代码
+        10 optional int             way=0;          // 渠道
+		11 optional byte			flowType = 0;   // 资金流水类型， 0 表示普通委托买卖，1 表示转入 2 表示转出
+	};
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// HashMap and DCache(服务端用)
+	struct User_Cache_Key
+	{
+		0 require	unsigned int 	userCode;
+	};
+
+	struct UserIndex_DCache_Value
+	{
+		0 require 	vector<string>	dateList;		// 日期索引
+	};
+
+	struct DataOnTheWay
+	{
+	    0 optional  int                            date;              // 交易日期
+		1 optional  byte                           market;            // 交易市场
+		2 optional  string                         stockCode;         // 证券代码
+		3 optional  double                         buyAmount;         // 买入未交收数量
+		4 optional  double                         buyBalance;        // 买入未交收金额
+		5 optional  double                         sellAmount;        // 卖出未交收数量
+		6 optional  double                         sellBalance;       // 卖出未交收金额
+		7 optional  unsigned int	               orderId;           // 委托编号
+		8 optional  byte                           trdId;             // 委托方向
+		9 optional	string			               secuAcc;		      // 股东代码
+		10 optional unsigned int	               orderDate;		  // 委托时间
+		11 optional int                            way=0;             // 渠道
+		12 optional int                            matchFlag;         // 成交标志 0-未成交，1-已成交
+		13 optional int                            settleFlag;        // 结算标志 0-未结算，1-已结算
+	};
+
+	struct UserCore_DCache_Value
+	{
+		0 require	UserBaseInfo					base;		// 基本资料
+		1 require	FundInfo						fund;		// 资金记录
+		2 optional	vector<HoldInfo>				holds;		// 持仓记录
+		3 optional	map<unsigned int, OrderInfo> 	orders;		// 委托记录
+		4 optional	vector<TradeInfo> 				trades;		// 成交记录
+		5 optional	vector<FlowInfo> 				flows;		// 资金流水
+		6 optional	byte							isSettled;	// 结算标志
+		7 optional	byte							isDividend;	// 分红标志
+		8 optional  map<string, vector<DataOnTheWay> >       holding;    // 在途持仓 key:日期_证券代码,value:在途持仓数量
+		9 optional	byte							limit=0;			// 风控限制 1 限制开 2 限制平 3 限制开平
+	    10 optional  byte						    curAction=0;		// 当前风控状态   取风控阈值 1 平仓、2 禁止交易、3禁止开仓、4禁止平仓、5 预警 
+		11 optional int								holdCountSum; //累计持股总数
+		12 optional int								holdDaySum; //累计持股天数
+		13 optional int								monthTradeSum; //月累计调仓数
+	};
+	// RBTree: order and trade process
+	struct entrustRBTreeKey
+	{
+		0 require	string	        stockCode;
+		1 require   byte            trdID;
+		2 require 	unsigned int	orderPrice;
+		3 require	unsigned int	orderID;
+
+	};
+
+	key[stockCode,trdID,orderPrice,orderID];
+
+	struct entrustRBTreeValue
+	{
+		0 require 	unsigned int	userCode;
+		1 optional  int				iBusid;
+		2 optional  unsigned int   	entNo;
+		3 optional 	byte 			trdID;
+		4 require 	unsigned int	orderPrice;
+		5 require	string	        stockCode;
+	};
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	// error info
+    struct ErrorInfo
+	{
+        0 require 	int  	errorCode;		// 错误代码
+        1 optional 	string 	errorInfo;		// 错误信息
+	};
+	
+	// get latest quote
+	struct QuoteInfo
+	{
+		0 optional byte			market;		// 股票市场
+		1 optional string		stockCode;	// 股票代码
+		2 optional unsigned int	bipPrice1;	// 买一价格
+		3 optional unsigned int	askPrice1;	// 卖一价格
+		4 optional unsigned int	lastPrice;	// 最新价格
+		5 optional unsigned int	volume;		// 成交数量
+		6 optional unsigned int	ztPrice;	// 涨停价格
+		7 optional unsigned int	dtPrice;	// 跌停价格
+		8 optional unsigned int	hqTime;		// 行情时间
+        9 optional string       stockName;  // 股票名称
+		10 optional unsigned int yestPrice; // 昨日收盘价
+	};
+
+
+	struct QuoteHKInfo
+    {
+        0 optional byte     market;     // 股票市场
+        1 optional string       stockCode;  // 股票代码
+        2 optional double 		bidPice1;   // 买一价格
+        3 optional double 		askPrice1;  // 卖一价格
+        4 optional double 		lastPrice;  // 最新价格
+        5 optional long 		volume;     // 成交数量
+        6 optional double 		ztPrice;    // 涨停价格
+        7 optional double 		dtPrice;    // 跌停价格
+		8 optional unsigned int hqDate;		// 行情日期
+        9 optional unsigned int hqTime;     // 行情时间
+        10 optional string      stockName;  // 股票名称
+		11 optional	double		lastClosePrice;	//昨收盘价
+		12 optional	double		bidPice10;		// 港股买10价
+		13 optional int         unit;       //买卖最小单位
+    };
+
+	struct optionInfo
+    {
+        0 optional string sName;			
+		1 optional string sUnderlyingCode;			// 标的代码
+		2 optional string sUnerlyingName;			// 标的名称
+		3 optional string sContractID;				// 交易ID
+		4 optional int	  eUnderlingType;           // 标的类型
+		5 optional byte	  cOptionType;				// E:欧式期权， A：美式期权
+		6 optional byte	  cCallOrPut;				// C:认购， P：认沽
+		7 optional int    iContractMutiplierUnit;	// 经过除权出席后的合约单位
+		8 optional double dExercisePrice;			// 行权价
+		9 optional double dPreClose;				// 前收盘价
+		10 optional double dPreSettlPrice;			// 前结算价
+		11 optional double dUnderlyingPreClose;		// 标的前收盘 
+		12 optional double dMarginUnit;				// 保证金数量，精确到分
+		13 optional float  fMarginRatioParam1;		// 保证金计算参数1
+		14 optional float  fMarginRatioParam2;		// 保证金计算参数2
+    };
+	
+	struct JceQuote
+	{
+		0 require vector<QuoteInfo> quotes;	// 推送行情
+	};
+
+	struct BatchQuoteReq
+	{
+		0 require vector<string> quoteReq;	// 股份代码
+	};
+	
+	struct BatchQuoteRsp
+	{
+		0 require ErrorInfo 				error;		// 错误信息
+		1 require map<string, QuoteInfo> 	quoteRsp;
+	};
+	
+
+	// order(5105)   
+	struct OrderSubmitReq
+	{
+		0 optional 		int    		userCode;		// 客户代码
+		1 optional 		int   		userIDCls = 0;		// 用户标识类型(投顾传0， 用户传1)
+		2 optional 		byte   		market;			// 交易市场
+		3 optional 		string   	secuAcc;		// 股东代码
+		4 optional 		string   	account;		// 资产账户
+		5 optional 		string   	seat;			// 交易席位
+		6 optional 		string   	secuCode;		// 证券代码
+		7 optional 		byte	   	trdID;			// 交易行为
+		8 optional 		double 		price;			// 价格
+		9 optional 		int    		qty;			// 数量
+		10 optional 	string   	bizNo;			// 业务序号
+		11 optional 	int    		extInst;		// 外部机构
+		12 optional 	int    		extRecNum;		// 外部记录号
+		13 optional 	string   	opRemark;		// 备注信息
+		14 optional 	string   	matchSeat;		// 对手席位
+		15 optional 	int    		matchNum;		// 约定号
+		16 optional		string		secuName;		// 证券名称
+		17 optional		string     	property;		// 委托属性 预留
+		18 optional     string      entrustType;    // 委托类型  市价："SJ"  限价："XJ"
+        19 optional     int         clientType=0;   // 渠道
+        20 optional     double      OrderAmount;    // 基金委托金额
+		21 optional     byte        OptionOC;       // 开、平、平今  开：'O' 平：'C' 平今：'T'
+        22  optional    byte        OrderProp=0;    // 委托品种属性	期权:10  期货:12
+		23 optional		int			bussId = 0;		// 业务类型
+	};
+
+	struct OrderSubmitRsp
+	{
+		0 require 		ErrorInfo 	 error;
+	    1 optional 		string    	 bizNo;		    // 业务序号
+	    2 optional 		string    	 orderID;		// 合同序号
+	    3 optional 		string    	 account;		// 资产账户
+	    4 optional 		double  	 price;			// 价格
+	    5 optional 		int     	 qty;			// 数量
+	    6 optional 		double  	 orderAmt;		// 委托金额
+	    7 optional 		double  	 orderFrzAmt;	// 委托冻结金额
+	    8 optional 		string    	 seat;			// 交易席位
+	    9 optional 		int     	 extInst;		// 外部机构
+	    10 optional 	string    	 extAcc;		// 外部帐户
+	    11 optional 	string    	 extSubAcc;		// 外部子帐户
+	    12 optional 	double  	 extFrzAmt;		// 外部冻结金额
+	    13 optional		int 		 assertId;		// 组合id
+	    14 optional 	string   	 secuCode;		// 证券代码
+	    15 optional		string		 secuName;		// 证券名称
+	    16 optional 	byte	   	 trdID;			// 交易行为
+	    17 optional		unsigned int matchDateTime;	// 成交时间
+	    18 optional 	double		 matchedPrice;	// 成交价格
+		19 optional 	unsigned int matchedQty;	// 成交数量
+        20 optional     unsigned int matchedSn;     // 成交编号
+	};
+	
+	// cancel order(5035)
+	struct OrderCancelReq
+	{
+		0 optional 		int    		userCode;		// 客户代码
+	    1 optional 		int		   	userIDCls = 0;	// 用户标识类型
+	    2 optional 		int    		recordNo;		// 记录序号
+	    3 optional 		byte	   	market;			// 交易市场
+	    4 optional 		string   	secuAcc;		// 股东代码
+	    5 optional 		string   	account;		// 资产账户
+	    6 optional 		string   	seat;			// 交易席位
+	    7 optional 		string   	secuCode;		// 证券代码
+	    8 optional 		byte	   	trdID;			// 交易行为
+	    9 optional 	    double 		price;			// 价格
+	    10 optional 	int    		qty;			// 数量
+	    11 optional 	string   	expiryDateTime;	// 终止时间
+	    12 optional		int			bussId = 0;	    // 业务类型
+	};
+	
+	struct OrderCancelRsp
+	{
+		0 require 		ErrorInfo 	error;
+		1 optional 		int 		recordNo;		// 记录序号
+	};
+	
+	//////////////////////////////////////////////////////open new games   （5010）
+	struct TradeBaseParamKey
+	{
+		0 require unsigned int	iBusId;			//大赛业务ID 从1开始，系统默认0:组合 
+		1 optional unsigned int	iUserType;		//0:投顾 1:用户
+	};
+
+	key[TradeBaseParamKey,iBusId,iUserType];
+
+
+	struct TradeBaseParamValue 
+	{
+		0 require   unsigned int	iInitAssert=1000000;  //初始资金
+		1 require   double			nHoldPosition=0.33;   //个股仓位限制
+		2 require   unsigned int	iLimited=1;			  //账号数目上限
+		3 require	map<unsigned int,bool>	mapKind;	  //支持品种类型
+	};
+
+	struct TradeBaseParamInfo
+	{
+		0 require   map<TradeBaseParamKey,TradeBaseParamValue> mapTradeBaseParamInfo;
+	};
+	
+	struct TradeRateParamKey
+	{
+		0 optional   unsigned int	 iKind;		//支持的品种类型
+		1 optional	 unsigned int	 iType;		//交易类型，买、卖、申购、赎回等	
+		2 optional	 int 			 iBussId;	// 业务类别，标识账号体系，默认为  0:组合 ,模拟社区 1：模拟大赛  其他的由客户端生成传入   
+	};
+
+	key[TradeRateParamKey,iKind,iType,iBussId];
+
+
+	struct TradeRateParamValue
+	{
+		0 optional   double			 nMoneyRate = 0;		//金额系数
+		1 optional   double			 nQtyRate   = 0;		//数量系数
+		2 optional   double			 nFixedFee  = 0;		//固定费用
+		3 optional   double			 nMinFee    = 0;		//单笔最低
+	};
+
+	struct TradeRateParamInfo
+	{
+		0 require   map<TradeRateParamKey,TradeRateParamValue> mapTradeRateParamInfo;
+	};
+
+
+	struct PubInfo
+	{
+		0 optional string 	opStation;		// 客户端信息[记录]
+		1 optional int  	clientType;		// 客户类别
+		2 optional string 	aesPwd;			// AES密码
+	};
+
+	struct CustNode
+	{
+		0 require 		string 	userID;						// 客户标识
+		1 optional 		int 	userIDCls;					// 用户标识类（0:投顾 1：用户)
+		2 require		map<string, vector<int>> mUserNode;	// BussId_accountType与用户UserCode集合
+	};
+
+	struct BussList
+	{
+		0 require		vector<int>			 vList;			//用户UserCode索引
+	};
+
+	struct UserLoginReq
+	{
+		0 require 		string 	userID;				// 用户标识
+		1 optional 		int 	userIDCls = 0;		// 用户标识类（0:投顾 1：用户)
+		2 optional 		int 	userCode;			// 用户账户
+		3 optional 		string 	beginDateTime;		// 开始时间
+		4 optional 		double 	beginFund;			// 初始资金
+		5 optional 		string 	endDateTime;		// 结束时间
+		6 optional		double 	stopProfitRate;		// 止盈收益率
+		7 optional		double 	stopLossRate;		// 止损收益率
+		8 optional		int 	accountType = 0;	// 客户类别 普通账户交易：0;   信用交易：1;   期权交易：2;	期货交易: 3	;
+		9 optional		string 	mac;				// mac地址（手机用户填手机号)
+		10 optional		string 	clientVersion;		// 客户端版本
+		11 optional 	string  sGuid;				// guid信息
+		12 optional		map<string, string> mExt;	// 扩展字段
+		13 optional		int  	bussId = 0;		// 业务类别，标识账号体系，默认为  0:组合,模拟社区 1:模拟大赛 其他的由客户端生成传入；客户可以有多个组合账户，模拟社区和大赛账号只能有一个
+		14 optional		int	loginType = 0;		// 0:新增账户  1：删除账户  2:修改账户交易品种权限
+		15 optional 	int	riskUserType;		// 是否是风控类型 默认0/风控1
+		16 optional     int     tempId = 0;             // 交易模板ID
+	};	
+
+	// user login（5003)
+	struct UserLoginReqEx
+	{	
+		0 optional		UserLoginReq    data;			// 发送请求数据
+		1 optional		PubInfo 		aeskey;			// 公共信息
+	};
+
+	struct UserLoginInfo
+	{
+		0 optional 		string 	market;				// 交易市场,这里沪深统一定义为HS
+		1 optional 		string 	secuAcc;			// 股东代码
+		2 optional 		string 	secuAccName;		// 股东名称
+		3 optional 		string 	account;			// 缺省资产帐号
+		4 optional 		int    	userCode;			// 客户代码
+		5 optional 		string 	userName;			// 客户名称
+		6 optional 		int  	branch;				// 开户分支
+		7 optional      string  masterId;           // 主账号id
+	};	   
+
+	struct UserLoginRsp//(这里的登录相当于注册，解密失败则返回指定错误码)
+	{
+		0 require 	ErrorInfo				error;		
+		1 optional 	string					session;
+		2 optional	vector<UserLoginInfo>	userList;
+		3 optional	string					lastLoginDate;	// 上次登录日期
+		4 optional	string					lastLoginTime;	// 上次登录时间
+		5 optional 	string					lastLoginMac;	// 上次登录mac
+		6 optional  string					lastLoginIp;	// 上次登录ip
+		7 optional	map<string, string>		mExt;			// 扩展字段
+	};
+	
+	// query money(5063)
+	struct MoneyQueryReq
+	{
+		0 optional 		int  	userCode;		// 客户代码
+		1 optional 		int 	userIDCls = 0;		// 用户标识类型
+		2 optional 		string 	account;		// 资产账户
+		3 optional 		byte 	currency;		// 货币
+	};
+
+	// query money(5063)
+	struct AllMoneyQueryReq
+	{
+		0 optional 		vector<UserLoginInfo>	userList;	// 客户信息
+		1 optional 		byte 	        currency;		    // 货币
+	};
+	
+	struct MoneyQueryRsp
+	{
+		0 require 		ErrorInfo 	error;
+		1 optional 		int     	userCode;		// 客户代码
+		2 optional 		string  	account;		// 资产账户
+		3 optional 		int     	branch;			// 分支机构
+		4 optional 		byte    	currency;		// 货币
+		5 optional 		double  	balance;		// 资金余额
+		6 optional 		double  	available;		// 资金可用金额
+		7 optional 		double  	frozen;			// 异常冻结金额
+		8 optional 		double  	trdFrz;			// 交易冻结金额
+		9 optional 		double  	drawAvlCash;	// 可提现金金额
+		10 optional 	double  	drawAvlCheque;	// 可提支票金额
+		11 optional 	double  	transferAvl;	// 可转账金额
+		12 optional 	double  	outStanding;	// 在途资金金额
+		13 optional 	double  	otdAul;			// 在途可用金额
+		14 optional 	double  	crAmt;			// 债权金额
+		15 optional 	double  	drAmt;			// 负债金额、期权占用保证金
+		16 optional 	double  	interest;		// 利息、当日平仓盈亏
+		17 optional 	double  	intMax;			// 利息税
+		18 optional 	double  	stkVal;			// 总市值
+		19 optional 	double  	sumAst;			// 总资产
+		20 optional 	double		todayFlowProfit;// 当日的浮动盈亏 //结算点2
+		21 optional     double      RiskDegree;     // 风险度(期权)
+	};
+		
+	// max tradable number(5031)
+	struct TradeMaxNumReq
+	{
+		0 optional 		int    		userCode;	// 客户代码
+		1 optional 		int			userIDCls = 0;	// 用户标识类型
+		2 optional 		byte	   	market;		// 交易市场
+		3 optional 		string   	secuAcc;	// 股东代码
+		4 optional 		string   	account;	// 资产账户
+		5 optional 		string   	secuCode;	// 证券代码
+		6 optional 		byte	   	trdID;		// 交易行为
+		7 optional 		double 		price;		// 价格
+		8 optional 		int    		extInst;	// 外部机构
+		9 optional		int			bussId = 0;	// 业务类型
+		10  optional    byte		OptionOC;   // 期货开平 开、平、平今  开：'O' 平：'C' 平今：'T'
+        11  optional    byte		OrderProp;  // 委托品种属性	期权:10  期货:12
+	};
+
+	struct TradeMaxNumRsp
+	{
+		0 require 		ErrorInfo error;
+		1 optional 		int 	  maxQty;		// 股份数量
+	};
+	
+	// fund flow(5079)	   
+	struct MoneyFlowQueryReq
+	{
+		0 optional 		int    		userCode;			// 客户代码
+		1 optional 		int		   	userIDCls = 0;			// 用户标识类型
+		2 optional 		string   	beginDate;			// 开始日期
+		3 optional 		string   	endDate;			// 结束日期
+		4 optional 		string   	account;			// 资产账户
+		5 optional 		byte   		currency;			// 货币
+		6 optional 		int    		requestNum;			// 请求行数
+		7 optional 		string   	positionStr;		// 定位串
+	};
+
+	struct MoneyFlowQueryInfo
+	{
+		0 require 		string    	settDate;			// 清算日期
+		1 optional 		string    	occurDate;		    // 发生日期
+		2 optional 		string    	bizNo;			    // 业务序号
+		3 optional 		string    	serialNo;			// 用户流水序号
+		4 optional 		int     	userCode;			// 客户代码
+		5 optional 		string    	userName;			// 用户名称
+		6 optional 		string    	account;			// 资产账户
+		7 optional 		byte    	currency;			// 货币
+		8 optional 		int     	branch;				// 分支机构
+		9 optional 		int     	extInst;			// 外部机构
+		10 optional 	int     	bizCode;			// 业务代码
+		11 optional 	double  	cptlAmt;			// 发生金额
+		12 optional 	double  	balance;			// 资金余额
+		13 optional 	bool    	isCheck;			// 是否支票
+		14 optional 	int     	agent;				// 代理人代码
+		15 optional 	string    	agentName;		    // 代理人名称
+		16 optional 	int     	cancelFlag;			// 冲正标志
+		17 optional 	string    	remark;			    // 备注信息
+		18 optional 	string    	bizCodeName;	    // 业务代码名称
+		19 optional 	string    	secuAcc;		    // 股东代码
+		20 optional 	string    	secuName;		    // 证券名称
+		21 optional 	string    	secuCode;		    // 证券代码
+		22 optional 	double  	matchedPrice;		// 成交价格
+		23 optional 	int			matchedQty;			// 成交数量
+		24 optional 	string    	positionStr;		// 定位串 
+	};
+
+	struct MoneyFlowQueryRsp
+	{
+		0 require 		ErrorInfo error;
+        1 optional 		vector<MoneyFlowQueryInfo> 	vList;
+	};
+	
+	// hold query(5064/5065)
+	struct HoldingQueryReq
+	{
+		0 optional 		int  	userCode;			// 客户代码
+		1 optional 		int 	userIDCls = 0;			// 用户标识类型
+		2 optional 		string 	account;			// 资产账户
+		3 optional 		byte 	market;				// 交易市场
+		4 optional 		string 	secuAcc;			// 股东代码
+		5 optional 		string 	secuCode;			// 证券代码
+		6 optional 		int  	extInst;			// 外部机构
+	};
+
+	// All account Hold query(5064/5065)
+	struct AllHoldingQueryReq
+	{
+		0 optional 		vector<UserLoginInfo>	userList;	// 客户信息
+	};
+
+	struct HoldingQueryInfo
+	{
+		0 require 			int     	userCode;			// 客户代码
+		1 optional 			string    	account;			// 资产账户
+		2 optional 			byte    	market;				// 交易市场
+		3 optional 			string    	secuName;			// 证券名称
+		4 optional 			string    	secuCode;			// 证券代码
+		5 optional 			int     	SecuIntl;			// 证券内码
+		6 optional 			string    	seat;				// 交易席位
+		7 optional 			int     	branch;				// 分支机构
+		8 optional 			int     	extInst;			// 外部机构
+		9 optional 			byte    	currency;			// 货币
+		10 optional 		int     	shareBln;			// 股份余额
+		11 optional 		int     	shareAvl;			// 股份可用
+		12 optional 		int     	shareTrdFrz;		// 股份交易冻结数
+		13 optional 		int     	shareOtd;			// 股份在途数量
+		14 optional 		int     	shareFrz;			// 股份异常冻结数
+		15 optional 		int     	shareUntradeqty;	// 股份非流通数量
+		16 optional 		double  	currentCost;		// 当前成本
+		17 optional 		double  	mktVal;				// 市值
+		18 optional 		double  	costPrice;			// 持仓成本价
+		19 optional 		int     	shareOtdAvl;		// 股份在途可用数量
+	    20 optional 		double  	currentPrice;		// 市价
+		21 optional 		double  	cost2Price;			// 买入成本价
+		22 optional 		int     	mktQty;				// 当前拥股
+		23 optional 		double  	floatProfit;		// 浮动盈亏
+		24 optional 		string    	secuAcc;			// 股东代码
+		25 optional			EStockType	stockType;			// 品种
+		26 optional			byte		subType=0;			// 证券子类
+	};
+
+	struct HoldingQueryRsp
+	{
+		0 require 		ErrorInfo error;
+		1 optional 		vector<HoldingQueryInfo>   	vList;
+	};
+	
+	// order query (5067/5069)(today/history)   
+	struct OrderQueryReq
+	{
+		0 optional 		int   	userCode;				// 客户代码
+		1 optional 		int		userIDCls = 0;			// 用户标识类型
+		2 optional 		string  beginDate;				// 起始日期
+		3 optional 		string  endDate;				// 终止日期
+		4 optional 		string  getOrdersMode;		    // 查询委托模式
+		5 optional 		byte	market;					// 交易市场
+		6 optional 		string  secuAcc;				// 股东代码
+		7 optional 		string  secuCode;				// 证券代码
+		8 optional 		byte	trdID;				    // 交易行为
+		9 optional 		string  bizNo;					// 业务序号
+		10 optional 	string  orderID;				// 合同序号
+		11 optional 	int   	branch;					// 分支机构;
+		12 optional 	string  account;				// 资产账户
+		13 optional 	int   	extInst;				// 外部机构
+		14 optional 	int   	actionIn;				// 操作确认
+		15 optional 	int   	requestNum;				// 请求行数
+		16 optional 	string  positionStr;			// 定位串
+	};
+
+	struct OrderQueryInfo
+	{
+		0 require 			string    	orderDate;			// 委托日期
+		1 optional 			string    	trdDate;			// 交易日期
+		2 optional 			int     	userCode;			// 客户代码
+		3 optional 			string    	userName;			// 客户名称
+		4 optional 			string    	account;			// 资产账户
+		5 optional 			byte    	currency;			// 货币
+		6 optional 			int     	branch;				// 分支机构
+		7 optional 			string    	secuAcc;			// 股东代码
+		8 optional 			string    	secuAccName;		// 股东名称
+		9 optional 			byte    	trdID;				// 交易行为
+		10 optional 		string    	bizNo;				// 业务序号
+		11 optional 		string    	orderID;			// 合同序号
+		12 optional 		byte    	market;				// 交易市场
+		13 optional 		string    	secuName;			// 证券名称
+		14 optional 		string    	secuCode;			// 证券代码
+		15 optional 		string    	seat;				// 交易席位
+		16 optional 		double  	price;				// 价格
+		17 optional 		int     	qty;				// 数量
+		18 optional 		double  	orderAmt;			// 委托金额
+		19 optional 		double  	orderFrzAmt;		// 委托冻结金额
+		20 optional 		double  	available;			// 资金可用金额
+		21 optional 		int     	shareAvl;			// 股份可用
+		22 optional 		byte    	isWithdraw;			// 撤单标志
+		23 optional 		string    	isWithdrawn;		// 已撤单标志
+		24 optional 		string    	canWithdraw;		// 可撤单标志
+		25 optional 		string    	dclFlag;			// 发送标志
+		26 optional 		string    	dclTime;			// 报盘时间
+		27 optional 		string    	validFlag;			// 合法标志
+		28 optional 		int     	matchedQty;			// 成交数量	
+		29 optional 		int     	withDrawn;			// 已撤单数量
+		30 optional 		double  	matchedAmt;			// 成交金额
+		31 optional 		double  	rltSettAmt;			// 实时清算金额
+		32 optional 		string    	opRemark;			// 操作备注
+		33 optional 		string    	initiator;			// 发起方
+		34 optional 		int     	extInst;			// 外部机构
+		35 optional 		string    	extAcc;				// 外部账户
+		36 optional 		string    	extSubAcc;			// 外部子账户
+		37 optional 		double  	extFrzAmt;			// 外部冻结金额
+		38 optional 		int     	extRecNum;			// 外部记录号
+		39 optional 		double  	extSettAmt;			// 已清算外部资金
+		40 optional 		string    	extBizNo;			// 外部业务号
+		41 optional 		string    	extorderID;		    // 外部合同号
+		42 optional 		double  	matchedPrice;		// 成交价格
+		43 optional 		string    	positionStr;		// 定位串
+		44 optional			EStockType	stockType;			// 品种
+		45 optional		    byte		subType=0;			// 证券子类
+		46 optional			string     	property;			// 委托属性  
+	};   
+
+	struct OrderQueryRsp
+	{
+		0 require 		ErrorInfo 					error;
+		1 optional 		vector<OrderQueryInfo> 		vList;
+	};
+	
+	// trade query (5071/5073)(today/history)
+	struct TradeQueryReq
+	{
+		0 optional 		int    		userCode;			// 客户代码
+		1 optional 		int			userIDCls = 0;		// 用户标识类型
+		2 optional 		string   	beginDate;			// 起始日期
+		3 optional 		string   	endDate;			// 终止日期
+		4 optional 		byte	   	market;				// 交易市场
+		5 optional 		string   	secuAcc;			// 股东代码
+		6 optional 		string   	secuCode;			// 证券代码
+		7 optional 		byte	   	trdID;				// 交易行为
+		8 optional 		string   	orderID;			// 合同序号
+		9 optional 		int    		branch;				// 分支机构
+		10 optional 	string   	account;			// 资产账户
+		11 optional 	int    		extInst;			// 外部机构
+		12 optional 	int    		requestNum;			// 请求行数
+		13 optional 	string   	positionStr;		// 定位串 
+	};
+
+	struct TradeQueryInfo
+	{
+		0 require 			string    	orderDate;			// 委托日期
+		1 optional 			string    	trdDate;			// 交易日期
+		2 optional 			int     	userCode;			// 客户代码
+		3 optional 			string    	userName;			// 客户名称
+		4 optional 			string    	account;			// 资产账户
+		5 optional 			byte    	currency;		    // 货币
+		6 optional 			int     	branch;				// 分支机构
+		7 optional 			string    	secuAcc;			// 股东代码
+		8 optional 			string    	secuAccName;		// 股东名称
+		9 optional 			byte    	trdID;				// 交易行为
+		10 optional 		string    	orderID;			// 合同序号
+		11 optional 		byte    	market;				// 交易市场
+		12 optional 		string    	secuName;			// 证券名称
+		13 optional 		string    	secuCode;			// 证券代码
+		14 optional 		string    	seat;				// 交易席位
+		15 optional 		double  	price;				// 价格
+		16 optional 		int     	qty;				// 数量
+		17 optional 		double  	orderAmt;			// 委托金额
+		18 optional 		double  	orderFrzAmt;		// 委托冻结金额
+		19 optional 		double  	available;			// 资金可用金额
+		20 optional 		int     	shareAvl;			// 股份可用
+		21 optional 		string    	isWithdraw;			// 撤单标志
+		22 optional 		string    	dclTime;			// 报盘时间
+		23 optional 		string    	matchedTime;		// 成交时间
+		24 optional 		string    	matchedSn;			// 成交序号
+		25 optional 		double  	matchedPrice;		// 成交价格
+		26 optional 		int     	matchedQty;			// 成交数量
+		27 optional 		double  	matchedAmt;			// 成交金额
+		28 optional 		double  	rltSettAmt;			// 实时清算金额
+		29 optional 		string    	opRemark;			// 操作备注
+		30 optional 		string    	initiator;			// 发起方
+		31 optional 		int     	extInst;			// 外部机构
+		32 optional 		string    	extAcc;				// 外部账户
+		33 optional 		string    	extSubAcc;			// 外部子账户
+		34 optional 		double  	extFrzAmt;			// 外部冻结金额
+		35 optional 		int     	extRecNum;			// 外部记录号
+		36 optional 		double  	extSettAmt;			// 已清算外部资金
+		37 optional 		string    	positionStr;   		// 定位串
+		38 optional			EStockType	stockType;			// 品种
+		39 optional         double      beforeFund;         // 成交前总资金
+		40 optional         double      beforeHoldValue;    // 成交前仓位
+		41 optional         double      afterFund;          // 成交后总资金
+		42 optional         double      afterHoldValue;     // 成交后仓位
+		43 optional 		double		HandlingFee;		// 手续费
+		44 optional 		unsigned int	winOrLose;		// 0为亏、1为盈利
+		45 optional			byte			subType=0;		// 证券子类
+		46 optional			string     	property;			// 委托属性
+	};
+
+	struct TradeQueryRsp
+	{
+		0 require 		ErrorInfo 					error;
+		1 optional 		vector<TradeQueryInfo>  	vList;
+	};
+
+
+	// query all trade 5082
+	struct AllTradeQueryReq
+	{
+		0 optional      vector<int> vUserCode;			// 客户代码
+		1 require 		string   	beginDate;			// 起始日期
+		2 require 		string   	endDate;			// 终止日期
+		3 optional 		string   	secuCode;			// 证券代码或证券名称
+		4 optional 		byte	   	trdID;				// 交易行为
+		5 optional 	    int    		requestNum = 100;   // 请求行数
+		6 optional 	    int   	    position;		    // 定位串  分页查询时使用，传上一次返回值
+	};
+
+	struct AllTradeQueryRsp
+	{
+		0 require 		ErrorInfo 					error;
+		1 optional 		vector<TradeQueryInfo>  	vList;
+		2 optional 		int    	                    position;   		// 定位串
+		3 optional      int                         totalNum;           // 总条数
+	};
+
+
+	
+	// query security shareholder 5061
+	struct SecAccountQueryReq
+	{	
+		0 require 		int  	userCode;				// 客户代码		
+
+		1 optional 		int		userIDCls = 0;			    // 用户标识类型
+		2 optional 		string 	userName;			    // 客户名称	
+	};
+
+	struct SecAccountQueryInfo
+	{
+        0 require 		ErrorInfo  	error;
+        1 optional 		string     	secuAccSHA;			// 上海股东代码			
+        2 optional 		string     	secuAccSZA;			// 深圳股东代码
+        3 optional 		string     	secuAccName;		// 股东名称    
+	};	
+
+	struct SecAccountQueryRsp
+	{
+        0 require 		ErrorInfo  						error;
+        1 optional 		vector<SecAccountQueryInfo> 	vList;
+	};
+
+
+    // 5081 查询用户交易信息
+    struct QueryUserTradeInfoReq
+    {
+        0 optional unsigned int userCode; // 资金账号
+    };
+
+    struct QueryUserTradeInfoRsp
+    {
+        0 optional 	ErrorInfo  	        error;
+        1 optional  unsigned int        createDate;     // 创建日期
+        2 optional  unsigned int        lastLoginDate;  // 最后登录日期
+        3 optional  unsigned int        lastTradeDate;  // 上次交易日
+        4 optional  unsigned int        firstTradeDate; // 首次交易日
+    };
+	
+	//行情信息
+    struct HqData
+    {
+		0 optional short shMarketNo;             // 市场代码
+		1 optional string sStockCode;            // 证券代码
+        2 optional double fOpen;                 // 单位开盘价
+        3 optional double fHigh;                 // 单位最高价
+        4 optional double fLow;                  // 单位最低价
+        5 optional double fClose;                // 单位收盘价
+        6 optional double fAmount;               // 单位成交金额(日线/指数)
+        7 optional long lVolume;                 // 成交量
+        8 optional double dSettlementPrice;      // 结算价
+    };
+
+    struct HqDataPackage
+    {
+        0 optional vector<HqData> vHqData;
+    };
+
+/////////////////////////////////////////////////////期货基础配置信息///////////////////////////////////////////
+	struct TradeTime
+	{
+		0 require int iTradeBeginTime;
+		1 require int iTradeEndTime;
+	};
+
+	// 期货基础配置
+	struct FutureAttr
+	{
+	  0 optional 	int iMarket;
+	  1 optional 	int iSxfType;
+	  2 optional 	string sFutureName;
+	  3 optional 	double nDeposit;
+	  4 optional 	double nOpenSxf;
+	  5 optional 	double nCloseSxf;
+	  6 optional 	double nCloseTodaySxf;
+	  7 optional 	double nOpenSxfRate;
+	  8 optional 	double nClostSxfRate;
+	  9 optional 	double nClostTodaySxfRate; 
+	  10 optional	double nUnit;
+	  11 optional 	vector<TradeTime> vTradeTime;
+	};
+
+	struct FutureMap
+	{
+		0 optional map<string,FutureAttr> mapFutureConfig; //key: kind ,value:FutureAttr
+	};
+
+	struct AllotmentInfo
+	{
+		0 optional      DataBaseInfo  userInfo;           // 查询基础信息
+		1 optional      string        stockCode;          // 股票代码
+		2 optional        string        curDate;          // 配股日期
+		3 optional      double        price;              // 配股价格
+		4 optional      unsigned int  shareAmounts;       // 配股数量
+		5 optional      unsigned int  isSucess;           // 是否申购交易成功
+		6 optional      unsigned int  tradeAmounts;       // 配股申购数量
+		7 optional      byte       	  market;        	  // 市场
+		8 optional      string        secuName;           // 股票代码
+		9 optional        string        endDate;          // 配股结束日期
+	};
+
+	struct Allotment_DCache_Value
+	{
+		0 optional	vector<AllotmentInfo>				vecAllotments;		// 配股记录
+	};
+
+	struct OrderAllotmentStockReq
+	{    
+		0 require       int            userCode;        // 客户代码
+		1 optional      string       secuCode;        // 证券代码
+		2 optional      string      curDate;        // 配股日期
+		3 require		int			bussId = 0;		// 业务类型
+		4 optional      byte        market;        // 市场
+	};
+	
+	struct OrderAllotmentStockRsp
+	{    
+		0 require         ErrorInfo                      error;
+	};
+
+	struct QueryAllotmentInfoReq
+	{    
+		0 require 		int    		userCode;			// 客户代码
+	};
+	struct QueryAllotmentInfoRsp
+	{    
+		0 require         ErrorInfo                      error;
+		1 optional      vector<AllotmentInfo>            vList;
+	};
+
+	//清仓信息
+	struct HoldClean
+	{
+		0 require  string            stockType;      //清仓标的名称
+		1 optional double             createCostPrice;//建仓成本
+		2 optional unsigned int        createDate;        //建仓时间
+		3 optional double             cleanCostPrice; //清仓价格
+		4 optional unsigned int        cleanDate;        //清仓时间
+		5 optional double            profitRate;        //收益率
+		6 optional unsigned int     qty;            //数量
+		7 optional vector<string>  vecTradeData;    // 清仓数据uid_20200922__tradeId
+	};
+
+	struct HoldCleanInfo
+	{
+		0 optional map<string, HoldClean>    mapHoldClean;
+	};
+
+	struct QueryHoldCleanReq
+	{    
+		0 require 		int    		userCode;			// 客户代码
+	};
+
+	struct QueryHoldCleanRsp
+	{    
+		0 require         ErrorInfo                      error;
+		1 optional      map<string, HoldClean>            vList;
+	};
+
+	//清仓详情
+	struct QueryHoldCleanDetailReq
+	{
+		0 require 		int    		userCode;			// 客户代码
+		1 optional 		vector<string>    		vecTradeIndex;			// 交易信息 id|日期|成交编号
+	};
+
+	struct QueryHoldCleanDetailRsp
+	{
+		0 require 		ErrorInfo 					error;
+		1 optional 		vector<TradeQueryInfo>  	vList;
+	};
+
+	//分红信息
+	struct DividendInfo
+	{
+        0 optional 	long          uid;                // 用户id
+        1 optional 	string        stockCode;          // 证券代码
+        2 optional 	string        stockName;          // 证券代码
+        3 optional 	int           ChagShares;         // 分红股数
+        4 optional 	double        ChgMoney;           // 分红金额
+		5 optional 	double        CorreTax;           // 分红手续费
+		6 optional 	double        beforeFundAvl;      // 分红前可用资产
+		7 optional 	double        afterFundAvl;       // 分红后可用资产
+		8 optional 	unsigned int  beforShareAvl;	  // 分红前可用股份
+		9 optional 	unsigned int  afterShareAvl;	  // 分红后可用股份
+		10 optional double        beforCostPrice;     // 分红前成本价
+		11 optional double        afterCostPrice;     // 分红后成本价
+		12 optional string        divedendDate;       // 分红后成本价
+		13 optional	EStockType	  stockType;		  // 证券大类
+	};
+
+	struct QueryDividendHisInfoReq
+	{
+		0 require      	int    			userCode;	  // 客户代码
+		1 optional		string			date;		  // 查询日期
+		2 optional		string			ext;		  // 扩展字段
+	};
+
+	struct QueryDividendHisInfoRsp
+	{
+		0 require 		ErrorInfo  				error;	// 状态返回
+		1 optional 		vector<DividendInfo>    vList;	// 分红信息
+	};
+	
+/////////////////////////////////////////////////////风控信息/////////////////////////////////////////////////
+
+    // 风控计算事件
+	struct RiskCalcEventInfo
+	{
+		0 optional 	long					userId;
+		1 optional 	long					userCode;
+        2 optional  int                     accountType;
+		3 optional  int						bussId;
+	};
+
+    // 风控基础设置
+	struct RiskSettingBaseInfo
+	{
+		0 require	string 			        desc;				// 风控说明
+		1 require	int				        range;				// 作用范围 默认为  0:组合、模拟社区 1：模拟大赛 
+		2 require   int				        direction;			// 比较方向	1 >、2 >=、3 =、4 <、5 <=  默认1 大于
+		3 require   int				        dim=2;				// 控制维度 1 两融 2 期权  3 期货  默认2期权 
+	};
+
+    // 阈值设置
+	struct RiskThresholdInfo
+	{
+		0 require   double		            threshold;	        // 阈值		
+		1 require   int                     action;		        // 触警操作 1 平仓、2 禁止交易、3禁止开仓、4禁止平仓、5 预警 
+	};
+
+	// 风控设置信息
+	struct RiskSettingInfo
+	{
+		0 require   unsigned int			id;			       // id
+        1 optional  long                   	userId=0;	       // 账号
+		2 require   RiskSettingBaseInfo		base;		       // 风控基础设置	
+		3 require   vector<RiskThresholdInfo>	threshold;	   // 阈值设置	
+		4 require   bool					isActive=true;	   // 是有有效
+		5 optional  string 	  	    		createTime;		   // 创建时间
+		6 optional  string        			updateTime;		   // 更新时间
+	};
+
+	// 账户预警事件
+	struct UserRiskEventInfo
+	{
+		0 optional 	long 			        id;					// 用户id
+		1 optional	long			        clientId;			// 关联的客户编号
+		2 optional  double			        threshold;			// 风控阈值
+		3 optional  double			        deposit;			// 保证金
+		4 optional  double			        mktVal;				// 证券市值
+		5 optional  double			        availableFund;		// 可用资金
+		6 optional  double			        frozenAmt;			// 冻结金额
+		7 optional	double			        interestWithheld;	// 未扣利息
+		8 optional  double                  netAsset;			// 净资产
+		9 optional  int           	        riskType;			// 风险类型（账户状态） 1安全 2 预警 3 止损  4 禁止
+		10 optional	unsigned int            riskId;				// 风控id
+		11 optional double			        curValue;			// 风控计算值
+		12 optional int				        riskStatus;			// 触发状态   1 发送通知  2 限制交易 3 平仓
+		13 optional	string			        clientName;			// 客户姓名
+		14 optional	int				        limitStatus;		// 0 不限制 1 限制买 2 限制卖 3 限制买卖
+	};
+
+	//模拟大赛状态
+	enum EAmndsStatus
+	{
+		E_AMN_UNOPEN = 0,
+		E_AMN_SIGNUP = 1,
+		E_AMN_GAMING = 2,
+		E_AMN_GAMEENDS = 3,
+		E_AMN_GAMECLEAR = 4,
+	};
+	
+	//期货风险监测数据
+
+	//风险监控类型
+	enum EFutureRiskType
+	{
+		E_FMT_FXD = 0, //风险度超标
+		E_FMT_DQ = 1,  //合约到期
+	};
+
+	struct FutureRiskInfo
+	{
+		0 optional 	int 			        iUserCode;			// 用户id
+		1 optional	EFutureRiskType			eRiskType;			// 风险类型
+		2 optional  string					sCode;				// 期货代码 、风险类型为E_FMT_DQ才需要填写
+	};
+
+	//期货风控信息, 存Dcache, 每日结算更新
+	struct FutureRisk
+	{
+		0 optional map<int,vector<FutureRiskInfo>>  vFutureRiskInfo; //key:0 风险度超标   key:1 合约到期
+	};
+
+	//港股通汇率
+	struct  GGTMarketRate_Comm
+	{
+		0 optional double dSettlementBuy;       //结算买入汇率
+		1 optional double dSettlementSell;      //结算卖出汇率
+		2 optional double dReferenceBuy;        //参考买入汇率
+		3 optional double dReferenceSell;       //参考卖出汇率
+	};
+
+	//港股通沪市 深市 汇率
+	struct  GGTRate_Comm
+	{
+		0 optional GGTMarketRate_Comm shRate;       //上海结算汇率
+		1 optional GGTMarketRate_Comm szRate;       //深圳结算汇率
+	};
+
+	struct SGGTRateInfo
+	{
+		0 optional map<int, GGTRate_Comm> mapRate; // key-日期
+	};
+
+	/////////////////////////////////////////////////////////////////组合下单风控信息/////////////////////////////////////////////////////////////////////
+
+	struct AutoOrder_DCache_Value
+	{
+		0 require	vector<OrderSubmitReq> vOrderReq;
+	};
+
+	struct MaxDrawUserData
+	{
+		0 optional int 	curDate;
+		1 optional double  drawDown;
+	};
+
+	struct MaxDrawUserInfo
+	{
+		0 optional map<int, MaxDrawUserData> mapMaxDraw; // key-curdate
+	};
+
+	struct UserLossInfo
+	{
+		0 optional map<int, double> mapLossRate; // assertId-lossRate
+	};
+
+	/////////////////////////////////////////////////////////////////组合复制/////////////////////////////////////////////////////////////////////
+	
+	//检查组合是否有数据
+	struct CheckAssertIsHasDataReq
+	{
+		0 optional      unsigned int 		userCode;			// 客户代码
+	};
+
+	struct CheckAssertIsHasDataRsp
+	{
+		0 require 		ErrorInfo 					error;
+	};
+
+	//复制新组合
+	struct CopyNewAssertReq
+	{
+		0 optional      unsigned int 		oldUserCode;	// 旧客户代码
+		1 optional		int 				oldBussId;			//老业务类别，标识账号体系，默认为  0:组合、模拟社区 ,1: 其他的由客户端生成传入的大赛标识
+		2 optional      unsigned int 		newUserCode;	// 新客户代码
+		3 optional		int 				newBussId;			// 新业务类别，标识账号体系，默认为  0:组合、模拟社区 ,1: 其他的由客户端生成传入的大赛标识
+	};
+
+	struct CopyNewAssertRsp
+	{
+		0 require 		ErrorInfo 					error;
+	};
+
+	struct AccountBaseInfo
+	{
+		1 require       EAccountType type;    		// 账户类型
+		2 optional      double beginFund;     		// 初始资金
+		3 optional 		string beginDate;		    // 开始日期，YYYYMMDD，大赛用户传参，普通交易用户可不传
+		4 optional 		string endDate;		        // 结束日期，YYYYMMDD，大赛用户传参，普通交易用户可不传
+	};
+
+	enum EAuthType
+	{
+        E_DEFALUT_USER_REG = 0,    //普通交易用户注册
+		E_DEFAULT_USER_LOGIN = 1,  //普通交易用户登录
+		E_GAME_USER_REG = 2,       //大赛用户注册
+        E_GAME_USER_LOGIN =3,      //大赛用户登录
+	};
+	
+	struct doUserAuthReq
+	{
+		0 require       string                  userId;                    // 用户主账户唯一id
+		1 require       EAuthType               loginType;                 // 用户登录类型 
+		2 optional      vector<AccountBaseInfo> vAccount;                  // 子交易账户信息
+		3 optional      unsigned int            stcId = 0;                 // 大赛ID，非大赛用户此id为0
+		4 optional		int  	                bussId = 0;		           // 业务类别，标识账号体系，0:普通用户 1:大赛用户 2:投顾组合
+		5 optional		string 	                clientVersion;		       // 客户端版本 
+		6 optional 	    string                  guid;				       // guid信息
+		7 optional 	    string                  phoneNum;				   // 手机号码
+		8 optional		string 	                mac;				       // mac地址
+		9 optional		string 	                sip;				       // ip地址
+		10 optional     string                  ext;					   // 扩展字段	
+	};
+
+	struct doUserAuthRsp
+	{
+		0 require 	ErrorInfo				error;		
+		1 optional	vector<UserLoginInfo>	userList;
+		2 optional  string                  ext;						// 扩展字段		
+	};
+
+	//交易手续费信息
+	struct TradeFeeDetailInfo
+	{
+		0 require  EStockType	 	stockType;				//交易品种类型
+		1 optional 	double			commissionRate = 0;		//佣金费率
+		2 optional 	double			stampDutyRate = 0;		//印花税费率
+		3 optional 	double			tradeRegulaRate = 0;	//交易规费率
+		4 optional 	double			TransferRate = 0;		//过户费率
+		5 optional  double			minFee = 0;				//单笔最低
+	};
+
+	//手续费管理操作类型
+	enum E_FEE_OPREATE_TYPE
+	{
+		E_FEE_ADD = 0,		//添加交易品种手续费
+		E_FEE_MODIFY = 1,	//修改
+		E_FEE_QUERY = 2,	//查询查询	查全量
+		E_FEE_DEL = 3,		//删除
+	};
+
+	//手续费操作管理(50)
+	struct TradeFeeOperateReq
+	{
+		0 require E_FEE_OPREATE_TYPE			type;	//业务操作类型
+		1 optional vector<TradeFeeDetailInfo>	vInfo;	//交易手续费信息		
+		2 optional int  						bussId = 0;	// 业务类别，标识账号体系，默认为  0:组合,模拟社区 1:模拟大赛
+		3 optional string 						ext;	//拓展字段
+	};
+
+	struct TradeFeeOperateRsp
+	{
+		0 require ErrorInfo 					error;	
+		1 optional vector<TradeFeeDetailInfo>	vInfo;	//交易手续费信息
+	};
+
+	//交易撮合规则
+	enum E_TRADE_MATCH_TYPE
+	{
+		E_GENERAL_MATCH = 0,	//普通撮合规则 市价/限价
+		E_VWAP_MATCH = 1,		//VWAP撮合规则
+		E_TWAP_MATCH = 2,		//TWAP撮合规则
+	};
+
+	//模拟大赛信息 SimluatedTradeCompets->STC
+	struct SimluatedTradeCompetInfo
+	{
+		0 require unsigned int 				ID;				//大赛ID
+		1 optional unsigned int 			startDate;		//大赛开始时间 20220117
+		2 optional unsigned int 			endDate;		//大赛结束时间 20220517
+		3 optional E_TRADE_MATCH_TYPE 		matchType;		//撮合类型
+		4 optional long						createTime;		//大赛创建时间 秒级时间戳
+	};
+
+	//模拟交易大赛管理操作类型
+	enum E_STC_OPREATE_TYPE
+	{
+		E_STC_CREATE = 0,		//创建大赛
+		E_STC_STOP = 1,			//停止大赛
+		E_STC_CLEAR = 2,		//清理大赛
+	};
+
+	//模拟交易大赛业务操作请求(40)
+	struct STCInfoOperateReq
+	{
+		0 require E_STC_OPREATE_TYPE 		type;	//业务操作类型，停止和清理大赛info字段只需大赛ID即可
+		1 optional SimluatedTradeCompetInfo info;	//大赛信息		
+		2 optional string 					ext;	//拓展字段
+	};
+
+	struct STCInfoOperateRsp
+	{
+		0 require ErrorInfo 				error;	
+	};
+}; 
+

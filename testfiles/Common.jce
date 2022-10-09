@@ -457,7 +457,7 @@ module HQSys
         EMR_DAY_1 = 1,
         EMR_DAY_3 = 3,
         EMR_DAY_5 = 5,
-        EMR_DAY_10 =10
+        EMR_DAY_10 = 10,
     };
 
     enum E_MF_RANK_SORT_COLUMN   //资金排名排序列

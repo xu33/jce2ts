@@ -1,0 +1,70 @@
+#include  "ATGComm.jce"
+#include  "MasterComm.jce"
+#include  "ATGGame.jce"
+
+module ATG
+{
+	interface DataTrans
+	{
+
+	    /**
+	     * 交易通用接口（写）
+             * @param reqhead:    请求参数头
+	     * @param reqBuff:	  请求参数 下单（5033）撤单（5035）
+             * @param rsphead:    回包参数头 
+	     * @param rspBuff: 	  回包
+	     * @return int：	  E_TQIF_RET_CODE 业务层错误码	
+	     */					
+	    int Trade(TQHead reqhead, vector<byte> reqBuff,out TQHead rsphead, out vector<byte> rspBuff);	  
+
+	    int TradeApi(TQHead reqhead, string reqBuff, out string rspBuff);	  
+
+	    /**
+	     * 查询通用接口 （只读）
+             * @param reqhead:    请求参数头
+	     * @param reqBuff:	  请求参数
+             * @param rsphead:    回包参数头 
+	     * @param rspBuff: 	  回包
+	     * @return int：	  E_TQIF_RET_CODE 业务层错误码	
+	     */	
+	    int Query(TQHead reqhead, vector<byte> reqBuff,out TQHead rsphead, out vector<byte> rspBuff);
+
+	    int QueryApi(TQHead reqhead, string reqBuff, out string rspBuff);
+
+
+		//天风模拟交易接口*****************************************************
+		//注册登录
+		int LoginRegistTF(TQHead reqhead, doUserAuthReq req, out doUserAuthRsp rsp);
+
+		//下单 5105
+		int doOrderTF(TQHead reqhead, OrderSubmitReq req, out OrderSubmitRsp rsp);
+
+		//撤单 5035
+		int cancelOrderTF(TQHead reqhead, OrderCancelReq req, out OrderCancelRsp rsp);
+
+		//持仓查询 5065 
+		int queryHoldTF(TQHead reqhead, HoldingQueryReq req, out HoldingQueryRsp rsp);
+
+		//委托查询 5069 5067
+		int queryOrderTF(TQHead reqhead, OrderQueryReq req, out OrderQueryRsp rsp);
+
+		//资金流查询 5079
+		int queryHisFundFlowTF(TQHead reqhead, MoneyFlowQueryReq req, out MoneyFlowQueryRsp rsp);
+
+		//当日成交查询（走历史成交） 历史成交查询 5071/5073
+		int queryTradeTF(TQHead reqhead, TradeQueryReq req, out TradeQueryRsp rsp);
+
+		// money query(5063) 资金查询
+		int queryMoneyTF(TQHead reqhead, MoneyQueryReq req, out MoneyQueryRsp rsp);
+
+		//最大可交易数量查询 5031
+		int queryTradeNumTF(TQHead reqhead, TradeMaxNumReq req, out TradeMaxNumRsp rsp);
+
+		//查询收益率等衍生数据 5206
+		int queryDerivedProfitRateTF(TQHead reqhead, QueryProfitRateQueryReq req, out QueryProfitRateQueryRsp rsp);
+
+		//查询历史收益率 5207
+		int queryHistoryProfitRateTF(TQHead reqhead, QueryHistoryProfitRateReq req, out QueryHistoryProfitRateRsp rsp);
+	};
+
+}; 

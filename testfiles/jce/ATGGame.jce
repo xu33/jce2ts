@@ -1,0 +1,574 @@
+#include "ATGComm.jce"
+#include "MasterComm.jce"
+
+
+module ATG
+{	
+	// 账户关系：sUserId：客户唯一标识，可以对应多个 iUserCode。iBussId：描述iUserCode的类型，如：组合模拟社区：0、、模拟大赛A：1、模拟大赛B：2 ... 有客户端与服务端约定可配置
+	// 查指定账户代码数据	 ：iUserCode!=-1 && iBussId!=-1 && sUserId!=""     //一期开放
+	// 查客户指定业务类型数据：iUserCode==-1 && iBussId!=-1 && sUserId!=""
+	// 查客户所有账户数据	 ：iUserCode==-1 && iBussId!=-1 && sUserId=="xxx"
+
+
+	// 胜率数据
+	struct WinRateInfo
+    { 	 
+        0 optional unsigned int			win;
+        1 optional unsigned int			loss;
+        2 optional unsigned int			draw;
+        3 optional unsigned int			totalwin;
+        4 optional unsigned int			totalloss;
+        5 optional unsigned int			totaldraw;
+        6 optional      double          winRate=0;      // 胜率(<0 表示没有完整的交易)              
+        7 optional      double          lossRate=0;     // 亏率(<0 表示没有完整的交易)              
+        8 optional      double          drawRate=0;     // 平率(<0 表示没有完整的交易)   
+    };
+
+	struct RankItem
+    {
+		0 optional      unsigned int	userCode;      // id
+		1 optional      double			profitrate;	   // 收益率
+		2 optional      unsigned int	rank;		   // 排名
+		3 optional      int				rankrise;	   // 排名变化
+		4 optional      int				type;		   // 排名类型 RankType
+    };
+
+    // 排行数据
+    struct RankDetail
+    {
+		0 require      map<int, RankItem>				mRankDetail;     //排名明细, key：RankType
+    };
+
+	// 排序类型
+    enum RankType
+    {
+		ERT_DAY_PROFITRATE   = 0, // 日收益排名
+		ERT_WEEK_PROFITRATE  = 1, // 周收益排名
+		ERT_MONTH_PROFITRATE = 2, // 月收益排名
+		ERT_TOTAL_PROFITRATE = 3, // 总收益排名
+		ERT_UP_LIMIT		 = 4, 
+		ERT_WIN_RATE		 = 5,
+		ERT_SEASON_PROFITRATE = 6,// 季收益排名
+		ERT_YEAR_PROFITRATE = 7   // 年收益排名
+    };
+	
+	struct ProfitInfo
+	{
+		0 optional      double          	totalValue;             // 总资产
+		1 optional      double          	totalMktValue;          // 总市值
+		2 optional      double				todayProfitValue;		// 当日盈亏
+		3 optional		double 				avalValue;				// 可用金额
+		4 optional		double 				floatProfitValue;		// 浮动盈亏
+		5 optional      double 				totalProfit;			// 总收益
+		6 optional      double              beginFund;				// 初始资产
+		7 optional      double          	lastDaySumValue;          // 截止昨日总资产
+		8 optional      double          	lastWeekSumValue;         // 截止上周总资产
+		9 optional      double				lastMonthSumValue;		  // 截止上月总资产
+		10 optional		double 				lastSeasonSumValue;		  // 截止上个季度
+		11 optional		double 				lastYearSumValue;		  // 截止去年
+		12 optional      double 			lastNatureYearSumValue;	  // 截止上个自然年
+	};
+
+	// 获取收益率等衍生数据
+	struct ProfitRateRankInfo
+	{
+		0 optional		DataBaseInfo		userInfo;				// 用户数据
+		1 optional		unsigned int		updateTime;				// 更新时间
+	    2 optional      double          	totalValue;             // 总资产
+		3 optional      double          	totalMktValue;          // 总市值
+		4 optional		double 				dayProfitRate;			// 日收益率
+		5 optional		double 				weekProfitRate;			// 周收益率
+		6 optional		double 				monthProfitRate;		// 月收益率
+		7 optional		double 				avalValue;				// 可用金额
+		8 optional		double 				floatProfitValue;		// 浮动盈亏
+		9 optional		double				floatProfitRate;		// 浮动盈亏率
+		10 optional     double 				totalProfitRate;		// 总收益率
+		11 optional     double 				totalProfit;			// 总收益
+		12 optional		double				currentNetValue;		// 当前净值
+		13 optional		double				maxNetValue;			// 最大净值
+		14 optional     double				holdpos;				// 仓位
+        15 optional     double				todayProfitValue;		// 当日盈亏
+		16 optional		double				totalProfitNum;			// 总利润金额		
+        17 optional     WinRateInfo         winRateInfo;            // 胜率
+        18 optional     RankDetail          rank;                   // 排行
+		19 optional     unsigned int 		totalNum;				// 组合总数
+		20 optional		double				maxRetracement;			// 最大回撤
+		21 optional     int             	upLimitCount;           // 涨停次数 
+		22 optional     double             	dayRetracement;         // 当日回撤 
+		23 optional		double				fiveDayAvgHoldpos;		// 五日平均仓位
+		24 optional		int					curDate;				// 当前日期
+		25 optional		double 				seasonProfitRate;		// 季收益率
+		26 optional		double 				yearProfitRate;		    // 年收益率
+		27 optional		double 				yearMaxDrawDown;	    // 过去一年最大回撤
+		28 optional		double 				yearMaxNetValue;		// 过去一年最大净值
+		29 optional		double 				dailyHoldAvg;	    	// 每日平均持股数
+		30 optional		unsigned int 		currentMonthTrade;		// 当月调仓次数
+		31 optional		double 				natureYearProfitRate;   // 自然年收益率
+		32 optional		double 				outperformValue;   		// 跑赢大盘
+		33 optional     string              bulkStockName;          // 重仓股名称
+		34 optional     double 				monthTurnoverRate;      // 月周转率
+		35 optional     double              beginFund;				// 初始资产
+	};
+
+
+	/////////////////// 查询单个用户的收益率
+	struct QueryProfitRateQueryReq
+	{	
+		0 optional      DataBaseInfo	userInfo;			// 查询基础信息
+		1 optional      string  	    date;				// 日期（YYYYMMDD）默认为当日
+	};
+
+	struct QueryProfitRateQueryRsp
+	{	
+		0 require 		ErrorInfo  					error;
+		1 optional      ProfitRateRankInfo			stProfitRateRankInfo;
+	};
+
+	/////////////////// 查询盘后数据
+	struct MarketEndInfo
+    {
+        0 optional        DataBaseInfo    userInfo;            // 查询基础信息
+        1 optional      string        date;            //时间
+        2 optional      short      entrustType;       //业务类型,0红利、1转股
+        3 optional        double        changeFundAvl;    //变动金额
+        4 optional      unsigned int  changeShareAvl;   //变动股票数量
+		5 optional        string        stockCode;        // 股票代码
+    };
+
+    struct QueryMarketEndReq
+    {    
+        0 optional      DataBaseInfo    userInfo;            // 查询基础信息
+    };
+
+    struct QueryMarketEndRsp
+    {    
+        0 require         ErrorInfo                      error;
+        1 optional      vector<MarketEndInfo>            vList;
+    };
+
+	/////////////////// 查询所有用户组合收益信息
+	struct QueryUsersInfoReq
+	{	
+		0 optional      int        iUserCode;        //账户代码
+	};
+
+	struct QueryUsersInfoRsp
+	{	
+		0 require 		ErrorInfo  					error;
+		1 optional      vector<ProfitRateRankInfo>			vList;
+	};
+
+
+	/////////////////// 获取历史收益率
+    struct QueryHistoryProfitRateReq
+    {
+		0 optional		DataBaseInfo    userInfo;			// 用户数据
+	    2 optional 		string          beginDate;			// 起始日期（YYYYMMDD）
+		3 optional 		string          endDate;			// 终止日期（YYYYMMDD）
+        4 optional      unsigned int    len;                // 获取记录条数
+        5 optional      unsigned int    type;               // 0 自然日  1 交易日
+        6 optional      unsigned int    format;             // 日期格式 0 YYYYMMDD  1 YYYY-MM-DD
+    };
+
+    struct HistoryProfitRateInfo
+    {
+        0 optional     string           date;                // 日期（YYYYMMDD）
+        1 optional     double           profitRate;          // 收益率
+    };
+
+    struct QueryHistoryProfitRateRsp
+    {
+        0 optional      ErrorInfo       				error;	// 错误描述
+        1 optional      vector<HistoryProfitRateInfo> 	vList;	// 结果列表
+    };
+
+    
+    ///////////////////  获取胜率数据
+    struct QueryWinRateReq
+    {
+		0 optional		DataBaseInfo    userInfo;			// 用户数据	
+	    2 optional      string  date;    			// 日期 （YYYYMMDD）
+    };
+
+    struct QueryWinRateRsp
+    { 
+		0 optional 		ErrorInfo 		error;		// 错误描述
+        1 optional      WinRateInfo     winRateInfo;    // 胜率数据       
+    };
+ 
+    /////////////////// 获取指定股票，在交易日期内的用户持仓总数
+    struct QueryHoldCountReq
+    {
+		0 optional		DataBaseInfo		userInfo;			// 用户数据	
+        2 optional      string				secuCode;           // 股票代码 
+	    3 optional      string				date;               // 日期（YYYYMMDD）
+    };
+
+    struct QueryHoldCountRsp
+    {	
+        0 optional      ErrorInfo       error;		// 错误描述
+        1 optional      int             count;		// 持仓总数
+    };
+
+    /////////////////// 获取开始交易日和最大交易日
+    struct QueryTradeDateReq
+    {
+		0 optional		DataBaseInfo    userInfo;			// 用户数据	
+        1 optional      int     format;             // 日期格式 0 YYYYMMDD  1 YYYY-MM-DD
+    };
+
+    struct QueryTradeDateRsp
+    {
+        0 optional      ErrorInfo       error;		// 错误描述
+        1 optional      string          beginDate;  // 开始交易日
+        2 optional      string          maxDate;    // 最大交易日
+    };
+
+    /////////////////// 根据交易日期查询每个股票的持仓用户总数
+    struct QueryHoldUserCountReq
+    {
+        0 optional		DataBaseInfo    userInfo;			// 用户数据	
+        1 optional      string  date;               // 日期（YYYYMMDD）
+        2 optional      int     topLen;             // 返回前多少条记录
+        3 optional      int     type;               // 0 不限制  1 查询总收益排行前100的高手持仓的每只股票的持有人数
+    };
+
+	// 股票持仓用户数
+    struct HoldUserCountInfo
+    {
+        0 optional      byte    market;             // 市场
+        1 optional      string  secuName;           // 股票名称
+        2 optional      string  secuCode;           // 股票代码
+        3 optional      int     count;              // 持仓用户数     
+    };
+
+    struct QueryHoldUserCountRsp
+    {
+        0 optional      ErrorInfo                 error;    //  错误信息
+        1 optional      vector<HoldUserCountInfo> vList;    //  结果列表
+    };
+
+
+    /////////////////// 股票买卖次数查询
+    struct QueryStockBuySellTimesReq
+    {
+        0 optional		DataBaseInfo    userInfo;			// 用户数据	
+        1 optional      byte    trdId;              // 交易方向
+        2 optional      string  date;               // 日期（YYYYMMDD）
+		3 optional      int     topLen;             // 返回前多少条记录
+    };
+
+	// 股票买卖次数
+    struct StockBuySellTimesInfo
+    {
+        0 optional      byte    market;             // 市场
+        1 optional      string  secuName;           // 股票名称
+        2 optional      string  secuCode;           // 股票代码
+        3 optional      int     count;              // 买/卖次数
+    };
+
+    struct QueryStockBuySellTimesRsp
+    {
+        0 optional      ErrorInfo                 		error;    //  错误信息
+        1 optional      vector<StockBuySellTimesInfo> 	vList;    //  结果列表
+    };
+	
+	/////////////////// 批量查询用户指定账户收益率
+	struct BatchQueryProfitRateReq
+	{	
+		0 optional 		vector<DataBaseInfo> 	vDataBases;			// 客户代码
+		1 optional      string  		date;               // 日期（YYYYMMDD）
+	};
+	
+	struct BatchQueryProfitRateRsp
+	{	
+        0 optional 		ErrorInfo 					error;			// 错误描述
+		1 optional      vector<ProfitRateRankInfo>  vList;          // 结果列表 
+	};
+	
+	/////////////////// 根据资金账号、股票代码，获取某只股票在一段时间内的成交记录
+	struct QueryStockTradeReq
+	{
+		0 optional      DataBaseInfo	userInfo;			// 查询基础信息
+		1 optional      byte    		market;             // 市场	
+		2 optional      string  		secuCode;           // 股票代码
+		4 optional      vector<string>  vDate;              // 日期列表
+	};
+	
+	// 成交信息
+	struct StockTradeInfo
+	{
+		0 optional      byte    trdId;              		// 交易方向
+		1 optional		double	matchPrice;					// 成交价格
+		2 optional		int		matchQty;					// 成交数量
+		3 optional      string  Date;						// 成交日期（YYYYMMDD）
+		4 optional      long  	matchTime;					// 成交时间（时间戳）
+	};
+	
+	struct QueryStockTradeRsp
+    {
+        0 optional      ErrorInfo                 	error;    //  错误信息
+        1 optional      vector<StockTradeInfo> 		vList;    //  结果列表
+    };
+	
+
+
+	/////////////////// 查询收益率排行
+	struct QueryProfitRateRankReq
+	{
+		0 optional		DataBaseInfo    userInfo;			// 请求数据 iBussId： 0：组合社区 1：模拟大赛1 ... 
+		1 optional		RankType		eType;				// 排序类型
+		2 optional      int     		topLen;             // 返回前多少条记录
+		3 optional		int				onlineType;			// 上架类别 0：所有创建的组合 1：组合平台已上架  2：模拟社区平台已上架 3：社区用户排名
+	};
+	
+	struct QueryProfitRateRankRsp
+	{
+		0 optional      ErrorInfo                 	error;    //  错误信息
+        1 optional      vector<ProfitRateRankInfo> 	vList;    //  结果列表
+	};
+	
+    // /////////////////// 批量查询用户收益率排名数据最新数据
+	struct BatchQueryProfitRankRateReq
+	{	
+        0 optional  DataBaseInfo	userInfo;						// 查询基础信息 
+        1 optional 	vector<unsigned int> vUserCodes;				// 指定账户代码集
+        2 optional	RankType		               eType;			// 排序类型
+	};
+	
+	struct BatchQueryProfitRankRateRsp
+	{	
+        0 optional 	ErrorInfo 					                    	error;			// 错误描述
+		1 optional 	map<int, map<unsigned int,ProfitRateRankInfo>>  	mapRanks;       // 结果列表 code《-》rankinfo
+	};
+
+	/////////////////// 查询用户在指定的周、月、季、半年的时间段中的参赛次数
+	struct QueryUserGameTimesReq
+	{
+		0 optional      DataBaseInfo	userInfo;			// 查询基础信息
+		2 optional		int				week;				// 周次
+		3 optional		int				month;				// 月份
+		4 optional		vector<int>		seasonMonths;		// 季节包含月份
+		5 optional		vector<int>		halfYearMonths;		// 半年包含月份
+	};
+	
+	struct QueryUserGameTimesRsp
+	{
+		0 optional      ErrorInfo		error;    			// 错误信息
+		1 optional		int				weekTimes;			// 周参数次数
+		2 optional		int				monthTimes;			// 月参数次数
+		3 optional		int				seasonTimes;		// 季节参数次数
+		4 optional		int				halfYearTimes;		// 半年参数次数
+	};
+
+
+
+	/////////////////// 查询历史回撤
+    struct QueryHistoryDrawDownQueryReq
+    {
+		0 optional		DataBaseInfo userInfo;		// userinfo
+	    2 optional 		string  beginDate;			// 起始日期
+		3 optional 		string  endDate;			// 终止日期
+        4 optional      unsigned int len;           // 获取记录条数
+        5 optional      unsigned int type;          // 0 自然日  1 交易日
+    };
+
+    struct HistoryDrawDownInfo
+    {
+        0 optional     string  date;                // 日期
+        1 optional     double  drawdown;          	// 回撤
+        2 optional     double  netValue;            // 净值
+		3 optional     int     win;                 // 成功次数
+		4 optional     int     loss;                // 失败次数
+		5 optional     int     draw;                // 平手次数 
+		6 optional     double  profitRate;          // 总收益率 
+    };
+	
+	struct QueryHistoryDrawDownQueryRsp
+    {
+        0 require       ErrorInfo       error;
+        1 optional      vector<HistoryDrawDownInfo> vList;
+    };
+
+
+	/////////////////// 查询历史仓位
+    struct QueryHistoryHoldPosQueryReq
+    {
+        0 optional		DataBaseInfo userInfo;		// userinfo
+	    2 optional 		string  beginDate;			// 起始日期
+		3 optional 		string  endDate;			// 终止日期
+        4 optional      unsigned int len;           // 获取记录条数
+        5 optional      unsigned int type;          // 0 自然日  1 交易日
+    };
+
+    struct HistoryHoldPosInfo
+    {
+        0 optional     string  date;                	// 日期
+        1 optional     double  holdPos;          		// 仓位 
+		2 optional     double  fiveDayAvgHoldPos;       // 5日平均仓位 
+    };
+
+    struct QueryHistoryHoldPosQueryRsp
+    {
+        0 require       ErrorInfo       error;
+        1 optional      vector<HistoryHoldPosInfo> vList;
+    };
+
+
+	struct QuerySpecialRateReq
+    {
+        0 optional		DataBaseInfo userInfo;		// userinfo
+		1 require		string		 beginDate;		// subscribe date
+    };
+
+    struct QuerySpecialRateRsp
+    {
+		0 require       ErrorInfo       error;
+        1 require       double			nRates;
+    };
+
+	struct UserTmpKey
+    {
+        0 optional unsigned int assertId;
+    };
+
+    struct UserTmpData
+    {
+        0 optional double maxnetvalue;
+        1 optional double minnetvalue;
+        2 optional long	  updatetime;
+        3 optional double maxdrawdown;
+		4 optional double yearMaxNetValue;
+		5 optional double yearMinnetvalue;
+		6 optional double yearMaxDraw;
+		7 optional double natureYearMaxNetValue;
+		8 optional double natureYearMinnetvalue;
+		9 optional double natureYearMaxDraw;
+    };
+
+    struct SqlTaskItemKey
+    { 
+        0 optional unsigned int assertId;   
+        1 optional long updatetime;
+        2 optional string fun;
+    };
+
+    struct SqlTaskItem
+    {
+        0 optional string sql;
+        1 optional string fun;
+        2 optional unsigned int assertId;
+        3 optional unsigned int iDate;
+        4 optional unsigned int countType;
+        5 optional long updatetime;
+        6 optional bool updateTotal=false;
+    };
+
+
+	struct RankKey
+	{
+		0 optional string sKey;  
+	};
+
+	struct RankInfo
+    {
+		0 optional map<unsigned int, ProfitRateRankInfo> mProfitRank; // key：iUserCode
+        1 optional long updatetime;
+    };
+
+    // 区间衍生数据查询
+	struct IntervalDerivedDataQueryReq
+	{
+		0 require 		unsigned int  	userCode;				// 客户代码		
+		1 optional 		string 	        userIDCls;			    // 用户标识类型
+		2 require		string          beginDate;		        // 起始日期
+		3 require       string          endDate;                // 终止日期
+	};
+
+	struct IntervalDerivedDataQueryRsp
+    {
+		0 require       ErrorInfo       error;
+        1 require       double			nRates;        // 区间收益率
+		2 require       double			maxDrawdown;   // 区间最大回撤
+		3 require       double			SuccessfulRate;// 区间胜率
+    };
+	struct getUserMaxDrawDownReq
+    {
+        0 optional vector<unsigned int> vUserCodeList;
+    };
+
+    struct getUserMaxDrawDownRsp
+    {
+		0 require       ErrorInfo       error;
+        1 optional map<unsigned int, double> mpMaxDraw;
+    };
+
+	interface ATGGame
+	{
+		// query user profit rate			--queryProfitRate  queryDerivedDataQuery
+        int queryDerivedProfitRate(QueryProfitRateQueryReq req, out QueryProfitRateQueryRsp rsp);
+
+		// for query history profitrate		--queryHistoryProfitRate
+		int queryHistoryProfitRate(QueryHistoryProfitRateReq req, out QueryHistoryProfitRateRsp rsp);
+
+		//for query users info
+		int queryUsersInfo(QueryUsersInfoReq req, out QueryUsersInfoRsp rsp);
+
+		//for query market end info
+		int queryMarketEndInfo(QueryMarketEndReq req, out QueryMarketEndRsp rsp);
+
+		// query user profit rate rank		--queryProfitRateRank
+		int queryProfitRateRank(QueryProfitRateRankReq req, out QueryProfitRateRankRsp rsp);
+
+		// query history drawdown			--queryHistoryDrawDown
+        int queryHistoryDrawDown(QueryHistoryDrawDownQueryReq req, out QueryHistoryDrawDownQueryRsp rsp);
+
+        // query history hold pos			--queryHistoryHoldPos
+        int queryHistoryHoldPos(QueryHistoryHoldPosQueryReq req, out QueryHistoryHoldPosQueryRsp rsp);
+
+		//query specified time profitrate
+		int querySpecifiedTimesProfitrate(QuerySpecialRateReq req,out QuerySpecialRateRsp rsp);
+
+		//for batch query profit rate cmd: 5208
+		int batchQueryProfitRate(BatchQueryProfitRateReq req, out BatchQueryProfitRateRsp rsp);
+
+        // query interval derived data
+		int queryIntervalDerivedData(IntervalDerivedDataQueryReq req, out IntervalDerivedDataQueryRsp rsp);
+
+		/*
+		// for query trade date
+		int queryTradeDate(QueryTradeDateReq req, out QueryTradeDateRsp rsp);
+
+		// for query stock hold conut
+		int queryHoldUserCount(QueryHoldUserCountReq req, out QueryHoldUserCountRsp rsp);
+
+		// for query stock  buy/sell times
+		int queryStockBuySellTimes(QueryStockBuySellTimesReq req, out QueryStockBuySellTimesRsp rsp);
+
+
+		int queryStockTrade(QueryStockTradeReq req, out QueryStockTradeRsp rsp);
+
+		// query batch profit rank
+        int batchQueryProfitRateRank(BatchQueryProfitRankRateReq req, out BatchQueryProfitRankRateRsp rsp);
+
+		int queryUserGameTimes(QueryUserGameTimesReq req, out QueryUserGameTimesRsp rsp);
+
+		// for trade notify
+		int notifyUserUpdate(DataBaseInfo userInfo,int type);
+
+        // for manager
+        int saveUserData(int type);
+        int cleanData(int type);
+        int calcUserData(int type);
+		*/
+		
+		// for trade notify
+		int notifyWinUpdate(DataBaseInfo userInfo,int type);
+		int doClearAmnds(int iAmnid);
+
+		int getUserMaxDrawDown(getUserMaxDrawDownReq req, out getUserMaxDrawDownRsp rsp);
+
+		int copyNewUser(CopyNewAssertReq req, out CopyNewAssertRsp rsp);
+
+    };
+}; 

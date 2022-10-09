@@ -9,7 +9,7 @@ module FuPan
     //股票信息 精简版
     struct StkInfo
     {
-		1 optional short set = 0;               //市场
+		1 optional short sett = 0;               //市场
 		2 optional string code;                //股票代码
     };
     struct StkSimpInfo

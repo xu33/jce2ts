@@ -12,6 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 const args = process.argv.slice(2);
+const OUTPUT_DIR = "dist";
 
 if (args.length <= 0) {
   console.log("Invaild arguments.");
@@ -19,8 +20,11 @@ if (args.length <= 0) {
 }
 
 const fileName = args[0];
+const bookKeeping = [];
 
 function parseRecursion(fileName) {
+  bookKeeping.push(fileName);
+
   const { name, dir } = path.parse(fileName);
   const outputName = name + ".spec.ts";
   const content = fs.readFileSync(fileName, {
@@ -29,12 +33,15 @@ function parseRecursion(fileName) {
 
   const output = parser.parse(content);
 
-  console.log(output);
+  // console.log(output);
 
   const deps = output.deps;
   if (deps?.length) {
     for (let i = 0; i < deps.length; i++) {
-      parseRecursion(path.join(dir, deps[i]));
+      const depFileName = path.join(dir, deps[i]);
+      if (!bookKeeping.includes(depFileName)) {
+        parseRecursion(depFileName);
+      }
     }
   }
 
@@ -51,11 +58,12 @@ function parseRecursion(fileName) {
   const ast = generate(program);
   // console.log(ast.code);
 
-  fs.writeFile(outputName, ast.code, {}, (err) => {
+  const dst = path.join(OUTPUT_DIR, outputName);
+  fs.writeFile(dst, ast.code, {}, (err) => {
     if (err) {
       console.log("error write file");
     } else {
-      console.log("Success!");
+      console.log(`Generate ${dst} success!`);
     }
   });
 }

@@ -1,0 +1,106 @@
+module CenterManager
+{
+	  struct HStockCompetition
+	  {
+	     0		optional long  		    lCompetitionId;
+	     1		optional string  		sCompetitionName;
+		 2 		optional string  		sCompetitionImage;
+		 3 		optional string 		sCompetitionDesc;
+		 4 		optional string 		sCompetitionPrizeDesc;
+		 5 		optional long   		lCompetitionStartCapitalHKD;
+		 6 		optional long   		lCompetitionStartCapitalCNY;
+		 7 		optional long   		lCompetitionStartCapitalUSD;
+		 8 		optional long   		lCompetitionEnterStartTime;
+		 9 		optional long   		lCompetitionEnterEndTime;
+		 10 	optional long   		lCompetitionStartTime;
+		 11 	optional long   		lCompetitionEndTime;
+		 12 	optional string   		sCompetitionRuleDesc;
+		 13     optional long           lCompetitionPrizeNumber;
+		 14     optional string         sCompetitionPrizeJson;
+		 15     optional string         sCompetitionUser;
+		 16     optional long           lCompetitionUserMax;
+	  };
+	   struct HStockCompetitionReq
+	  {
+	    0    optional unsigned int uiStart = 0;                      //分页开始位置
+		1    optional unsigned int uiCount;                          //数量
+		2    optional string  sStockUserId;                        //用户ID
+	  };
+	  struct HStockCompetitionRsp
+	  {
+	    0      optional  	int  						iRet = 0;//返回值，0：成功，-1：失败
+		1      optional 	int  						iTotal =0;//总数量
+		2      optional 	bool 						bEnd =false;//是否结束
+		3      optional 	vector<HStockCompetition> 	vHStockCompetition;
+	  };
+	  
+	 
+	  struct HTransactionUser{
+	    0    optional  string   sNickName ;  
+        1    optional  double   dProfit;		
+	  };
+	  
+	  struct HTransactionUserRsp{
+	    0    optional   int                         iRet = 0;//返回值，0：成功，-1：失败
+		1    optional 	int  	                    total =0;//总数量
+        2    optional 	bool 	                    bEnd =false;//是否结束	
+        3    optional 	vector<HTransactionUser> 	vHTransactionUser;			
+	  };
+	 enum E_Stock_Competition_USER
+     {
+        ESCU_ALL = 0,          //全部用户
+        ESCU_INTEREST = 1,    //用户关注
+        ESCU_FANS = 2         //用户的粉丝
+     };
+	  struct HTransactionUserReq
+	  {
+	    0    optional unsigned int uiStart = 0;                      //分页开始位置
+		1    optional unsigned int uiCount;                          //数量
+		2    optional string  sStockUserId;                        //用户ID
+		3    optional int iFans=ESCU_ALL;//0:全部用户;1:sStockUserId关注的用户;2:sStockUserId用户的粉丝
+	  };
+	  
+	  struct HStockCompetitionAnnouncement{
+	    0   optional   string      sStockCompetitionName;
+	    1   optional   string      sType;
+	    2   optional   string      stitle;
+	    3   optional   long        lAnnounceDate; 
+	    4   optional   string      sDigest; 
+	    5   optional   string      sContent; 		
+	  };
+	  
+	  struct HStockCompetitionAnnouncementRsp{
+	    0    optional   int                         iRet = 0;//返回值，0：成功，-1：失败
+		1    optional 	int  	                    total =0;//总数量
+        2    optional 	bool 	                    bEnd =false;//是否结束	
+        3    optional 	vector<HStockCompetitionAnnouncement> 	vHStockCompetitionAnnouncement;			
+	  };
+	  
+	  struct HStockCompetitionAnnouncementReq
+	  {
+	    0    optional unsigned int uiStart = 0;                      //分页开始位置
+		1    optional unsigned int uiCount;                          //数量
+	  };
+
+	  struct HJoinStockCompetitionReq{
+		  0		optional long  		 lCompetitionId;
+		  1     optional string     sStockUserId;                        //用户ID
+	  };
+
+	  struct  HJoinStockCompetitionRsp{
+		0    optional   int     iRet = 0;//返回值，0：成功，-1：失败
+	  };
+
+	interface SimulationTransaction
+	{    
+	    //获取大赛列表
+		int getStockCompetition(HStockCompetitionReq stReq,HStockCompetitionRsp stRsp);
+		//参加大赛
+		int joinStockCompetition(HJoinStockCompetitionReq stReq,HJoinStockCompetitionRsp stRsp);
+		//获取模拟交易牛人排行，包含全部选手，我关注的，我的粉丝
+		int getTransactionUser(HTransactionUserReq stReq,HTransactionUserRsp stRsp);
+		//获取模拟交易公告
+		int getTransactionAnnouncement(HStockCompetitionAnnouncementReq stReq,HStockCompetitionAnnouncementRsp stRsp);
+		
+	};
+};

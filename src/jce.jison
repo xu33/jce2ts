@@ -39,9 +39,13 @@ map { return "MAP"; }
 ";" return "SEMI"
 "," return "COMMA"
 "::" return "DOUBLE_COLON"
-"="\s*[^=;,//]+ { /* DO NOTHING */ }
-\d+ { return "PROPERTY_INDEX";}
-<<EOF>> return "EOF"
+// "="\s*[^=;,//]+ { /* DO NOTHING */ }
+// "-"?\d+ { return "ENUM_VALUE"; }
+"=" { return "EQUAL"; }
+"-" { return "UMINUS"; }
+[0-9]+("."[0-9]+)?\b { return "NUMBER"; }
+0[xX][0-9a-fA-F]+ { return "HEX"; }
+<<EOF>> { return "EOF"; }
 
 /lex
 
@@ -137,13 +141,39 @@ enumitem
 ;
 
 enumitem
-: IDENTIFIER COMMA
+: enumitemDef
+{
+    $$ = $enumitemDef;
+}
+| enumitemDef COMMA
+{
+    $$ = $enumitemDef;
+};
+
+enumitemDef
+: IDENTIFIER 
 {
     $$ = t.tsEnumMember(t.identifier($1));
 }
-| IDENTIFIER
+| IDENTIFIER EQUAL NUMBER
 {
-    $$ = t.tsEnumMember(t.identifier($1));
+    {
+    const value = Number($3);
+    $$ = t.tsEnumMember(t.identifier($1), t.numericLiteral(value));
+    }
+}
+| IDENTIFIER EQUAL HEX
+{
+    {
+    $$ = t.tsEnumMember(t.identifier($1), t.stringLiteral($3));
+    }
+}
+| IDENTIFIER EQUAL UMINUS NUMBER
+{
+    {
+    const value = -Number($4);
+    $$ = t.tsEnumMember(t.identifier($1), t.numericLiteral(value));
+    }
 }
 ;
 
@@ -175,11 +205,11 @@ items
 ;
 
 item 
-: PROPERTY_INDEX REQUIRED t IDENTIFIER SEMI 
+: NUMBER REQUIRED t propertyName SEMI 
 {
     {
         const node = t.tsPropertySignature(
-            t.identifier($IDENTIFIER),
+            t.identifier($propertyName),
             t.tsTypeAnnotation($t)
         );
 
@@ -192,13 +222,32 @@ item
 }
 ;
 
+propertyName
+: IDENTIFIER {
+    $$ = $IDENTIFIER
+}
+| IDENTIFIER EQUAL UMINUS NUMBER{
+    $$ = $IDENTIFIER
+}
+| IDENTIFIER EQUAL NUMBER {
+    $$ = $IDENTIFIER
+}
+| IDENTIFIER EQUAL IDENTIFIER {
+    $$ = $1
+}
+;
+
 t
 : TYPE
 {
     // console.log('TYPE:', $1 + '_x');
     if ($1 === 'bool') {
         $$ = t.tsBooleanKeyword();
-    } else {
+    } 
+    else if ($1 === 'int') {
+        $$ = t.tsNumberKeyword();
+    }
+    else {
         $$ = t.tsStringKeyword();
     }
 }

@@ -1,0 +1,242 @@
+module CenterManager
+{
+    struct HStockCompetition
+    {
+        0  optional long   lCompetitionId;
+        1  optional string sCompetitionName;            //大赛名称
+        2  optional string sCompetitionImage;           //banner图片,url
+        3  optional string sCompetitionDesc;
+        4  optional string sCompetitionPrizeDesc;
+        5  optional long   lCompetitionStartCapitalHKD; //初始资金 港币
+        6  optional long   lCompetitionStartCapitalCNY; //初始资金 人民币
+        7  optional long   lCompetitionStartCapitalUSD; //初始资金 美元
+        8  optional long   lCompetitionEnterStartTime;  //报名开始时间
+        9  optional long   lCompetitionEnterEndTime;    //报名结束时间
+        10 optional long   lCompetitionStartTime;       //比赛开始时间
+        11 optional long   lCompetitionEndTime;         //比赛结束时间
+        12 optional string sCompetitionRuleDesc;
+        13 optional long   lCompetitionPrizeNumber;
+        14 optional string sCompetitionPrizeJson;
+        15 optional string sCompetitionUser;
+        16 optional long   lCompetitionUserMax;         //参赛人数上限
+        17 optional int    iCompetionStatus;            //大赛状态;1待上架 2报名未开始 3报名中 4报名结束比赛未开始 5比赛中 6比赛结束 7已下架
+        18 optional int    iCompetionTotalNum;          //参加大赛的人数
+        19 optional int    iCompetionRank   = -1;       //当前用户排名
+        20 optional double dProfit          = 0.0;      //收益率本人
+        21 optional string sRecommendImg;               //推荐比赛展示图
+        22 optional long   lSignContestDate = -1;       //参赛时间 -1:未找到
+        23 optional int    iSigned;                     //0-未参赛 1-已参赛
+        24 optional string sTradeVariety;               //交易品种
+    };
+    struct HStockCompetitionReq
+    {
+        0 optional unsigned int uiStart            = 0; //分页开始位置
+        1 optional unsigned int uiCount;                //数量
+        2 optional string       sStockUserId;           //用户ID
+        3 optional int          iType              = 0; //查询类型 0-查询所有我参加的大赛(当用户id存在时,id不存在时查询所有大赛) 1-查询所有大赛,同时返回我的参赛时间
+        4 optional int          iCompetitionFilter = 0; //大赛状态过滤,0-仅过滤未上架的 1-过滤未上架以及已结束的
+        5 optional int          iSignSort          = 0; //排序字段,默认0,按照大赛收益排序; 1-按参赛时间排序;注:仅在查询我的大赛时候有效(stockUserId不为空)
+    };
+    struct HStockCompetitionRsp
+    {
+        0 optional int                       iRet   = 0;     //返回值，0：成功，-1：失败
+        1 optional int                       iTotal = 0;     //总数量
+        2 optional bool                      bEnd   = false; //是否结束
+        3 optional vector<HStockCompetition> vHStockCompetition;
+        4 optional string                    msg;            //提示信息
+    };
+
+    struct HTransactionUser
+    {
+        0 optional string sNickName;
+        1 optional double dProfit;
+        2 optional string sHeadImgUrl;  //用户头像
+        3 optional int    iFans = 0;    //关注关系,0-未关注 1-已关注
+        4 optional int    iRank = -1;   //排名,-1表示未排名,
+        5 optional string sStockUserId; //用户ID
+    };
+
+    struct HTransactionUserRsp
+    {
+        0 optional int                      iRet  = 0;     //返回值，0：成功，-1：失败
+        1 optional int                      total = 0;     //总数量
+        2 optional bool                     bEnd  = false; //是否结束
+        3 optional vector<HTransactionUser> vHTransactionUser;
+        4 optional string                   msg;           //提示信息
+        5 optional HTransactionUser         rMyProfitRank; //当前用户的收益排名
+        6 optional long                     lUpdateTime;   //最近更新时间,毫秒级时间戳
+    };
+    enum E_Stock_Competition_USER
+    {
+        ESCU_ALL      = 0,        //全部用户
+        ESCU_INTEREST = 1,        //用户关注
+        ESCU_FANS     = 2         //用户的粉丝
+    };
+    struct HTransactionUserReq
+    {
+        0 optional unsigned int uiStart        = 0;  //分页开始位置
+        1 optional unsigned int uiCount;             //数量
+        2 optional string       sStockUserId;        //用户ID
+        3 optional int          iFans          = 0;  //0:全部用户;1:sStockUserId关注的用户;2:sStockUserId用户的粉丝
+        4 optional int          rankType       = 0;  //排行类型,0-总收益率 1-周 2-月 3-年
+        5 optional long         lCompetitionId = -1; //大赛id,-1
+    };
+
+    struct HStockCompetitionAnnouncement
+    {
+        0 optional string sStockCompetitionName;
+        1 optional string sType;
+        2 optional string stitle;
+        3 optional long   lAnnounceDate;
+        4 optional string sDigest;
+        5 optional string sContent;
+    };
+
+    struct HStockCompetitionAnnouncementRsp
+    {
+        0 optional int                                   iRet  = 0;     //返回值，0：成功，-1：失败
+        1 optional int                                   total = 0;     //总数量
+        2 optional bool                                  bEnd  = false; //是否结束
+        3 optional vector<HStockCompetitionAnnouncement> vHStockCompetitionAnnouncement;
+        4 optional string                                msg;           //提示信息
+    };
+
+    struct HStockCompetitionAnnouncementReq
+    {
+        0 optional unsigned int uiStart = 0; //分页开始位置
+        1 optional unsigned int uiCount;     //数量
+    };
+
+    struct HJoinStockCompetitionReq
+    {
+        0 optional long   lCompetitionId;
+        1 optional string sStockUserId;       //用户ID
+        2 optional string sStockUserNickName; //用户昵称
+        3 optional string sStockUserTel;      //用户手机号
+        4 optional string sStockUserAccount;  //模拟账户号码
+    };
+
+    struct HJoinStockCompetitionRsp
+    {
+        0 optional int    iRet = 0; //返回值，0：成功，-1：失败
+        1 optional string msg;      //提示信息
+    };
+
+    struct HStockContestRecommandReq
+    {
+        0 optional unsigned int uiStart = 0; //分页开始位置
+        1 optional unsigned int uiCount;     //数量
+    };
+
+    struct HStockContestRecommandRsp
+    {
+        0 optional int                       iRet = 0;           //返回值，0：成功，-1：失败
+        1 optional vector<HStockCompetition> vHStockCompetition; //推荐比赛
+        2 optional string                    msg;                //提示信息
+    };
+
+    struct HStockUserAttentionReq
+    {
+        0 optional string targetUserId; //关注用户的id
+        1 optional string fansUserId;   //粉丝id
+    };
+
+    struct HStockUserAttentionRsp
+    {
+        0 optional int    iRet = 0; //返回值，0：成功，-1：失败
+        1 optional string msg;      //提示信息
+    };
+    struct HStockUserAttentionStateRsp
+    {
+        0 optional int    iRet   = 0; //返回值，0：成功，-1：失败
+        1 optional string msg;        //提示信息
+        2 optional int    iState = 0; //0-未关注 1-已关注
+    };
+
+    struct HSignStateReq
+    {
+        0 optional string sStockUserId; //用户id
+        1 optional long   lContestId;   //比赛id,id为0查询普通用户收益
+    };
+    struct HSignStateRsp
+    {
+        0 optional int iSigned; //0-未参赛 1-已参赛
+    };
+    struct HStockCompetitionDetialRsp
+    {
+        0 optional HStockCompetition        competition;      //比赛详细
+        1 optional vector<HTransactionUser> vUserProfitRanks; //大赛排名信息
+        2 optional int                      iRet = 0;         //返回值，0：成功，-1：失败
+        3 optional string                   msg;              //提示信息
+        4 optional HTransactionUser         rMyProfitRank;    //当前用户在大赛中的收益排名
+    };
+
+    struct HStockRankRsp
+    {
+        1 optional int    iRank;       //当前排名,比赛/炒股用户排名
+        2 optional int    iRankChange; //排名变化,较昨日
+        3 optional int    iRet = 0;    //返回值，0：成功，-1：失败
+        4 optional string msg;         //提示信息
+    };
+
+    struct RestTimesReq
+    {
+        0 optional string sStockUserId; //用户ID
+    };
+    struct RestTimesRsp
+    {
+        0 optional int    iRemainTimes; //剩余重置次数
+        1 optional int    iRet = 0;     //返回值，0：成功，-1：失败
+        2 optional string msg;          //提示信息
+    };
+    struct HStockUserFansRsp
+    {
+        0 optional long   lFansNum;     //粉丝数
+        1 optional int    iRet = 0;     //返回值，0：成功，-1：失败
+        2 optional string msg;          //提示信息
+        3 optional string sNickName;    //用户昵称
+        4 optional string sStockUserId; //用户id
+        5 optional string sHeadImgUrl;  //用户头像
+        6 optional string sMobileNum;   //手机号
+    };
+    struct HBlacklistReq
+    {
+        0 optional string sStockUserId; //用户id
+    };
+    struct HBlacklistRsp
+    {
+        0 optional int iIsBlacklist; //是否是黑名单用户 0-否 1-是
+    };
+
+    interface SimulationTransaction
+    {
+        //获取大赛列表
+        int getStockCompetition(HStockCompetitionReq stReq, out HStockCompetitionRsp stRsp);
+        //参加大赛
+        int joinStockCompetition(HJoinStockCompetitionReq stReq, out HJoinStockCompetitionRsp stRsp);
+        //获取模拟交易牛人排行，包含全部选手，我关注的，我的粉丝
+        int getTransactionUser(HTransactionUserReq stReq, out HTransactionUserRsp stRsp);
+        //获取模拟交易公告
+        int getTransactionAnnouncement(HStockCompetitionAnnouncementReq stReq, out HStockCompetitionAnnouncementRsp stRsp);
+        //获取推荐大赛列表
+        int getRecommendContest(HStockContestRecommandReq stReq, out HStockContestRecommandRsp stRsp);
+        //关注用户
+        int followUser(HStockUserAttentionReq stReq, out HStockUserAttentionRsp stRsp);
+        //关注关系
+        int followUserState(HStockUserAttentionReq stReq, out HStockUserAttentionStateRsp stRsp);
+        //获取单个用户信息
+        int getUserMsg(RestTimesReq stReq, out HStockUserFansRsp stRsp);
+        //用户是否参赛
+        int signState(HSignStateReq stReq, out HSignStateRsp stRsp);
+        //比赛详细-带排行前三情况
+        int getStockCompetitionDetail(HSignStateReq stReq, out HStockCompetitionDetialRsp stRsp);
+        //排名及变化
+        int getStockRank(HSignStateReq stReq, out HStockRankRsp stRsp);
+        //查询剩余重置次数
+        int getRemainRestTimes(RestTimesReq stReq, out RestTimesRsp stRsp);
+        //重置次数减一,如果次数为0则失败
+        int reduceRemainRestTimes(RestTimesReq stReq, out RestTimesRsp stRsp);
+        //重置次数加一
+        int addRemainRestTimes(RestTimesReq stReq, out RestTimesRsp stRsp);
+    };
+};

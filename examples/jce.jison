@@ -16,6 +16,7 @@
 "struct" { return "STRUCT";}
 "enum" { return "ENUM";}
 "interface" { /* DO NOTHING */ }
+"=" { return "EQUAL"; }
 "<" { return "OPEN"; }
 ">" { return "CLOSE"; }
 "{" { return "LEFT"; }

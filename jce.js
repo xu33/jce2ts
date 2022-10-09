@@ -72,12 +72,12 @@
   }
 */
 var jce = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[8,12],$V1=[1,17],$V2=[1,16],$V3=[15,20,24],$V4=[1,30],$V5=[1,33],$V6=[15,28],$V7=[10,15],$V8=[1,43],$V9=[1,42],$Va=[1,44],$Vb=[1,45],$Vc=[10,23,34];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[8,12],$V1=[1,17],$V2=[1,16],$V3=[15,20,29],$V4=[1,30],$V5=[1,34],$V6=[15,26],$V7=[10,15],$V8=[10,15,24],$V9=[1,45],$Va=[1,44],$Vb=[1,46],$Vc=[1,47],$Vd=[10,24,39];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"jce":3,"deplist":4,"expressions":5,"EOF":6,"dep":7,"INCLUDE":8,"QUOTE":9,"IDENTIFIER":10,"JCE":11,"MODULE":12,"LEFT":13,"structlist":14,"RIGHT":15,"SEMI":16,"def":17,"struct":18,"enum":19,"ENUM":20,"enumitems":21,"enumitem":22,"COMMA":23,"STRUCT":24,"itemlist":25,"items":26,"item":27,"PROPERTY_INDEX":28,"REQUIRED":29,"t":30,"TYPE":31,"VECTOR":32,"OPEN":33,"CLOSE":34,"MAP":35,"DOUBLE_COLON":36,"$accept":0,"$end":1},
-terminals_: {2:"error",6:"EOF",8:"INCLUDE",9:"QUOTE",10:"IDENTIFIER",11:"JCE",12:"MODULE",13:"LEFT",15:"RIGHT",16:"SEMI",20:"ENUM",23:"COMMA",24:"STRUCT",28:"PROPERTY_INDEX",29:"REQUIRED",31:"TYPE",32:"VECTOR",33:"OPEN",34:"CLOSE",35:"MAP",36:"DOUBLE_COLON"},
-productions_: [0,[3,3],[4,0],[4,2],[7,5],[5,6],[14,1],[14,2],[17,1],[17,1],[19,6],[21,1],[21,2],[22,2],[22,1],[18,3],[25,4],[26,1],[26,2],[27,5],[30,1],[30,1],[30,4],[30,6],[30,3]],
+symbols_: {"error":2,"jce":3,"deplist":4,"expressions":5,"EOF":6,"dep":7,"INCLUDE":8,"QUOTE":9,"IDENTIFIER":10,"JCE":11,"MODULE":12,"LEFT":13,"structlist":14,"RIGHT":15,"SEMI":16,"def":17,"struct":18,"enum":19,"ENUM":20,"enumitems":21,"enumitem":22,"enumitemDef":23,"COMMA":24,"EQUAL":25,"NUMBER":26,"HEX":27,"UMINUS":28,"STRUCT":29,"itemlist":30,"items":31,"item":32,"REQUIRED":33,"t":34,"propertyName":35,"TYPE":36,"VECTOR":37,"OPEN":38,"CLOSE":39,"MAP":40,"DOUBLE_COLON":41,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",8:"INCLUDE",9:"QUOTE",10:"IDENTIFIER",11:"JCE",12:"MODULE",13:"LEFT",15:"RIGHT",16:"SEMI",20:"ENUM",24:"COMMA",25:"EQUAL",26:"NUMBER",27:"HEX",28:"UMINUS",29:"STRUCT",33:"REQUIRED",36:"TYPE",37:"VECTOR",38:"OPEN",39:"CLOSE",40:"MAP",41:"DOUBLE_COLON"},
+productions_: [0,[3,3],[4,0],[4,2],[7,5],[5,6],[14,1],[14,2],[17,1],[17,1],[19,6],[21,1],[21,2],[22,1],[22,2],[23,1],[23,3],[23,3],[23,4],[18,3],[30,4],[31,1],[31,2],[32,5],[35,1],[35,4],[35,3],[35,3],[34,1],[34,1],[34,4],[34,6],[34,3]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -123,7 +123,7 @@ case 5:
         );
     
 break;
-case 6: case 11: case 17:
+case 6: case 11: case 21:
 
     this.$ = [$$[$0]];
 
@@ -134,7 +134,7 @@ case 7:
     this.$ = $$[$0-1].concat($$[$0])
 
 break;
-case 8: case 9:
+case 8: case 9: case 13:
 
     this.$ = $$[$0];
 
@@ -154,17 +154,40 @@ case 12:
     this.$ = $$[$0-1].concat($$[$0]);
 
 break;
-case 13:
+case 14:
 
-    this.$ = t.tsEnumMember(t.identifier($$[$0-1]));
+    this.$ = $$[$0-1];
 
 break;
-case 14:
+case 15:
 
     this.$ = t.tsEnumMember(t.identifier($$[$0]));
 
 break;
-case 15:
+case 16:
+
+    {
+    const value = Number($$[$0]);
+    this.$ = t.tsEnumMember(t.identifier($$[$0-2]), t.numericLiteral(value));
+    }
+
+break;
+case 17:
+
+    {
+    this.$ = t.tsEnumMember(t.identifier($$[$0-2]), t.stringLiteral($$[$0]));
+    }
+
+break;
+case 18:
+
+    {
+    const value = -Number($$[$0]);
+    this.$ = t.tsEnumMember(t.identifier($$[$0-3]), t.numericLiteral(value));
+    }
+
+break;
+case 19:
 
     this.$ = t.tsInterfaceDeclaration(
         t.identifier($$[$0-1]),
@@ -174,19 +197,19 @@ case 15:
     );
 
 break;
-case 16:
+case 20: case 26: case 27:
 
     this.$ = $$[$0-2]
 
 break;
-case 18:
+case 22:
 
     // console.log('ERROR', $$[$0-1], $$[$0]);
 
     this.$ = $$[$0-1].concat($$[$0])
 
 break;
-case 19:
+case 23:
 
     {
         const node = t.tsPropertySignature(
@@ -202,22 +225,36 @@ case 19:
     }
 
 break;
-case 20:
+case 24:
+
+    this.$ = $$[$0]
+
+break;
+case 25:
+
+    this.$ = $$[$0-3]
+
+break;
+case 28:
 
     // console.log('TYPE:', $$[$0] + '_x');
     if ($$[$0] === 'bool') {
         this.$ = t.tsBooleanKeyword();
-    } else {
+    } 
+    else if ($$[$0] === 'int') {
+        this.$ = t.tsNumberKeyword();
+    }
+    else {
         this.$ = t.tsStringKeyword();
     }
 
 break;
-case 21:
+case 29:
 
     this.$ = t.tsTypeReference(t.identifier($$[$0]));
 
 break;
-case 22:
+case 30:
 
     this.$ = t.tsTypeReference(
         t.identifier('Array'),
@@ -227,7 +264,7 @@ case 22:
       );
 
 break;
-case 23:
+case 31:
 
     this.$ = t.tsTypeReference(
         t.identifier('Record'),
@@ -238,7 +275,7 @@ case 23:
     );
 
 break;
-case 24:
+case 32:
 
     // module::struct => namespace.interface
     const left = t.identifier($$[$0-2]);
@@ -248,8 +285,8 @@ case 24:
 break;
 }
 },
-table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,8:[1,6],12:[1,5]},{6:[1,7]},o($V0,[2,3]),{10:[1,8]},{9:[1,9]},{1:[2,1]},{13:[1,10]},{10:[1,11]},{14:12,17:13,18:14,19:15,20:$V1,24:$V2},{11:[1,18]},{15:[1,19],17:20,18:14,19:15,20:$V1,24:$V2},o($V3,[2,6]),o($V3,[2,8]),o($V3,[2,9]),{10:[1,21]},{10:[1,22]},{9:[1,23]},{16:[1,24]},o($V3,[2,7]),{13:[1,26],25:25},{13:[1,27]},o($V0,[2,4]),{6:[2,5]},o($V3,[2,15]),{26:28,27:29,28:$V4},{10:$V5,21:31,22:32},{15:[1,34],27:35,28:$V4},o($V6,[2,17]),{29:[1,36]},{10:$V5,15:[1,37],22:38},o($V7,[2,11]),o($V7,[2,14],{23:[1,39]}),{16:[1,40]},o($V6,[2,18]),{10:$V8,30:41,31:$V9,32:$Va,35:$Vb},{16:[1,46]},o($V7,[2,12]),o($V7,[2,13]),o($V3,[2,16]),{10:[1,47]},o($Vc,[2,20]),o($Vc,[2,21],{36:[1,48]}),{33:[1,49]},{33:[1,50]},o($V3,[2,10]),{16:[1,51]},{10:[1,52]},{10:$V8,30:53,31:$V9,32:$Va,35:$Vb},{10:$V8,30:54,31:$V9,32:$Va,35:$Vb},o($V6,[2,19]),o($Vc,[2,24]),{34:[1,55]},{23:[1,56]},o($Vc,[2,22]),{10:$V8,30:57,31:$V9,32:$Va,35:$Vb},{34:[1,58]},o($Vc,[2,23])],
-defaultActions: {7:[2,1],24:[2,5]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,8:[1,6],12:[1,5]},{6:[1,7]},o($V0,[2,3]),{10:[1,8]},{9:[1,9]},{1:[2,1]},{13:[1,10]},{10:[1,11]},{14:12,17:13,18:14,19:15,20:$V1,29:$V2},{11:[1,18]},{15:[1,19],17:20,18:14,19:15,20:$V1,29:$V2},o($V3,[2,6]),o($V3,[2,8]),o($V3,[2,9]),{10:[1,21]},{10:[1,22]},{9:[1,23]},{16:[1,24]},o($V3,[2,7]),{13:[1,26],30:25},{13:[1,27]},o($V0,[2,4]),{6:[2,5]},o($V3,[2,19]),{26:$V4,31:28,32:29},{10:$V5,21:31,22:32,23:33},{15:[1,35],26:$V4,32:36},o($V6,[2,21]),{33:[1,37]},{10:$V5,15:[1,38],22:39,23:33},o($V7,[2,11]),o($V7,[2,13],{24:[1,40]}),o($V8,[2,15],{25:[1,41]}),{16:[1,42]},o($V6,[2,22]),{10:$V9,34:43,36:$Va,37:$Vb,40:$Vc},{16:[1,48]},o($V7,[2,12]),o($V7,[2,14]),{26:[1,49],27:[1,50],28:[1,51]},o($V3,[2,20]),{10:[1,53],35:52},o($Vd,[2,28]),o($Vd,[2,29],{41:[1,54]}),{38:[1,55]},{38:[1,56]},o($V3,[2,10]),o($V8,[2,16]),o($V8,[2,17]),{26:[1,57]},{16:[1,58]},{16:[2,24],25:[1,59]},{10:[1,60]},{10:$V9,34:61,36:$Va,37:$Vb,40:$Vc},{10:$V9,34:62,36:$Va,37:$Vb,40:$Vc},o($V8,[2,18]),o($V6,[2,23]),{10:[1,65],26:[1,64],28:[1,63]},o($Vd,[2,32]),{39:[1,66]},{24:[1,67]},{26:[1,68]},{16:[2,26]},{16:[2,27]},o($Vd,[2,30]),{10:$V9,34:69,36:$Va,37:$Vb,40:$Vc},{16:[2,25]},{39:[1,70]},o($Vd,[2,31])],
+defaultActions: {7:[2,1],24:[2,5],64:[2,26],65:[2,27],68:[2,25]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -758,7 +795,7 @@ case 14: return "RIGHT";
 break;
 case 15:return "REQUIRED"
 break;
-case 16:return 31
+case 16:return 36
 break;
 case 17:return "TYPE"
 break;
@@ -792,16 +829,20 @@ case 31:return "COMMA"
 break;
 case 32:return "DOUBLE_COLON"
 break;
-case 33: /* DO NOTHING */ 
+case 33: return "EQUAL"; 
 break;
-case 34: return "PROPERTY_INDEX";
+case 34: return "UMINUS"; 
 break;
-case 35:return "EOF"
+case 35: return "NUMBER"; 
+break;
+case 36: return "HEX"; 
+break;
+case 37: return "EOF"; 
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=\s*[^=;,//]+)/,/^(?:\d+)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=)/,/^(?:-)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:0[xX][0-9a-fA-F]+)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],"inclusive":true}}
 });
 return lexer;
 })();
