@@ -98,37 +98,37 @@ module IC
 		1 optional map<string, SQtRec> mData;
 	};
 
-    interface PushHqData
-    {
-	    /*
-        *  推送最新交易日期
-        */
-		int pushNewTradeDate(int iNewDate);
+    // interface PushHqData
+    // {
+	//     /*
+    //     *  推送最新交易日期
+    //     */
+	// 	int pushNewTradeDate(int iNewDate);
 		
-		/*
-        *  推送动态行情数据
-        */
-		int pushStockQtRec(SPushQtRec sPushQtRec);
+	// 	/*
+    //     *  推送动态行情数据
+    //     */
+	// 	int pushStockQtRec(SPushQtRec sPushQtRec);
 		
-	    /*
-        *  推送短线精灵数据接口
-        */
-		int pushShortLineData(SPushShortLineData sPushShortLineData);
+	//     /*
+    //     *  推送短线精灵数据接口
+    //     */
+	// 	int pushShortLineData(SPushShortLineData sPushShortLineData);
 		
-        /*
-        *  推送板块异动数据接口
-        */
-        int pushBlockChangeData(SPushBlockChangeData sPushBlockChangeData);
+    //     /*
+    //     *  推送板块异动数据接口
+    //     */
+    //     int pushBlockChangeData(SPushBlockChangeData sPushBlockChangeData);
 		
-		/*
-        *  推送板块异动数据接口New
-        */
-        int pushBlockChangeDataNew(SPushBlockChangeDataNew sPushBlockChangeDataNew);
+	// 	/*
+    //     *  推送板块异动数据接口New
+    //     */
+    //     int pushBlockChangeDataNew(SPushBlockChangeDataNew sPushBlockChangeDataNew);
 		
-		/*
-        *  推送领涨板块数据接口
-        */
-        int pushLeadBlkInfo(SPushLeadBlkInfo sPushLeadBlkInfo);
-    };
+	// 	/*
+    //     *  推送领涨板块数据接口
+    //     */
+    //     int pushLeadBlkInfo(SPushLeadBlkInfo sPushLeadBlkInfo);
+    // };
 
 };

@@ -1,10 +1,10 @@
 module HQSys
 {  
 
-		//push时设置request的BasePacket.iVersion
-    const int PUSH_VERSION = 100;
-    //标识回应包是否是对应的取消注册包，客户端通过标识区分是普通回应包，还是取消注册回应包
-    const int PUSH_CANCEL = 110;
+	// 	//push时设置request的BasePacket.iVersion
+    // const int PUSH_VERSION = 100;
+    // //标识回应包是否是对应的取消注册包，客户端通过标识区分是普通回应包，还是取消注册回应包
+    // const int PUSH_CANCEL = 110;
     
 		//客户端请求压缩选项
     enum E_CLI_COMP_TYPE
