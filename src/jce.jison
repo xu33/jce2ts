@@ -16,14 +16,17 @@
 "module" { return "MODULE";}
 "struct" { return "STRUCT";}
 "enum" { return "ENUM";}
-"interface" { /* DO NOTHING */ }
+"interface" { return "INTERFACE" }
 "<" { return "OPEN"; }
 ">" { return "CLOSE"; }
 "{" { return "LEFT"; }
 "}" { return "RIGHT"; }
 "[" { return "KEY_OPEN"; }
 "]" { return "KEY_CLOSE"; }
+"(" { return "LEFT_QUOTE"; }
+")" { return "RIGHT_QUOTE"; }
 (require|optional) {return "REQUIRED"}
+"out" return "OUT";
 // (string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short) { return "TYPE";}
 "string" return 'TYPE'
 "byte" return "TYPE"
@@ -100,6 +103,14 @@ expressions
             t.tsModuleBlock($4)
         );
     }
+| MODULE IDENTIFIER LEFT structlist interface RIGHT SEMI
+{
+    $4.push($interface);
+    $$ = t.tsModuleDeclaration(
+        t.identifier($IDENTIFIER),
+        t.tsModuleBlock($4)
+    );
+}
 ;
 
 structlist 
@@ -269,7 +280,7 @@ t
 }
 | MAP OPEN t COMMA t CLOSE
 {
-    console.log("map:", $3);
+    // console.log("map:", $3);
     if ($3.type === 'TSTypeReference') {
         $$ = t.tsTypeReference(
                 t.identifier('Map'),
@@ -296,3 +307,58 @@ t
     $$ = t.tsTypeReference(t.tsQualifiedName(left, right));
 }
 ;
+
+interface
+: INTERFACE IDENTIFIER LEFT methodlist RIGHT SEMI {
+    // console.log($1);
+    // console.log($2);
+
+    $$ = t.tsInterfaceDeclaration(
+        t.identifier($IDENTIFIER),
+        undefined,
+        undefined,
+        t.tsInterfaceBody($methodlist)
+    );
+};
+
+methodlist
+: TYPE IDENTIFIER LEFT_QUOTE args RIGHT_QUOTE SEMI {
+    const typeParameters = null;
+    const parameters = $args[0] || [];
+    const typeAnnotation = $args[1] ||  t.tsTypeAnnotation(t.tsTypeReference(t.identifier("void")));
+    $$ = [
+        t.tsPropertySignature(
+            t.identifier($IDENTIFIER),
+            t.tsTypeAnnotation(
+                t.tsFunctionType(
+                    typeParameters,
+                    parameters,
+                    typeAnnotation
+                )
+            )
+        )
+    ]
+};
+
+args
+: /* empty */
+| argc args 
+{
+    // console.log($1, $2);
+};
+
+argc
+: arg COMMA {
+    $$ = $1;
+}
+| arg {
+    $$ = $1;
+};
+
+arg
+: t IDENTIFIER {
+    console.log($1, $2);
+}
+| OUT t IDENTIFIER {
+    console.log($1, $2, $3);
+};

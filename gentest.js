@@ -1,23 +1,42 @@
 const generate = require("@babel/generator").default;
+const t = require("@babel/types");
 
-const { parse } = require("@babel/parser");
+// const typeParameters = t.tsTypeParameterDeclaration([
+//   t.tsTypeParameter(t.tsStringKeyword(), null, "a"),
+// ]);
+const typeParameters = null;
+const p = t.identifier("a");
+// p.type = "string";
+p.typeAnnotation = t.tsTypeAnnotation(t.tsStringKeyword());
+const parameters = [p];
 
-const code = `
-interface XXX {
-    name: string; // 注释
-}
-`;
-const ast = parse(code, {
-  sourceType: "module",
-  plugins: ["typescript"],
-});
-
-const output = generate(
-  ast,
-  {
-    /* options */
-  },
-  code
+const ps = t.tsPropertySignature(
+  t.identifier("getStockCompetition"),
+  t.tsTypeAnnotation(
+    t.tsFunctionType(
+      typeParameters,
+      parameters,
+      t.tsTypeAnnotation(
+        t.tsTypeReference(t.identifier("HStockCompetitionReq"))
+      )
+    )
+  )
 );
 
-console.log(JSON.stringify(ast));
+const id = t.tsInterfaceDeclaration(
+  t.identifier("SimulationTransaction"),
+  undefined,
+  undefined,
+  t.tsInterfaceBody([ps])
+);
+
+const ast = generate(id);
+
+console.log(ast.code);
+
+/*
+output:
+interface SimulationTransaction {
+  getStockCompetition: (a: string) => HStockCompetitionReq;
+}
+*/
