@@ -1,6 +1,6 @@
 module ABC {
     //财务权息版本数据
-	struct HCWVerData
+	struct HStockCompetitionReq
 	{
 			0 optional short shtSetCode;
 			1 optional string stringCode;
@@ -9,10 +9,9 @@ module ABC {
 			4 optional long lLTGChgVersion;	    //变动流通股最新版本
 	};
 
-    // 股票类型
-    enum E_STOCK_TYPE
+	interface SimulationTransaction
     {
-        E_STOCK_TYPE_A = 1,             // A股
-        E_STOCK_TYPE_B = 2,           // B股
+        //获取大赛列表
+        int getStockCompetition(HStockCompetitionReq stReq, out HStockCompetitionReq stRsp);
     };
 };
