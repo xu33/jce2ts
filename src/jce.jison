@@ -8,6 +8,7 @@
 \s+ /* skip whitespace */
 "//"(.*)                                    { /* DO NOTHING */ }
 [/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */ }
+"key"\[[^\]]*\]";" { /* DO NOTHING */ }
 "#include" return "INCLUDE";
 ".jce" return "JCE"
 <<EOF>> return 'EOF'
@@ -20,6 +21,8 @@
 ">" { return "CLOSE"; }
 "{" { return "LEFT"; }
 "}" { return "RIGHT"; }
+"[" { return "KEY_OPEN"; }
+"]" { return "KEY_CLOSE"; }
 (require|optional) {return "REQUIRED"}
 // (string|byte|short|bool|int|float|long|double|signed\s+int|unsigned\s+int|unsigned\s+short) { return "TYPE";}
 "string" return 'TYPE'
@@ -33,6 +36,7 @@
 "signed"\s+"int" return "TYPE"
 "unsigned"\s+"int" return "TYPE"
 "unsigned"\s+"short" return "TYPE"
+"unsigned\s+byte" return "TYPE"
 vector { return "VECTOR"; }
 map { return "MAP"; }
 [a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
@@ -103,7 +107,6 @@ structlist
     $$ = [$1];
 }
 | structlist def {
-    // console.log('STRUCT:', $1, $2)
     $$ = $1.concat($2)
 }
 ;
@@ -266,13 +269,24 @@ t
 }
 | MAP OPEN t COMMA t CLOSE
 {
-    $$ = t.tsTypeReference(
-        t.identifier('Record'),
-        t.tsTypeParameterInstantiation([
-            $3,
-            $5
-        ])
-    );
+    console.log("map:", $3);
+    if ($3.type === 'TSTypeReference') {
+        $$ = t.tsTypeReference(
+                t.identifier('Map'),
+                t.tsTypeParameterInstantiation([
+                    $3,
+                    $5
+                ])
+            );
+    } else {
+        $$ = t.tsTypeReference(
+            t.identifier('Record'),
+            t.tsTypeParameterInstantiation([
+                $3,
+                $5
+            ])
+        );
+    }
 }
 | IDENTIFIER DOUBLE_COLON IDENTIFIER 
 {

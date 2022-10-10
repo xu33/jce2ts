@@ -96,7 +96,7 @@ case 2:
     this.$ = [];
 
 break;
-case 3:
+case 3: case 7:
 
     this.$ = $$[$0-1].concat($$[$0])
 
@@ -126,12 +126,6 @@ break;
 case 6: case 11: case 21:
 
     this.$ = [$$[$0]];
-
-break;
-case 7:
-
-    // console.log('STRUCT:', $$[$0-1], $$[$0])
-    this.$ = $$[$0-1].concat($$[$0])
 
 break;
 case 8: case 9: case 13:
@@ -266,13 +260,24 @@ case 30:
 break;
 case 31:
 
-    this.$ = t.tsTypeReference(
-        t.identifier('Record'),
-        t.tsTypeParameterInstantiation([
-            $$[$0-3],
-            $$[$0-1]
-        ])
-    );
+    console.log("map:", $$[$0-3]);
+    if ($$[$0-3].type === 'TSTypeReference') {
+        this.$ = t.tsTypeReference(
+                t.identifier('Map'),
+                t.tsTypeParameterInstantiation([
+                    $$[$0-3],
+                    $$[$0-1]
+                ])
+            );
+    } else {
+        this.$ = t.tsTypeReference(
+            t.identifier('Record'),
+            t.tsTypeParameterInstantiation([
+                $$[$0-3],
+                $$[$0-1]
+            ])
+        );
+    }
 
 break;
 case 32:
@@ -769,39 +774,39 @@ case 1: /* DO NOTHING */
 break;
 case 2: /* DO NOTHING */ 
 break;
-case 3:return "INCLUDE";
+case 3: /* DO NOTHING */ 
 break;
-case 4:return "JCE"
+case 4:return "INCLUDE";
 break;
-case 5:return 6
+case 5:return "JCE"
 break;
-case 6:return "QUOTE";
+case 6:return 6
 break;
-case 7: return "MODULE";
+case 7:return "QUOTE";
 break;
-case 8: return "STRUCT";
+case 8: return "MODULE";
 break;
-case 9: return "ENUM";
+case 9: return "STRUCT";
 break;
-case 10: /* DO NOTHING */ 
+case 10: return "ENUM";
 break;
-case 11: return "OPEN"; 
+case 11: /* DO NOTHING */ 
 break;
-case 12: return "CLOSE"; 
+case 12: return "OPEN"; 
 break;
-case 13: return "LEFT"; 
+case 13: return "CLOSE"; 
 break;
-case 14: return "RIGHT"; 
+case 14: return "LEFT"; 
 break;
-case 15:return "REQUIRED"
+case 15: return "RIGHT"; 
 break;
-case 16:return 36
+case 16: return "KEY_OPEN"; 
 break;
-case 17:return "TYPE"
+case 17: return "KEY_CLOSE"; 
 break;
-case 18:return "TYPE"
+case 18:return "REQUIRED"
 break;
-case 19:return "TYPE"
+case 19:return 36
 break;
 case 20:return "TYPE"
 break;
@@ -817,32 +822,40 @@ case 25:return "TYPE"
 break;
 case 26:return "TYPE"
 break;
-case 27: return "VECTOR"; 
+case 27:return "TYPE"
 break;
-case 28: return "MAP"; 
+case 28:return "TYPE"
 break;
-case 29: return "IDENTIFIER";
+case 29:return "TYPE"
 break;
-case 30:return "SEMI"
+case 30:return "TYPE"
 break;
-case 31:return "COMMA"
+case 31: return "VECTOR"; 
 break;
-case 32:return "DOUBLE_COLON"
+case 32: return "MAP"; 
 break;
-case 33: return "EQUAL"; 
+case 33: return "IDENTIFIER";
 break;
-case 34: return "UMINUS"; 
+case 34:return "SEMI"
 break;
-case 35: return "NUMBER"; 
+case 35:return "COMMA"
 break;
-case 36: return "HEX"; 
+case 36:return "DOUBLE_COLON"
 break;
-case 37: return "EOF"; 
+case 37: return "EQUAL"; 
+break;
+case 38: return "UMINUS"; 
+break;
+case 39: return "NUMBER"; 
+break;
+case 40: return "HEX"; 
+break;
+case 41: return "EOF"; 
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:(require|optional))/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=)/,/^(?:-)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:0[xX][0-9a-fA-F]+)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:key\[[^\]]*\];)/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:\[)/,/^(?:\])/,/^(?:(require|optional))/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:unsigned\\s\+byte\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=)/,/^(?:-)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:0[xX][0-9a-fA-F]+)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41],"inclusive":true}}
 });
 return lexer;
 })();
