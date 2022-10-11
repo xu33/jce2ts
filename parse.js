@@ -1,8 +1,3 @@
-/**
- * author:nanshi
- * jce格式协议转ts格式类型声明
- * 词法分析，语义分析，手动构造AST生成代码
- */
 const generate = require("@babel/generator").default;
 const t = require("@babel/types");
 const parser = require("./jce").parser;
