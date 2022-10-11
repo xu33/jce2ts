@@ -167,6 +167,22 @@ declare global {
     interface HBlacklistRsp {
       iIsBlacklist?: number;
     }
+    interface SimulationTransaction {
+      addRemainRestTimes: (stReq: RestTimesReq) => RestTimesRsp;
+      reduceRemainRestTimes: (stReq: RestTimesReq) => RestTimesRsp;
+      getRemainRestTimes: (stReq: RestTimesReq) => RestTimesRsp;
+      getStockRank: (stReq: HSignStateReq) => HStockRankRsp;
+      getStockCompetitionDetail: (stReq: HSignStateReq) => HStockCompetitionDetialRsp;
+      signState: (stReq: HSignStateReq) => HSignStateRsp;
+      getUserMsg: (stReq: RestTimesReq) => HStockUserFansRsp;
+      followUserState: (stReq: HStockUserAttentionReq) => HStockUserAttentionStateRsp;
+      followUser: (stReq: HStockUserAttentionReq) => HStockUserAttentionRsp;
+      getRecommendContest: (stReq: HStockContestRecommandReq) => HStockContestRecommandRsp;
+      getTransactionAnnouncement: (stReq: HStockCompetitionAnnouncementReq) => HStockCompetitionAnnouncementRsp;
+      getTransactionUser: (stReq: HTransactionUserReq) => HTransactionUserRsp;
+      joinStockCompetition: (stReq: HJoinStockCompetitionReq) => HJoinStockCompetitionRsp;
+      getStockCompetition: (stReq: HStockCompetitionReq) => HStockCompetitionRsp;
+    }
   }
 }
 export {};

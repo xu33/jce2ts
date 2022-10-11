@@ -8,7 +8,7 @@ declare global {
       lLTGChgVersion?: string;
     }
     interface SimulationTransaction {
-      getStockCompetition: () => void;
+      getStockCompetition: (stReq: HStockCompetitionReq) => HStockCompetitionReq;
     }
   }
 }

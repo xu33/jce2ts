@@ -322,12 +322,39 @@ interface
 };
 
 methodlist
+: method {
+    $$ = [$1];
+}
+| method methodlist {
+    $$ = $2.concat($1);
+};
+
+method
 : TYPE IDENTIFIER LEFT_QUOTE args RIGHT_QUOTE SEMI {
+    {
     const typeParameters = null;
-    const parameters = $args[0] || [];
-    const typeAnnotation = $args[1] ||  t.tsTypeAnnotation(t.tsTypeReference(t.identifier("void")));
-    $$ = [
-        t.tsPropertySignature(
+    const inputArgs = $args.filter(o => o.out === false);
+
+    const parameters = inputArgs.map(o => {
+        p = t.identifier(o.name);
+        p.typeAnnotation = t.tsTypeAnnotation(o.type);
+
+        return p;
+    });
+
+    console.log('parameters', parameters);
+
+    const out = $args.find(o => o.out === true);
+    let typeAnnotation;
+
+    if (out) {
+        console.log(out);
+        typeAnnotation = t.tsTypeAnnotation(out.type);
+    } else {
+        typeAnnotation = t.tsTypeAnnotation(t.tsTypeReference(t.identifier("void")));   
+    }
+
+    $$ = t.tsPropertySignature(
             t.identifier($IDENTIFIER),
             t.tsTypeAnnotation(
                 t.tsFunctionType(
@@ -336,15 +363,24 @@ methodlist
                     typeAnnotation
                 )
             )
-        )
-    ]
+        );
+    }
 };
 
 args
 : /* empty */
-| argc args 
 {
-    // console.log($1, $2);
+    $$ = [];
+}
+| args argc
+{
+    // console.log('arg', $2, $1);
+    // if (!Array.isArray($1)) {
+    //     $$ = 
+    // }
+
+    // $$ = $2.concat($1);
+    $$ = $1.concat($2);
 };
 
 argc
@@ -357,8 +393,16 @@ argc
 
 arg
 : t IDENTIFIER {
-    console.log($1, $2);
+    $$ = {
+        name: $IDENTIFIER,
+        type: $t,
+        out: false
+    }
 }
 | OUT t IDENTIFIER {
-    console.log($1, $2, $3);
+    $$ = {
+        name: $IDENTIFIER,
+        type: $t,
+        out: true
+    }
 };
