@@ -348,7 +348,7 @@ declare global {
     interface FUltraShortTermStkNum {
       iRiseStkNum?: number;
       iFallStkNum?: number;
-      mapOriStkNum?: Record<E_UNITED_STK_POOL_TYPE, number>;
+      mapOriStkNum?: Map<E_UNITED_STK_POOL_TYPE, number>;
       sUltraShortMoodCopy?: string;
     }
     interface FPositionRateCopy {
@@ -434,7 +434,7 @@ declare global {
       strCode?: string;
     }
     interface FZTAnalyze {
-      mapZTAnalyze?: Record<E_ZT_TAG_TYPE, Array<FZTAnalyzeInfo>>;
+      mapZTAnalyze?: Map<E_ZT_TAG_TYPE, Array<FZTAnalyzeInfo>>;
     }
     interface FPanMianLDInfo {
       strStockName?: string;
@@ -446,7 +446,7 @@ declare global {
       strCode?: string;
     }
     interface FPanMianLD {
-      mapPanMianLD?: Record<E_ZT_TAG_TYPE, Array<FPanMianLDInfo>>;
+      mapPanMianLD?: Map<E_ZT_TAG_TYPE, Array<FPanMianLDInfo>>;
     }
     interface FEarnMoneyEffectInfo {
       strStockName?: string;

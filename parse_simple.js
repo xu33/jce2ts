@@ -10,14 +10,15 @@ const fs = require("fs");
 const path = require("path");
 
 const args = process.argv.slice(2);
-const OUTPUT_DIR = "dist";
+console.log(args);
+const OUTPUT_DIR = "./";
 
 if (args.length <= 0) {
   console.log("Invaild arguments.");
   return;
 }
 
-const fileName = args[0];
+const entryFileName = args[0];
 const bookKeeping = [];
 
 function parseRecursion(fileName) {
@@ -66,4 +67,4 @@ function parseRecursion(fileName) {
   });
 }
 
-parseRecursion(fileName);
+parseRecursion(entryFileName);

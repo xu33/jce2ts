@@ -1,0 +1,47 @@
+
+#include "InterfaceComm.jce"
+
+module News
+{
+	interface Broker
+	{
+		//获得banner
+		int getBannerList(NewsBannerReq req, out NewsBannerRsp rsp);
+
+		//获得自选的新闻id列表
+		int getIdList(NewsIdListReq req, out NewsIdListRsp rsp);
+
+		//获得某些股票下的新闻、公告、研报的新闻(多支)
+		int getStocksNews(stocksNewsReq req, out NewsIdListRsp rsp);
+
+		//获得除自选以外的新闻摘要
+		int getBriefList(NewsIdListReq req, out NewsListRsp rsp);
+
+		//获取栏目新闻摘要 对getBriefList的封装
+        int getColumnBriefList(NewsIdListReq req, out NewsListRsp rsp);
+
+		//获得除通用的新闻摘要/ID
+		int getAllList(NewsReq req, out NewsRsp rsp);
+
+		//获得自选新闻列表
+		int getNewsList(NewsListReq req, out NewsListRsp rsp);
+
+		//7*24列表
+		int getLiveList(NewsIdListReq req, out LiveListRsp rsp);
+
+		//获得新闻详情
+		int getNewsContent(NewsContentReq req, out NewsContentRsp rsp);
+
+		//获得研究所新闻详情
+		int getResearchNewsContent(NewsContentReq req, out ResearchContentRsp rsp);
+
+		//获取栏目信息
+		int getColumnInfo(ColumnInfoReq req, out ColumnInfoRsp rsp);
+	};
+};
+
+
+
+
+
+

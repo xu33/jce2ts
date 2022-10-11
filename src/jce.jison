@@ -12,6 +12,7 @@
 "#include" return "INCLUDE";
 ".jce" return "JCE"
 <<EOF>> return 'EOF'
+\"(\\.|[^"\\])*\" return "STRING_LITERAL"
 "\"" return "QUOTE";
 "module" { return "MODULE";}
 "struct" { return "STRUCT";}
@@ -42,6 +43,7 @@
 "unsigned\s+byte" return "TYPE"
 vector { return "VECTOR"; }
 map { return "MAP"; }
+"const" return "CONST";
 [a-zA-Z_$][a-zA-Z_$0-9]* { return "IDENTIFIER";}
 ";" return "SEMI"
 "," return "COMMA"
@@ -81,10 +83,13 @@ deplist
 
 
 dep
-: INCLUDE QUOTE IDENTIFIER JCE QUOTE
+: INCLUDE STRING_LITERAL
 {
-    console.log($IDENTIFIER);
-    $$ = [$IDENTIFIER + $JCE];
+    {
+    const fileName = $STRING_LITERAL.replace(/^"/, "").replace(/"$/, "");
+
+    $$ = [fileName];
+    }
 };
 
 expressions 
@@ -111,6 +116,13 @@ expressions
         t.tsModuleBlock($4)
     );
 }
+| MODULE IDENTIFIER LEFT interface RIGHT SEMI
+{
+    $$ = t.tsModuleDeclaration(
+        t.identifier($IDENTIFIER),
+        t.tsModuleBlock([$interface])
+    );
+}
 ;
 
 structlist 
@@ -123,15 +135,28 @@ structlist
 ;
 
 def
-:struct
+: struct
 {
     $$ = $1;
 }
-|enum
+| enum
 {
+    $$ = $1;
+}
+| statement {
     $$ = $1;
 }
 ;
+
+statement
+: CONST t IDENTIFIER EQUAL STRING_LITERAL SEMI {
+    {
+        const id = t.identifier($3);
+        id.typeAnnotation = t.tsTypeAnnotation($2);
+        const init = t.stringLiteral($5);
+        $$ = t.variableDeclaration("const", [t.variableDeclarator(id, init)]);
+    }
+};
 
 enum: 
 ENUM IDENTIFIER LEFT enumitems RIGHT SEMI {
@@ -249,6 +274,9 @@ propertyName
 | IDENTIFIER EQUAL IDENTIFIER {
     $$ = $1
 }
+| IDENTIFIER EQUAL STRING_LITERAL {
+    $$ = $1
+}
 ;
 
 t
@@ -342,13 +370,13 @@ method
         return p;
     });
 
-    console.log('parameters', parameters);
+    // console.log('parameters', parameters);
 
     const out = $args.find(o => o.out === true);
     let typeAnnotation;
 
     if (out) {
-        console.log(out);
+        // console.log(out);
         typeAnnotation = t.tsTypeAnnotation(out.type);
     } else {
         typeAnnotation = t.tsTypeAnnotation(t.tsTypeReference(t.identifier("void")));   

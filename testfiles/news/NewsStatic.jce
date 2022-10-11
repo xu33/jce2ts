@@ -1,0 +1,213 @@
+
+module CNews
+{
+    //返回状态码
+	enum Result_Status
+	{
+		OKOK  = 0,			//正常
+		ERROR = -1,			//异常
+	};
+
+    //通用返回码以及返回信息结构
+	struct Comm_Result
+	{
+		0 require int ResStatus;       //取值Result_Status
+		1 optional string Message;     //状态描述
+	};
+
+    //一个用户操作结构
+	struct News_Statics
+	{
+		0 require string NewsId;
+		1 require int    UserOp;        //用户操作，取值Static_Op
+	};
+
+    //用户操作请求
+	struct User_Op_Req
+	{
+		0 require string UserId;					//用户ID
+		1 require vector<News_Statics> UserOp;	    //用户操作，可上报多个操作
+	};
+
+    //统计数据查询请求
+	struct News_Statics_Req
+	{
+		0 require vector<string> NewsIds;			//查询资讯统计数
+		1 optional string UserId;
+	};
+
+    //统计数据查询返回结构
+	struct News_Statics_Res
+	{
+		0 require Comm_Result res;
+		1 optional map<string,map<int,int>> NewsStatics; //统计结果，map<NewsId,map<Static_Op,统计值>>
+		2 optional map<int,int> opType2opSum;            //UserId对应的操作类型2数量
+	};
+
+    //用户历史操作请求
+	struct User_Last_Op_Req
+	{
+		0 require string UserId;
+		1 require string NewsId;
+		2 optional int interval;         //间隔时间，这个时间类用户操作历史，不传递的话根据配置来
+	};
+
+    //用户历史操作查询请求返回
+	struct User_Last_Op_res
+	{
+		0 require Comm_Result res;
+		1 optional map<int,int> UserOps; //map<Static_Op,0/1>
+	};
+
+    //用户历史操作CacheKey
+	struct User_Last_Op_Key
+	{
+		0 require string UserId;
+		1 require string NewsId;
+	};
+
+    //用户历史操作CacheValue
+	struct User_Last_Op_Value
+	{
+		0 require map<int,int> UserOps; //<Static_Op,操作时间戳或者0>,0-未操作
+	};
+
+    //新闻操作CacheKey
+	struct News_Op_Key
+	{
+		0 require string NewsId;
+	};
+
+    //新闻操作CacheValue
+	struct News_Op_Value
+	{
+		0 require map<int,int> NewsOps;    // <Static_Op,操作累计数>
+	};
+
+    //新闻点赞人列表Value
+	struct News_Dz_User_Value
+	{
+		0 require map<string,long> UserOps;
+	};
+
+	///////////////////////////////////////////////////////////
+    ///////////////////////内部使用结构//////////////////////////
+
+    //支持操作的枚举
+    enum Static_Op
+    {
+    	SHARE = 0,						//分享
+    	READ  = 1,						//阅读或者点击
+    	LIKE  = 2,						//点赞
+    	NLIKE = 3,						//取消点赞
+    	TRANS = 4,						//转发
+    	COMM  = 5,						//评论
+    	FORBID  = 6,					//屏蔽
+    	AWARD = 7,						//打赏
+
+    	ENUM_END = 8,					//标记操作类型最大值，超过这个值非法
+    };
+
+    //新闻操作统计，用户信息节点
+    struct UserOpInfo {
+        0 optional string uid; //用户id
+        2 optional long updateTime; //最近操作时间
+        3 optional int opType; //操作类型 取值于Static_Op
+    };
+    //新闻统计信息Cache结构
+    struct NewsCountProp {
+        0 optional string newsId; //新闻id
+        1 optional map<int,int> countProp2Sum; //新闻统计指标2指标量
+        2 optional map<int,vector<UserOpInfo>> countProp2User; //新闻操作指标对应的操作人信息
+    };
+
+    //用户对某个新闻的操作记录Cache结构
+    struct User2NewsOp {
+        0 optional map<int,int> opType2opSum; //操作类型(Static_Op)2操作数量
+    };
+
+    //新闻操作类型 2 操作uid
+	struct NewsOperator{
+		0 require map<int,vector<UserOpInfo>> Op;//新闻操作指标对应的操作人信息
+	};
+
+    //用户上报请求
+    struct NotifyUserOpReq {
+        0 optional string newsId;  //操作的newsId
+        1 optional string userId;  //userId
+        2 optional map<int,int> opType2opSum;  //操作类型(Static_Op)2操作数量
+        3 optional int needNewCountInfo = 0;   //是否需要返回新的统计信息 (0不返回 1只返回数字 2返回数字以及最近操作usrId)
+        4 optional int needUpdateNews2User = 0;//是否需要构建新闻与用户操作关系 (0不构建 1构建)
+    };
+
+    //用户上报请求回复
+    struct NotifyUserOpRes {
+        0 optional Comm_Result res;
+        1 optional NewsCountProp newsCountProp; //返回的新的统计信息
+    };
+
+    //请求新闻统计信息
+    struct GetNewsCountInfoReq {
+        0 optional string newsId;  //操作的newsId
+        1 optional string userId;  //uid
+        2 optional bool needOpUserList = false;//是否返回最近操作人
+        3 optional bool needUserOp = true; //返回用户对改新闻的操作
+    };
+
+    //请求新闻统计信息回复
+    struct GetNewsCountInfoRes {
+        0 optional Comm_Result res;
+        1 optional NewsCountProp newsCountProp; //返回的新的统计信息
+        2 optional map<int,int> opType2opSum;   //返回用户的操作信息
+    };
+
+
+	struct HotNewsReq{
+		0 require int Optype; //操作类型
+		1 optional int reqNum = 10; //默认条数
+	};
+
+	struct HotNewsRes{
+		0 require vector<string> NewsIdList;
+	};
+	struct GetNewsCountInfoBatchReq{
+		0 require vector<string> vNewsId; //新闻id合集
+		1 optional string userId;	//用户id
+	};
+	struct GetNewsCountInfoBatchRes{
+		0 require Comm_Result res;  //返回状态
+		1 optional map<string,NewsCountProp> mNewsId2Count;// 新闻id 映射的新闻统计数据
+	};
+	interface NewsStatic
+	{
+	    //用户操作上报
+	    int notifyUserOp(NotifyUserOpReq req , out NotifyUserOpRes rsp);
+
+        //获取统计信息
+        int getNewsCountInfo(GetNewsCountInfoReq req, out GetNewsCountInfoRes rsp);
+
+		//批量获取统计信息
+		int getNewsCountInfoBatch(GetNewsCountInfoBatchReq req, out GetNewsCountInfoBatchRes rsp);
+
+        //按照某种统计依据获取前N的新闻
+        int getHotNews(HotNewsReq req,out HotNewsRes res);
+
+        ////////////////////////////////////////////////////////////////////
+
+		//用户操作上报(废弃)
+	    int userOpStaticsUpload(User_Op_Req req,out Comm_Result res);
+
+	    //查询资讯统计数(废弃)
+	    int dowloadNewsStatics(News_Statics_Req req,out News_Statics_Res res);
+
+	    //查询用户在过去短时间内针对资讯的操作，用于同步详情页操作到列表页(废弃)
+	    int userLastOp(User_Last_Op_Req req,out User_Last_Op_res res);
+
+	    //查询topNews(废弃)
+	    int getTopNews(string mark,out vector<string> topNews);
+
+	    //查询资讯点赞用户ID,返回map<userId,timestamp>(废弃)
+	    int getNewsLikeUser(string News_id,out map<string,long> Users);
+	};
+
+};

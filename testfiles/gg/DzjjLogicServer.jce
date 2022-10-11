@@ -1,0 +1,167 @@
+module DataCenter
+{
+    //定增掘金
+    struct DzjjZXDZSJ {
+        0 optional int iSecUniCode;     //证券统一编码,10位整数
+        1 optional int iMktTypePar;     //证券市场
+        2 optional string sSecCode;     //证券市场代码
+        3 optional string sSecShortName;//证券简称
+        4 optional string sMZSM; //募资说明
+        5 optional int iDSHGGR; //董事会公告日
+        6 optional string fDZJG; //定增价格(元)
+        7 optional string sSJJC; //事件进程
+        8 optional string fFXSL; //发行数量(万股)
+        9 optional string fMZJE; //募资净额(万股)
+        10 optional string fMZZJ; //募资资金(万元)
+        11 optional int iZXGGR; //最新公告日
+        12 optional float fZJL; //折价率=100*(1-定增价/现价*区间累计复权因子)
+    };
+
+    struct DzjjZXDZSJReq
+    {
+        0 optional string sBusId;       //接入业务名
+    };
+
+    struct DzjjZXDZSJRsp
+    {
+        0 optional int iRet;            //返回状态
+        1 optional string sMsg;         //提示信息
+        2 optional vector<DzjjZXDZSJ> vDzjjZXDZSJ;
+    };
+
+    struct DzjjZXPF {
+        0 optional int iMktTypePar;//证券市场
+        1 optional string sSecCode;//股票代码
+        2 optional string sSecShortName;//股票简称
+        3 optional int iZXGGR;//最新公告日
+        4 optional string sSJJC;//事件进程
+        5 optional string sMZSM;//募资说明
+        6 optional string fFXSL;//发行数量(万股)
+        7 optional string fDZJG;//定增价格(元)
+        8 optional string fQJFQYZ;//区间复权因子
+        9 optional int iJLJJRQTS;//距离解禁日期天数
+        10 optional string fJJSL;//解禁数量(万股)
+        11 optional string fJJZZGBB;//解禁占总股本比
+        12 optional float fZJL; //折价率=100*(1-定增价/现价*区间累计复权因子)
+        13 optional float fPFBL; //破发比例=100*(1-现价*区间累计复权因子/定增价格)
+        14 optional float fPeRatio;//市盈率
+    };
+
+    struct DzjjZXPFReq
+    {
+        0 optional string sBusId;
+    };
+
+    struct DzjjZXPFRsp
+    {
+        0 optional int iRet;
+        1 optional string sMsg;
+        2 optional vector<DzjjZXPF> vDzjjZXPF;
+    };
+
+    struct DzjjPFJH {
+        0 optional int iMktTypePar;//证券市场
+        1 optional string sSecCode;//股票代码
+        2 optional string sSecShortName;//股票简称
+        3 optional int iZXGGR;//最新公告日
+        4 optional string fDZJG;//定增价格(元)
+        5 optional string fQJFQYZ;//区间复权因子
+        6 optional float fPFBL; //破发比例=100*(1-现价*区间累计复权因子/定增价格)
+        7 optional int iJJRQ;//解禁日期
+    };
+
+    struct DzjjPFJHReq
+    {
+        0 optional string sBusId;
+    };
+
+    struct DzjjPFJHRsp
+    {
+        0 optional int iRet;
+        1 optional string sMsg;
+        2 optional vector<DzjjPFJH> vDzjjPFJH;
+    };
+
+    struct DzjjJJFX {
+        0 optional int iMktTypePar;//证券市场
+        1 optional string sSecCode;//股票代码
+        2 optional string sSecShortName;//股票简称
+        3 optional int iZXGGR;//最新公告日
+        4 optional string fDZJG;//定增价格(元)
+        5 optional string fQJFQYZ;//区间复权因子
+        6 optional int iJLJJRQTS;//距离解禁日期天数
+        7 optional string fJJSL;//解禁数量(万股)
+        8 optional string fJJZZGBB;//解禁占总股本比
+        9 optional float fYJL; //溢价率=100*(1-定增价/现价*区间累计复权因子)
+    };
+
+    struct DzjjJJFXReq
+    {
+        0 optional string sBusId;
+    };
+
+    struct DzjjJJFXRsp
+    {
+        0 optional int iRet;
+        1 optional string sMsg;
+        2 optional vector<DzjjJJFX> vDzjjJJFX;
+    };
+
+    struct DzjjDZXQByCode {
+        0 optional int iSecUniCode;     //证券统一编码,10位整数
+        1 optional int iMktTypePar;//证券市场
+        2 optional string sSecCode;//股票代码
+        3 optional string sSecShortName;//股票简称
+        4 optional int iZXGGR;//最新公告日
+        5 optional int iDSHGGR;//董事会公告日
+        6 optional int iFXJGGGR;//发行结果公告日
+        7 optional string sSJJC;//事件进程
+        8 optional string fDZJG;//定增价格(元)
+        9 optional int iJJRQ;//解禁日期
+        10 optional string fMJGF;//募集股份(万股)
+        11 optional string fMZZJ; //募资资金(万元)
+        12 optional string sZFSM;//增发说明
+        13 optional string sZJYT;//资金用途
+        14 optional string sDZJZ;//定增进展
+        15 optional string fQJFQYZ_GG;//区间复权因子_公告
+        16 optional string fQJFQYZ_ZJL;//区间复权因子_折价率
+        17 optional float fGGYLZF; //公告以来涨幅=100*(复权现价/董事会预案公告日收盘价-1)
+        18 optional float fZJL; //折价率=100*(1-定增价/现价*区间累计复权因子)
+        19 optional float fZXJ; //最新价
+        20 optional float fZDF; //涨跌幅
+    };
+
+    struct DzjjDZXQByCodeReq
+    {
+        0 optional string sBusId;
+        1 optional int iMktTypePar;//证券市场(1.深圳,2.上海)
+        2 optional string sSecCode;//股票代码
+    };
+
+    struct DzjjDZXQByCodeRsp
+    {
+        0 optional int iRet;
+        1 optional string sMsg;
+        2 optional vector<DzjjDZXQByCode> vDzjjDZXQByCode;
+    };
+
+    interface DzjjLogicServer
+    {
+        // TODO 定义相关接口
+        //最新定增
+        int getDzjjZXDZSJ(DzjjZXDZSJReq req, out DzjjZXDZSJRsp rsp);
+
+        //最新破发
+        int getDzjjZXPF(DzjjZXPFReq req, out DzjjZXPFRsp rsp);
+
+        //破发机会
+        int getDzjjPFJH(DzjjPFJHReq req, out DzjjPFJHRsp rsp);
+
+        //解禁风险
+        int getDzjjJJFX(DzjjJJFXReq req, out DzjjJJFXRsp rsp);
+
+        //定增详情ByCode
+        int getDzjjDZXQByCode(DzjjDZXQByCodeReq req, out DzjjDZXQByCodeRsp rsp);
+
+    };
+};

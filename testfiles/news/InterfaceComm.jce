@@ -1,0 +1,1067 @@
+#include "StockPoolData.jce"
+module News
+{
+	enum E_List_Type
+	{
+		ELT_NONE_Type = 0,											// 空
+		ELT_HEANLINE = 1,											// 头条
+		ELT_CHANCE = 2,												// 机会
+		ELT_STRATEGY = 3,											// 策略
+		ELT_HANDICAP = 4,											// 盘口
+		ELT_MAIN_FORCE = 5,											// 主力
+		ELT_MACROS = 6,												// 宏观
+		ELT_COMPANY = 7,											// 公司
+		ELT_HK_STOCK = 8,											//
+		ELT_US_STOCK = 9,											//
+		ELT_SH_GOLD = 10,											// 上海金
+		ELT_BIG_BOARD = 11,											// 指数
+
+		//12已经被使用
+		ELT_FUTURES = 13,           								// 期货
+  		ELT_FOREIGN_CURRENCY = 14,         							// 外汇
+
+		ELT_LIVE = 15,												// 7*24
+		ELT_NOTICE = 16,											// 公告
+		ELT_RESEARCH_REPORT = 17,									// 研报
+		ELT_CHOICE = 18,											// 自选
+		ELT_CHOICE_NEWS = 19,										// 自选新闻
+		ELT_CHOICE_NOTICE = 20,										// 自选公告
+		ELT_CHOICE_RESEARCH = 21,									// 自选研报
+		ELT_STOCK_NEWS = 22,										// 个股新闻
+		ELT_STOCK_NOTICE = 23,										// 个股公告
+		ELT_STOCK_RESEARCH = 24,									// 个股研报
+		ELT_NEWS = 25,												// 新闻
+		ELT_STOCK_INDUSTRY = 26,									// 个股行业
+		ELT_STOCK_INTERACTIVE = 27,									// 个股互动
+		ELT_INTERACTIVE = 28,										// 互动易
+		ELT_IDU_REPORT = 29,                                         // 行业研报
+
+		//研究所
+		ELT_RESEARCH = 30,											// 研究所
+		ELT_ANALYSIS = 31,											// 盘面直击
+		ELT_INSTITUTION_REFERENCE = 32,								// 机构内参
+		ELT_SPECIAL_STUDY = 33,										// 特色研究
+		ELT_RESEARCH_HEAD = 34,										// 研究所首条
+
+		//其它
+		ELT_INDUSTRY = 40,											// 行业
+		ELT_CONCERN = 41,											// 题材
+		ELT_AREA = 42,												// 地域
+		ELT_FUND = 43,												// 基金
+		ELT_FUTURE_KIND = 44,										// 期货品种
+		ELT_THEME_TOPIC = 45,										// 题材专题
+
+		ELT_USASTOCK_NEWS = 51,										//美股个股新闻
+		ELT_USASTOCK_NOTICE = 52,									//美股个股公告
+		ELT_USASTOCK_RESEARCH = 53,									//美股个股研报
+
+		ELT_HKSTOCK_NEWS = 54,										//港股个股新闻
+		ELT_HKSTOCK_NOTICE = 55,									//港股个股公告
+		ELT_HKSTOCK_RESEARCH = 56,									//港股个股研报
+
+		ELT_NEWSTOCK_NEWS = 57,										//新三板个股新闻
+		ELT_NEWSTOCK_NOTICE = 58,									//新三板个股公告
+		ELT_NEWSTOCK_RESEARCH = 59,									//新三板个股研报
+
+
+		//Media
+		ELT_MACRO_NEWS = 61,										//宏观经济
+		ELT_FARM_PRODUCE = 62,										//农产品
+		ELT_BLACK_METAL = 63,									    //黑色金属
+		ELT_NONFERR_METAL = 64,										//有色金属
+		ELT_ENERGY_CHEMICAL = 65,									//能源化工
+		ELT_FUTURE_HEAD = 66,										//期货头条
+		ELT_HK_NEWS = 67,											//港股资讯
+		ELT_USA_NEWS = 68,		                                    //美股资讯
+		ELT_FUND_NEWS = 69,											//基金资讯
+		ELT_BUND_NEWS = 70,											//债券资讯
+		ELT_THIRD_BOARD = 71,										//新三板资讯
+		ELT_PLATE =72,												//板块新闻
+		ELT_STOCK_ADVICE =73,										//个股情报
+		ELT_INTER_NEWS =74,											//国际新闻
+		ELT_INDU_NEWS =75,											//行业新闻
+		ELT_FINANCIAL_NEWS =76,										//财经要闻
+		ELT_GRAIL_NEWS =77,											//大盘优选
+		ELT_SECURITY_NEWS =78,										//证券要闻
+		ELT_PRE_NOTICE =79,											//定期报告
+		ELT_ADDISSUE_NOTICE =80,									//增发配股
+		ELT_IMP_NOTICE =81,											//重大事项
+		ELT_REMIND_NOTICE =82,										//提示性公告
+		ELT_DIG_COIN_NEWS =83,										//数字币新闻
+		ELT_ALL_NEWS =84,										    //全量新闻
+		ELT_RECOMM_NEWS =85,										//用户推荐
+		ELT_DDUNOTE_NEWS = 86,                                      //投顾观点
+		ELT_TGS_COLUMN = 87,                                        //信息流内容专栏列表
+		ELT_TG_NEWS = 88,                                           //投顾->新闻
+		ELT_TGCOLUMN_NEWS = 89,                                     //信息流专栏内容专栏->新闻
+		ELT_DDUNOTE_ONLY = 90,                                      //投顾观点 纯观点内容
+		ELT_INFOFLOW_TOPNEWS = 91,                                  //信息流 置顶新闻
+		ELT_YTG_NEWS = 92,                                          //优投顾普通新闻输出
+		ELT_MEDIACOL_NEWS_ALL = 93,                                 //新媒体栏目新闻
+		ELT_MEDIACOL_NEWS = 94,                                     //根据新媒体栏目取新闻
+		ELT_CHOICE_MEDIACOL_AND_DDU_NEWS = 95,                      //自选的投顾老师还有栏目新闻
+		ELT_DDUTHEACHER_LIST = 96,                                  //投顾老师列表
+		ELT_MEDIACIL_LIST = 97,                                     //新媒体栏目列表
+		ELT_FEATURES_LIST = 98,                                     //关注页面功能列表
+		ELT_MEDIACOL_INFO = 99,                                     //新媒体栏目详情
+
+		ELT_HLTNEWS = 100,                                          //沪伦通新闻
+
+		ELT_STOCK_REPORT = 101,                                     //自有数据 个股研报
+		ELT_NEWIDU_REPORT = 102,                                    //自有数据 行业研报
+
+		//港股新版资讯
+		ELT_HS_HEANLINE = 201,                                          //恒生港股头条
+		ELT_HS_DEEPIN = 202,                                            //恒生港股深度
+		ELT_HS_IMPNEWS = 203,                                           //恒生港股要闻
+		ELT_HS_CHOICE = 218,											//恒生自选
+		ELT_HS_CHOICE_NEWS = 219,										//恒生自选新闻
+		ELT_HS_CHOICE_NOTICE = 220,										//恒生自选公告
+		ELT_HS_CHOICE_RESEARCH = 221,									//恒生自选研报
+		ELT_HS_STOCK_BEGIN = 250,                                       //恒生港股个股开始占位
+		ELT_HS_HKNEWS = 225,											//恒生港股优选新闻
+		ELT_HS_USSTOCK_NEWS = 251,										//恒生美股个股新闻
+		ELT_HS_HKSTOCK_NEWS = 254,										//恒生港股个股新闻
+		ELT_HS_HKSTOCK_NOTICE = 255,									//恒生港股个股公告
+		ELT_HS_HKSTOCK_RESEARCH = 256,									//恒生港股个股研报
+		ELT_HS_STOCK_END =299,                                          //恒生港股个股结束占位
+	};
+
+	//研报评级状态
+	enum E_Rate_State
+	{
+		ERS_ALL = 0,			// 所有
+		ERS_INCREASE = 1,		// 调高
+		ERS_KEEP = 2,			// 维持
+		ERS_DOWN = 3,			// 调低
+		ERS_UNKNOW = 4,			// 未知
+		ERS_MAIDEN = 5,			// 首次评级
+	};
+
+	// 研报评级标签
+	enum E_Research_Tag
+	{
+		ERT_NONE = 0,								// 默认(全部)
+		ERT_BUY = 1,								// 买入
+		ERT_INCREASE = 2,							// 增持
+		ERT_NEUTRAL = 3,							// 中性
+		ERT_REDUCE = 4,								// 减持
+		ERT_SELL = 5,								// 卖出
+		ERT_WAIT = 6,   							// 不评级
+	};
+
+	//公告标签
+	enum E_Notice_Tag
+	{
+		ENT_ALL = 0,				// 所有
+		ENT_STRONG_LONG = 1,		// 强烈利好
+		ENT_LONG = 2,				// 利好
+		ENT_NEUTER = 3,				// 中性
+		ENT_SHORT = 4,				// 利空
+		ENT_STRONG_SHORT = 5,		// 强烈利空
+	};
+
+	//接入类型
+	enum EX_BUSS_ID
+	{
+		EET_F10 = 0,            // F10
+		EET_LEADER = 1,         // 大师兄
+		EET_INFO = 2,           // APP重构版资讯
+		EET_PCONLINE = 3,       // 线上股票通PC版
+		EET_PCOEM = 4,          // PC OEM版本
+		EET_OEM = 5,            // APP OEM版本
+		EET_ZGB = 6,            //金证（PC智股帮）
+		EET_GDS = 7,            //天鼎（PC股大师）
+		EET_JJJ = 8,            //玖玖金期货
+		EET_ZGBAPP = 9,         //金证（APP智股帮）
+		EET_GDSAPP = 10,        //天鼎（APP股大师）
+		EET_PCINFO = 12,        //PC重构版资讯
+		EET_THEME_EDIT = 13,    //题材编辑平台
+		EET_TZYAPP = 14,        //投资易APP
+		EET_TZYPC = 15,         //投资易PC
+		EET_HOT_NEWS = 16,      //新闻推荐平台
+		EET_BEINIU_APP = 17,    //倍牛AND
+		EET_DONGGUAN_APP = 18,  //东莞证券APP
+		EET_BEINIU_IOS = 19,    //倍牛IOS
+		EET_WEIXIN = 20,        //微信小程序
+		EET_NMAX_AND = 21,      //港股资讯NMAX接入AND
+		EET_NMAX_IOS = 22,      //港股资讯NMAX接入IOS
+		EET_HLZQ = 23,          //华林证券
+		EET_DZJJ = 24,          //web定增掘金
+		EET_YTG = 25,           //优投顾
+		EET_NRZL = 26,          //资讯流内容专栏
+		EET_FLOWATTACH = 27,    //信息流公告二级页面
+	};
+
+	//股票市场
+	enum MARKET_CODE
+	{
+		EMC_SZ = 0,      //深圳证券交易所
+		EMC_SH = 1,      //上海证券交易所
+		EMC_HK = 2,      //香港股票交易所
+		EMC_NASDAQ = 13, //纳斯达克证券交易所
+		EMC_NYSE = 14,   //纽约证券交易所
+		EMC_AMEX = 15,   //美国证券交易所
+		EMC_TB = 47,     //新三板
+	};
+
+	// 用户基本信息
+	struct UserBaseInfo
+	{
+		0 require string guid;		// guid
+		1 require string xua;		// xua
+		2 optional string imei;
+		3 optional string mac;
+		4 optional string upId;		// up账号
+		5 optional map<string, string> exData; //扩展信息  "EX_BUSS_ID" :"0","1","2" //"ALL_RELATE":"1" 所有相关   "0"listtype相关
+	};
+
+
+	//多媒体类型
+	enum E_Multimedia_Type
+	{
+		EMT_PICTURE = 0,	// 图片
+		EMT_FILE = 2,		// 文件
+		EMT_VIDE = 3,		// 视屏
+		EMT_AD = 4,         // 广告
+		EMT_AUDIO = 5,      // 音频
+        EMT_PDF = 6,        // pdf(也不是仅仅是pdf 公告/研报的附件都用这个)
+        EMT_HTML = 7,       // HTML
+	};
+
+	enum E_Multimedia_status
+	{
+	    //0~9为投顾视频状态
+	    EMS_VIDEO_LIVE = 0,				//视频直播状态
+	    EMS_VIDEO_NOTICE = 1,			//视频直播预告
+	    EMS_VIDEO_TRANSCODING = 2,		//视频转码
+	    EMS_VIDEO_REPLAY = 3,			//视频回放
+	    EMS_VIDEO_SHORT = 4,            //短视频
+	};
+
+    enum E_Multimedia_Style
+    {
+        EMS_BIG_VIDEO = 0,            //视频展示样式 大
+        EMS_SMALL_VIDEO = 1,          //视频展示样式 小
+        EMS_CONCERN_UPDATE = 2,       //关注内容更新
+    };
+
+    enum E_Heat_Status
+    {
+        EHS_NORMAL_NEWS = 0,              //普通新闻
+        EHS_HOT_NEWS = 1,                 //热门新闻
+        EHS_TOP_NEWS = 2,                 //置顶新闻
+    };
+
+	struct MultimediaInfo
+	{
+		0 require int			type;							// 类型 E_Multimedia_Type
+		1 require string		fileUrl;						// 路径或列表页图片或用户头像
+		2 optional string		name;							// 名称
+		3 optional int			size;							// 大小
+		4 optional int			duration;						// 时长
+		5 optional string       videoUrl;                       // 列表页视频链接
+		6 optional int          heat;                           // 资讯热度 或 点赞人数等
+		7 optional int          status;                         // 媒体信息状态,取值E_Multimedia_status
+		8 optional int          showStyle;                      // 展示样式 取值E_Multimedia_Style
+		9 optional int          heatStatus;                     // 热度状态 取值E_Heat_Status heat为数值，heatStatus为状态
+		10 optional int         like;                           // 点赞数
+        11 optional int         share;                          // 分享转发数
+	};
+
+    //新闻状态
+	enum E_News_Stauts
+	{
+		ENS_DISABLED = 0,								// 下线状态
+		ENS_AVAILABLE = 1,								// 上线状态
+		ENS_EDIT = 2,                                   // 编辑中状态
+		ENS_NEED_CHECK = 3,                             // 待审核状态
+		ENS_CHECK_ERR = 4,                              // 被驳回状态
+	};
+
+	//news_id前缀说明
+	//普通资讯
+	const string CIP_MEDIA       = "0-";     //新媒体
+	const string CIP_RESEARCH    = "Y-";     //研报
+	//投顾类
+	const string CIP_DDUNOTE     = "T-"; 	  //投顾观点
+	const string CIP_DDUTWEET    = "D-";	  //投顾动态
+	const string CIP_DDUCOMMENT  = "W-";	  //投顾问答
+	const string CIP_DDUAD       = "A-";	  //投顾广告
+	const string CIP_DDUNIUGROUP = "N-";	  //投顾圈子
+	const string CIP_DDUEXPRESS  = "E-";	  //投顾锦嚢
+	const string CIP_DDUVIDEO    = "V-";	  //投顾视频
+	const string CIP_DDULIVE     = "L-";	  //投顾图文直播
+	const string CIP_STOCKPOOL   = "S-";	  //股票池
+	const string CIP_EDITORPART  = "Z-";      //内容专栏
+	const string CIT_HOTSTOCK    = "H-";      //热股
+
+
+	enum E_News_Type
+	{
+		ENT_NEWS = 0,								// 新闻
+        ENT_NOTICE = 1,								// 公告
+        ENT_REPORT = 2,								// 研报
+        ENT_MEDIA = 3,								// 新媒体
+        ENT_RESEARCH = 4,							// 研究所
+        ENT_INTERACTIVE = 5,					    // 互动易
+        ENT_DUUNOTE = 6,                            // 投顾观点
+        ENT_DUUTWEET = 7,                           // 投顾动态
+        ENT_DUUCOMMENT = 8,                         // 投顾问股
+        ENT_DUUEXPRESS = 9,                         // 投顾锦嚢
+        ENT_DUUVIDEO = 10,                          // 投顾视频
+        ENT_DUUNIUGROUP = 11,                       // 投顾圈子
+        ENT_AD = 12,                                // 广告
+        ENT_STOCKPOOL = 13,                         // 股票池
+        ENT_DDULIVE = 14,                           // 投顾直播
+        ENT_EDITORPART = 15,                        // 内容专栏入口
+        ENT_HOTSTOCK = 16,                          // 热门股票
+        ENT_COLNEWS = 17,                           // 栏目新闻
+        ENT_DANYMICDATA = 18,                       // 信息流动态接入
+        ENT_VIPNEWS=19,                             // 会员资讯
+        ENT_TGVIPNEWS = 20,							// 会员栏目
+        ENT_PROTOCOL  = 21,                         // APP协议
+	};
+
+    enum E_Source_Status {
+        ESS_UNFOLLOW = 0,  //用户未关注
+        ESS_FOLLOW = 1,    //用户关注
+    };
+
+    enum E_Trade_Type {
+        ETT_NO_INFO = 0, //无交易信息
+        ETT_BEFORE = 1,  //盘前
+        ETT_TRADE = 2,   //盘中
+        ETT_AFTER = 3,   //盘后
+    };
+
+	//新闻摘要的基本信息
+	struct NewsBaseInfo
+	{
+		0 require string		   newsId;   						// 新闻ID
+		1 require string		   title;							// 标题
+		2 require string		   source;						    // 来源
+		3 require long			   timestamp;						// 发布时间
+		4 require int 			   listType;						// 索引类型E_List_Type
+		5 optional string		   summary;						    // 文章摘要摘要
+		6 optional string		   toUrl;							// 跳转的url
+		7 optional int 			   status=1;						// 新闻状态 取值于 E_News_Stauts
+		8 optional int             contentLength;					// 新闻内容长度
+		9 optional int			   stationId;						// 新闻来源站点
+		10 optional vector<string> imageUrl;					    // 新闻内容包含图片URL
+		11 optional int			   newsType=0;						// 资讯类型（E_News_Type）
+		12 optional int			   categoryId;						// 资讯大类
+		13 optional long           updateTime;						// 新闻更新时间
+		14 optional string         originId;                        // 属性补充id,正常情况可以从Dcache取到
+		15 optional string         author;                          // 作者
+		16 optional int            sourceStatus = 0;                // 用户对作者的状态 E_Source_Status
+		17 optional string         questioner;						// 一问一答模式数据中的提问者
+        18 optional string         avatar;                          // 作者,来源的头像url
+        19 optional long           crawlTime = 0;                   // 抓取时间
+        20 optional string         introduction;                    // 简介、正文内容预览
+        21 optional int            page = 0;                        // 公告或者研报得页数
+        22 optional int            tradeType = 0;                   // 交易时间段 取值于 E_Trade_Type
+        23 optional long           tradeTime = 0;                   // 从属交易日时间戳 秒 默认是1:00
+        24 optional string         subtitle;                        // 子标题、副标题等等
+	};
+
+
+	//股票的基本信息 （同时分类标签内容也复用）
+	struct StockInfo
+	{
+		0 require string		stock_code;						// 股票代码
+		1 require string		stock_name; 					// 股票名称
+		2 optional double 		accer;							// 涨跌幅
+		3 optional double		cur_price;						// 当前价格
+		4 optional int 			market;							// 市场
+		5 optional string 		secUniCode;						// 股票唯一编码
+		6 optional string		industryCode;                   // 股票对应的行业编码
+		7 optional int			stockType;						// 股票对应的类型（0,2,4等）
+		8 optional float        dist_score = 0;                 // 评分
+		9 optional bool         bDelist=false;                  // 是否停牌，true表示停牌
+	};
+
+	//简单版本的个股信息
+	struct StockInfoLite
+	{
+	    0 require string secCode;  //股票代码
+	    1 require int hqMarket;     //行情市场
+	};
+
+	//标签信息
+	enum E_Tage_Type
+	{
+		ETT_NEWS = 0,				// 新闻
+		ETT_NOTICE = 1,				// 公告利好利空
+		ETT_RESEARCH = 2,			// 研报
+		ETT_RESEARCH_CHANGE = 3,	// 研报评级变动
+		ETT_COLUM = 4,				// 栏目
+		ETT_PRODUCT = 5,			// 产品
+		ETT_NOTICE_TYPE = 6,		// 公告类型
+		ETT_HK_NOTICE_TYPE = 7,		// 港股公告类型
+		ETT_HK_RESEARCH = 8,		// 港股研报类型
+		ETT_HK_IMPNEWS = 9,			// 港股要闻标签
+		ETT_DDUNOTTYPE = 10,        // 投顾文章类型
+		ETT_MEDIACOLTYPE = 11,      // 新媒体栏目文章 栏目分类信息
+		ETT_DDU_TEACHER = 12,       // 投顾老师标签
+		ETT_MEDIACOL_BIGTYPE = 13,  // 新媒体栏目文章 一级分类信息
+		ETT_HAS_DP = 14,            // 是否有点评(公告，新闻)
+		ETT_YQ_IMPACT = 15,         // 舆情正负面
+		ETT_CMS_COLID = 16,         // CMS生产文字得栏目id
+        ETT_CUSTOM_WORD = 17        // 自定义文本标签
+	};
+
+	struct TagInfo
+	{
+		0 require  int		          type;		// 标签类型 取值E_Tage_Type
+		1 optional int		          value;    // 标签的值
+		2 optional string             tittle;	// 语句
+		3 optional map<string,string> style;    // 样式信息
+	};
+
+	//广告
+	enum E_Banner_Type
+	{
+		EBT_AD = 0,		// 广告
+		EBT_NEWS = 1,   // 新闻
+	};
+
+	// 广告位信息
+	struct NewsBannerInfo
+	{
+		0 require NewsBaseInfo 		baseInfo;					// 新闻摘要信息
+		1 require int				bannerType;					// 类型， 取值于E_Banner_Type
+		2 optional string			picturePath;				// 图片路径
+		3 optional string			toUrl;						// 跳转的url
+	};
+
+   /*
+    * 研报评级价格，包括当前价和目标价
+    */
+    struct ReportPrice
+    {
+        0 optional float fLowExpePrice;  // 目标价下限
+        1 optional float fHighExpePrice; // 目标价上限
+    };
+
+    //资讯付费状态
+    enum NEWS_PAY_TYPE{
+        NPT_FREE = 0,    //免费
+        NPT_PAY = 1,     //付费
+    };
+
+	// 列表页基本信息
+	struct NewsListInfo
+	{
+		0 require NewsBaseInfo 		                    baseInfo;			         // 新闻摘要信息
+		1 optional vector<StockInfo>                    vStockList;			         // 股票信息
+		2 optional vector<TagInfo>	                    vTag;			             // 标签信息
+		3 optional MultimediaInfo                       mutilmediaInfo;		         // 多媒体信息
+		4 optional ReportPrice 		                    price;				         // 研报评级价格
+		5 optional bool			                        hasContent=true;	         // 是否有正文
+		6 optional map<string,string>                   attr;				         // 新闻相关属性
+		7 optional vector<NewsRecom::NewsSIndexDataNew> stockPool;                   // 股票池 推荐接入五星股票池使用
+		8 optional NewsRecom::NewsRecomAssemblyData     newsRecomAssemblyData;       // 自产内容
+		9 optional int                                  newsPayType = 0;             // 是否付费资讯 取值于 NEWS_PAY_TYPE
+		10 optional map<int,vector<TagInfo>>            tagType2vTagDetail;          // 列表页上特殊标签统一储存结构 Key取值于E_Tage_Type
+	};
+
+	//7*24
+	struct  LiveListInfo
+	{
+		0 require NewsBaseInfo 		baseInfo;					// 新闻摘要信息
+		1 optional vector<byte> 	liveContent;				// 新闻内容
+		2 optional vector<NewsBaseInfo> vList;					// 相关新闻
+		3 optional MultimediaInfo   mutilmediaInfo;				// 多媒体信息
+	};
+
+	struct  LiveListRsp
+	{
+		0 require  int				ret;						// 返回值
+		1 require  vector<LiveListInfo> vList;					// 新闻摘要信息
+		2 optional string			msgInfo;					// 错误提示信息
+	};
+
+	//请求的基本信息
+	struct ListReqBaseInfo
+	{
+		0 require UserBaseInfo userInfo;		// 用户信息
+		1 optional vector<string> vNewsList;	// 请求新闻id信息
+		//1 optional int pageNum = 30;			// 请求数量
+		//2 optional long beginId = 0;			// 表示前1数据块的最后一个id， 没有用0表示（拉取最新）
+		//3 optional long endId = 0;			// 表示后一数据块的最前一个id， 没有用0表示
+	};
+
+	//请求的扩展参数的key的类型
+	enum E_Reqkey_Type
+	{
+		ERT_NOTICE = 0,					// 公告
+		ERT_RESEARCH_REPORT = 1,		// 研报
+		ERT_DEEP_RESEARCH = 2,			// 深度研究
+		ERT_STOCK_CODE = 3,				// 股票代码
+		ERT_MARKERT_TYPE = 4,			// 股票市场
+		ERT_INDUSTRY = 5,				// 行业
+		ERT_CONCERN = 6,				// 题材
+		ERT_AREA = 7,					// 地域
+		ERT_FUND = 8,					// 基金
+		ERT_FUTURE = 9,					// 期货
+		ERT_THEME = 10,					// 题材专题
+		ERT_CHOICE_TYPE = 11,           // 自选新闻类别(利好，利空)
+		ERT_NOTICE_TYPE_LIST = 12,      // 请求公告类别列表
+		ERT_TGEDITOR = 13,              // 投顾老师id
+		ERT_TGCOLUM_TYPE = 14,          // 内容专栏栏目id
+
+        //数据控制类别
+        ERT_NOPAID = 50                 //是否屏蔽付费内容
+	};
+
+	//新闻请求信息
+	struct NewsListReq
+	{
+		0 require ListReqBaseInfo 	baseInfo;					// 请求的基本信息
+		1 require int				listType;					// 栏目id
+		2 require string			bannerVersion;				// 轮播图版本
+		3 optional map<int, string> extData;					// 扩展参数 , key 取值于 E_Reqkey_Type;
+	};
+
+	// list 请求回包
+	struct NewsListRsp
+	{
+		0 require  int						        ret;				// 返回值
+		1 optional vector<NewsListInfo>	            vList;				// 摘要列表
+		2 optional vector<NewsBannerInfo>	        vBannerList;  		// 轮播图
+		3 optional string					        bannerVersion;		// 轮播图版本
+		4 optional string					        msgInfo;			// 错误提示信息
+		5 optional map<string,vector<NewsListInfo>> mList;              // 分类结果
+		6 optional int                              resSum;             // 满足条件的数量
+	};
+
+	// 作者信息
+	struct  Author
+	{
+		0 require string name;									// 名称
+		1 require string professional;							// 专业
+	};
+
+	//新闻详情请求
+	struct NewsContentReq
+	{
+		0 require UserBaseInfo		userInfo;					// 用户信息
+		1 require  int				listType;					// 栏目id
+		2 optional string			newsId;						// 当是空则默认取最新的一条新闻详情
+	};
+
+	struct ReportChartsNode {
+	    0 optional string chart_url; //图表内容url
+	    1 optional string chart_title; //图表标题
+	};
+
+	//新闻详情回包
+	struct NewsContentRsp
+	{
+		0 require int                        ret;					// 返回值
+		1 require NewsBaseInfo 			     baseInfo;				// 新闻摘要信息
+		2 require vector<byte>			     infoContent;			// 内容
+		3 optional vector<MultimediaInfo>    mutimedia;			    // 附件信息	  仅仅用于公告
+		4 optional Author 				     author;				// 分析师信息  仅用于研报
+		5 optional vector<NewsListInfo>	     vRelateList;           // 相关新闻
+		6 optional vector<StockInfo>	     vRelateStockList;		// 相关股票
+		7 optional vector<TagInfo>		     vTagList;				// 非标的标签
+		8 optional string                    msgInfo;		    	// 错误提示信息
+		9 optional ReportPrice 			     price;				    // 研报评级价格
+		10 optional string                   deadlineDate;        	// 研报目标价格期限
+		11 optional vector<byte>             infoContentPart2;      // 其他的内容（如公告详情页的目录）
+		12 optional vector<ReportChartsNode> charts;                // 图表列表
+	};
+
+	//研究所首页回包
+	struct ResearchFrontRsp
+	{
+		0 require int ret;										// 返回值
+		1 require vector<NewsListInfo> vInnerList;				// 访问次数最多的三个内刊
+		2 require vector<NewsListInfo> vNewsList;				// 新闻列表
+		3 optional vector<NewsBannerInfo> vBannerList;			// 运营位
+		4 optional string msgInfo;								// 错误提示信息
+	};
+
+
+	//上海金  财经日历， 这个比较特殊，需要提出来
+	struct CalendarInfo
+	{
+		0 require	NewsBaseInfo baseInfo;
+		1 optional	double preValue;							// 前值
+		2 optional	double forecastValue;						// 预测值
+		3 optional	double publishValue;						// 公布值
+		4 optional	int  startLevel;							// 星级
+	};
+
+	//回包
+	struct CalendarListRsp
+	{
+		0 require int					ret;					// 返回值
+		1 require vector<CalendarInfo> vList;					// 财经日历列表
+		2 optional string				msgInfo;				// 错误提示信息
+	};
+
+	// 列表
+	struct ColumInfo
+	{
+		0 require int		columId;							// 栏目id
+		1 require string	name;								// 栏目名称
+	};
+
+	struct ColumListRsp
+	{
+		0 require int					ret;					// 返回值
+		//1 require vector<ColumListInfo> vList;			    // 财经日历列表
+		1 optional string				msgInfo;				// 错误提示信息
+	};
+
+	enum E_Direction_Type {
+		EDT_NEWS = 0,	// 拉取最新的n条新闻
+		EDT_OLD = 1,	// 拉取指定ID后的n条新闻
+		EDT_MIDDLE = 2, // 拉取指定ID附近的n条新闻，包含本条
+		EDT_BEFORE = 3, // 拉取指定ID前n条新闻，不包含本条
+		EDT_SUB_TOP_NEWS = 4, //拉取该索引所有分类的最新一条数据 这个选项会忽略掉请求数量
+	};
+
+    enum E_Column_Type {
+    	ECT_Notice_Type =  0,   //公告类别
+    	ECT_Notice_Long =  1,   //利好公告
+    	ECT_Notice_Short = 2,   //利空公告
+    	ECT_Notice_All = 3,     //全部公告
+    };
+
+    enum E_Column_Req_Type {
+        ECR_App_Stock_Notice_List = 0,   //App个股公告列表页
+        ECR_App_Choose_Report_List = 1,  //App自选研报列表页
+        ECR_App_Choose_Notice_List = 2,  //App自选公告列表页
+    };
+
+    //栏目信息节点
+    struct ColumnData {
+        0 require  string columnName;       //栏目名称
+        1 require  int columnType;          //栏目类型  取至E_Column_Type
+        2 optional vector<int> vColumnArgs; //附加参数
+        3 optional int columnReqType;       //请求分类  取至E_Column_Req_Type
+    };
+
+    //栏目信息请求
+    struct ColumnInfoReq{
+        0 require int ColumnReqType;        //栏目请求类型 取至E_Column_Req_Type
+    };
+
+    //栏目信息回包
+    struct ColumnInfoRsp{
+    	0 require vector<ColumnData> vColumnData; //栏目信息
+    };
+
+    //时间范围索引
+    struct DayTimeRange{
+    	0 optional int startTime = 0; //起始时间 如 20181022 为 20181022 00:00:00
+    	1 optional int endTime = 0;   //结束时间 如 20181023 为 20181023 24:00:00
+    	2 optional bool isMainRule = false; //是否是主索引规则 为true的时候忽略请求数量 若使用时间范围索引必须为true
+    };
+
+    //精确时间范围索引
+    struct TimestampRange{
+        0 optional long startTime = 0; //起始时间戳
+        1 optional long endTime = 0;   //起始时间戳
+        2 optional bool isMainRule = false; //是否是主索引规则 为true的时候忽略请求数量 若使用时间范围索引必须为true
+    };
+
+	//获取新闻id的请求(返回当前最新的新闻）
+	struct NewsIdListReq{
+		0 require  UserBaseInfo		        userInfo;					// 用户信息
+		1 require  int				        listType;					// 栏目id
+		2 optional string 			        beginId;					// 开始的新闻id
+		3 optional int				        direction=0;				// 更新方向   取值于 E_Direction_Type;
+		4 optional int				        reqNum=500;					// 请求数量
+		5 optional map<int, string>         extData;					// 扩展参数   key 取值于 E_Reqkey_Type;
+		6 optional string 			        version;					// 新闻id的版本
+		7 optional vector<int>              noticeType;                 // 按照类型请求
+		8 optional vector<ColumnData>       vColumnData;                // 请求的栏目类型
+		9 optional DayTimeRange             timeRange;                  // 时间范围索引
+		10 optional TimestampRange          timestampRange;             // 时间戳范围
+		11 optional map<int,vector<string>> indexTypeList;              // 复合索引内容 key取值于 E_Reqkey_Type
+		12 optional	int						dynamicDataId = -1;			// 拉取信息流动态数据的ID，-1表示不拉取，0表示第一次拉取，直接返回最新的数据，大于0表示拉取获取比这个id号大的动态数据
+		13 optional string                  startId;                    // 起始访问的id，如果第一次请求则传“0” （信息流专用），对于普通资讯接口来说传当前下发的新闻数量
+		14 optional int                     pullDirection;              // 拉取方向，1表示拉新，0表示拉历史（信息流专用）
+		15 optional bool                    isChooseType = false;       // 是否是自选请求
+		16 optional int                     curNewsSum = 0;             // 已经拉取到了的新闻数，用于计算下发广告位置
+		17 optional vector<StockInfoLite>   vChooseStk;                 // 自选股数据
+	};
+
+	//获取自选新闻id列表的请求 主要用于已知自选股票的情况(返回当前最新的新闻）
+	struct stocksNewsReq
+	{
+		0 require NewsIdListReq		idListReq;					// 用户信息
+		1 optional vector<StockInfo> vStockList;				// 自选的股票
+	};
+
+
+	//获取新闻id的回包
+	struct NewsIdListRsp
+	{
+		0 require int				ret;						// 返回的ret
+		1 optional string			msgInfo;					// 错误信息
+		2 optional vector<string>	vList;						// idList
+		3 optional string 			version;					// 新闻id的md5
+		4 optional vector<StockInfo> vStockList;				// 自选股列表
+	};
+
+
+	//仅用于服务端
+	struct NewsServerNode
+	{
+		0 require  NewsListInfo		      newsInfo;
+		1 optional vector<MultimediaInfo> mutimedia;			    // 附件信息
+		2 optional Author 				author;				        // 分析师信息
+		3 optional vector<NewsListInfo>	vRelateList;                // 相关新闻
+		4 optional vector<StockInfo>	vRelateStockList;	        // 相关股票
+		5 optional vector<TagInfo>		vTagList;	                // 标签(利好利空，评级等等)
+		6 optional int moduleId;								    // 新闻类别  新媒体的数据：special/topic
+		7 optional vector<string> tempTagList;
+		8 optional vector<string> tmpKeyList;
+		9 optional string filePath;								    // 文件路径
+		10 optional bool hasNoContent=false;					    // 是否有内容
+		11 optional vector<StockInfo>	vRelateThemeList;		    // 相关题材
+		12 optional vector<StockInfo>	vRelateIndustryList;	    // 相关行业
+		13 optional vector<StockInfo>	vRelateAreaList;		    // 相关地域
+		14 optional vector<StockInfo>	vRelateFundList;		    // 相关基金
+		15 optional vector<string>   	vRelateId;		            // 相关新闻ID
+		16 optional map<int,vector<StockInfo>> vRelatedOtherList;   // 其他相关信息,key是AutoTagType枚举类型
+		17 optional string stationId;
+		18 optional string categoryId;
+		19 optional string indexFilePath;                           //公告的目录路径
+		20 optional bool hasNoIndexContent=true;                    //公告的index是否存在
+		21 optional string fullFilePath;							//全量解析文件路径
+        22 optional int fromResTable = 0;                           //来源分表后缀
+	};
+
+
+	struct NewsReq
+	{
+		0 require ListReqBaseInfo		baseInfo;					// 用户信息
+		1 require int					listType = 84;				// 栏目id
+		2 optional string 				beginId;					// 开始infoId
+		3 optional int					reqNum=500;					// 请求数量
+		4 optional int 					idType = 0;					// 新闻id的版本 E_Req_Id_Type
+	};
+
+	enum E_Req_Id_Type
+	{
+		ERIT_ID = 0,			// (依据序号)请求ID同时请求列表
+		ERIT_ID_LIST = 1,		// (依据序号)只请求ID
+		ERIT_SPECIAL_ID = 2,	// 指定ID返回列表
+	};
+
+	struct NewsSummInfo
+	{
+		0 optional string                   infoId;				//资讯ID_newsType
+		1 optional NewsServerNode			summ;				//资讯详情
+	};
+
+	// list 请求回包
+	struct NewsRsp
+	{
+		0 require  int						ret;				// 返回值
+		1 optional string					msgInfo;			// 错误提示信息
+		2 optional vector<NewsSummInfo>	    vList;				// 摘要列表
+	};
+
+	struct NewsNode
+	{
+		0 require string newsId;				// 新闻Id
+		1 require long priority;				// 优先级
+		2 optional int  subType;				// 子类型
+		3 optional vector<string> vRelateStock; // 相关股票
+		4 optional map<int, string> extData;	// 扩展参数
+		5 optional int stationId;               // 站点ID
+		6 optional int impact = 3;              // 利好利空
+		7 optional int noticeType = 0;          // 公告类型
+	};
+
+    //结构PushData中delData的升级版
+    struct DelDataNode
+    {
+        0 require string news_id;        		//news_id
+        1 optional string stock_unicode; 		//股票唯一编码
+    };
+
+	struct PushData
+	{
+		0 require int listType;
+		1 require vector<NewsNode> vList;	 					  // 新闻列表
+		2 optional vector<NewsBannerInfo> vBannerList;  		  // 轮播图
+		3 optional string _version;								  // 轮播图版本
+		4 optional vector<NewsListInfo> vChipNews;				  // 碎片新闻
+		5 optional long curTime;								  // 更新时间
+		6 optional map<int, vector<string>> delData;              // 删除列表
+		7 optional map<int, vector<DelDataNode>> delDataNodeList; // 删除列表2
+	};
+
+	struct PushRsp
+	{
+		0 require int ret;								// ret
+		1 require string errMsg;	 					// 错误信息
+	};
+
+	struct DataNode
+	{
+		0 require string Id;				// 新闻Id
+		1 require long priority;			// 优先权（实际上就是发布时间）
+		2 optional int stationId;           // 站点ID
+		3 optional int noticeType = 0;      // 类型信息
+		4 optional byte impact = 0;         // 利好利空
+	};
+
+	struct DataNodeList
+	{
+		0 require int columId;				// 列表类型
+		1 optional vector<DataNode>vList;	// 新闻id列表
+		2 optional long lastUpdateTime;		// 上一次更新时间
+		3 optional int subType;				// 子类型
+		4 optional string lastNewsId;		// 最后一条新闻id
+	};
+
+	struct BannerList
+	{
+		0 require int columId;					// 列表类型
+		1 optional vector<NewsBannerInfo>vList;	// 新闻id列表
+		2 optional long lastUpdateTime;			// 上一次更新时间
+	};
+
+	struct ChipList
+	{
+		0 require int columId;					// 列表类型
+		1 optional vector<NewsListInfo>vList;	// 新闻id列表
+		2 optional long lastUpdateTime;			// 上一次更新时间
+	};
+
+	//新闻轮播图请求
+	struct NewsBannerReq
+	{
+		0 require UserBaseInfo		userInfo;					// 用户信息
+		1 require int				listType;					// 栏目id
+		2 optional map<int, string> extData;					// 扩展参数 , key 取值于 E_Reqkey_Type;
+		3 optional string 			version;					//
+	};
+
+	struct NewsBannerRsp
+	{
+		0 require  int						ret;				// 返回值
+		1 optional vector<NewsBannerInfo>	vBannerList;  		// 轮播图
+		2 optional string					bannerVersion;		// 轮播图版本
+		3 optional string					msgInfo;			// 错误提示信息
+	};
+
+
+	struct ResearchContentBase
+	{
+		0 require string id;				// id
+		1 require TagInfo columInfo;		// cms2栏目
+		2 optional vector<byte> vContent;	// 详情
+		3 optional string title;			// 标题
+	};
+
+
+	struct ResearchContentRsp
+	{
+		 0 require int ret; 					// 返回值
+		 1 require NewsBaseInfo baseInfo;		// 新闻基本信息
+		 2 require TagInfo columInfo;			// 文章栏目信息
+		 3 optional vector<ResearchContentBase> vContentList; //文章详情
+		 4 optional Author author;				// 作者
+		 5 optional string msgInfo;				// 提示信息
+	};
+
+
+	//主要用于修改新闻
+	//相关股票，标签， 标题
+	enum  E_Operate_Type
+	{
+		EOT_MODIFY = 1,							 // 修改新闻信息
+		EOT_DELETE = 2,							 // 新闻下线
+		EOT_REVERT = 3,							 // 上线新闻
+		EOT_CHECK_ERR = 4,                       // 驳回
+		EOT_SUBMIT_CHECK = 5,                    // 提交审核
+	};
+
+	enum  E_Query_News_Type
+	{
+		EQT_News_Title = 0,							 // 按title查询
+		EQT_News_Id = 1,							 // 按id查询
+	};
+
+	struct QueryNewsInfo
+	{
+		0 require NewsListInfo				listInfo;		// 新闻基本信息
+		1 optional Author 					author;			// 分析师信息
+		2 optional vector<NewsListInfo>		vRelateList;    // 相关新闻
+		3 optional vector<MultimediaInfo>	mutimedia;		// 附件信息
+		4 optional vector<byte>				vContent;		// 新闻内容
+		5 optional vector<TagInfo>          vTagInfo;       // 标签信息
+	};
+
+
+	struct QueryNewsReq
+	{
+		0 require UserBaseInfo userInfo;			// 操作用户信息
+		1 require E_List_Type listType;				// 列表类型
+		2 require string newsTitle;					// 查询入参 依据E_Query_News_Type填写内容
+		3 require string publishDate;				// 发布日期
+		4 optional int reqType = 0;		            // 0：依据title查询 1：依据id查询 E_Query_News_Type
+	};
+
+	enum E_Key_Type
+	{
+		EKT_TITLE = 0,				// 标题
+		EKT_SOURCE = 1,				// 来源
+		EKT_TIMESPAN =2 ,			// 时间
+		EKT_SUMMARY = 3,			// 摘要
+		EKT_CONTENT = 4,			// 内容
+		EKT_AUTHOR = 5,				// 作者
+		EKT_RELATE_STOCK = 6,		// 相关股、题材、地域、期货
+		EKT_TAGS = 7,				// 公告标签
+		EKT_CONTENT_IMG = 8,		// 修改内容中的图片
+		EKT_HEAT_STATUS = 9,        // 修改热门状态
+		EKT_LIST_IMG = 10,          // 修改列表配图
+        EKT_TAG = 11,               // 修改非标的类标签
+        EKT_NEWS_ATTACH = 12        // 修改资讯附件
+	};
+
+	struct ModifyNewsReq
+	{
+		0 require UserBaseInfo userInfo;			// 用户基本信息
+		1 require QueryNewsInfo newsInfo;			// 修改后的新闻信息
+		2 require int operateType;					// 操作类型，其值的二进制的位含义取之于E_Operate_Type，每一位代表一个操作
+		3 optional vector<E_Key_Type> vKeyList;		// 修改的key列表
+	};
+
+	struct ModifyNewsRsp
+	{
+		0 require int ret;							// 操作结果
+		1 optional string newsId;					// 新闻Id
+		2 optional string msgInfo;					// 提示信息
+	};
+
+
+	// 以下结构主要用于服务端
+	struct ModifyNewsNode
+	{
+		0 require NewsServerNode  allInfo;			// 修改后的新闻信息
+		1 require int operateType;					// 操作类型，含义取之于E_Operate_Type
+		2 require int listType;
+		3 require long insertTime;					// 修改时间
+		4 optional vector<StockInfo> vDelStockList;	// 删除的股票
+		5 optional vector<StockInfo> vAddStockList;	// 增加的股票
+		6 optional vector<TagInfo> vDelTagList;		// 删除的tag;
+		7 optional vector<TagInfo> vAddTagList;		// 增加的tag;
+		8 optional vector<E_Key_Type> vModifyKeyList;	// 修改的新闻的key
+		9 optional bool hasAnyBaseChange;
+	};
+
+	// 资讯内容链接信息
+	struct UrlBaseInfo
+	{
+		0 require string userName;		// 用户名
+		1 require string guId;		//
+		2 optional string bussId;
+		3 optional string stockCode;
+		4 optional string newsId;		// 新闻id
+		5 optional string listType;
+		6 optional bool pcFlag;
+		7 optional bool userNameEncoded;
+		8 optional string pcHtmlUrlBase;             //pc默认域名
+		9 optional string htmlUrlBase;               //H5默认域名
+		10 optional map<string, string> pcUrlTable;   //pc端url中间串
+		11 optional map<string, string> baseUrlTable; //定制域名
+		13 optional string picPercent;
+		14 optional string relateFlag;
+	};
+
+	//自选股缓存到共享内存Key与Value
+	struct UserNode
+	{
+		0 require string upId;
+	};
+
+	struct SelfStockInfo
+	{
+		0 require string		stock_code;						// 股票代码
+		1 optional int 			market;							// 市场
+	};
+
+	struct UserStock
+	{
+		0 require vector<SelfStockInfo> stockList ;
+		1 require long timeStamp;
+	};
+
+	//个股列表缓存到共享内存Key与Value
+	struct StockListKey
+	{
+		0 require string stockKey;
+	};
+
+	//缓存码表Key与Value
+	struct CodeListKey
+	{
+		0 require int tagType;
+	};
+
+	//缓存的个股关联信息结构 （内部使用）
+	struct StkUserInfo
+	{
+	   0 require  string stock_code;
+	   1 optional int market;
+	   2 optional DataNode lastYQNewsId;  //最新一条舆情相关id
+	   3 optional DataNode lastDPNewsId;  //最新一条点评相关id
+	};
+
+	//股票的基本信息
+	struct StockInfoSM
+	{
+		0 require string		stock_code;						// 股票代码
+		1 require string		stock_name; 					// 股票名称
+		2 optional int 			market;							// 市场
+		3 optional string 		secUniCode;						// 股票唯一编码
+		4 optional string		industryCode;                   // 行业编码
+	};
+
+	struct CodeListValue
+	{
+		0 require vector<StockInfoSM> codeList;
+	};
+
+	//列表页类型枚举
+    enum NIC_LIST_TYPE {
+        NLT_STATIC_LIST = 1, //自定义静态列表
+        NLT_AUTO_LIST = 2,   //自动综合新闻列表
+        NLT_RELA_LIST = 3,   //自动关联新闻列表
+        NLT_MAP_LIST = 4,    //映射列表
+        NLT_EXTEND_LIST = 5  //外部列表
+    };
+
+    //使用广告位配置信息
+    struct AdBaseConfNode {
+        0 optional int adPartId = -1;   //广告位id
+        1 optional int adPlatform = -1; //广告平台编码
+    };
+
+    //广告下发行为逻辑
+    enum E_AD_INSERT_TYPE {
+        EAIT_GAP_TYPE = 1,  //间隔下发 间隔n个新闻下发一次广告 其中n为AdConf中的gap 默认第一个就是广告 广告循环下发
+        EAIT_GAP_NO_CYCLE = 2, //间隔下发 间隔n个新闻下发一次广告 其中n为AdConf中的gap 默认第一个就是广告 广告不循环下发
+    };
+
+    struct AdConf {
+        0 optional bool isWork = false; //是否生效
+        1 optional int insertType;      //下发行为类型 使用E_AD_INSERT_TYPE枚举
+        2 optional int gap = 1;         //间隔
+        3 optional vector<AdBaseConfNode> adConfList;//广告配置列表
+        4 optional int startOffSet = 0; //开始计算广告下发的偏移量
+    };
+
+};

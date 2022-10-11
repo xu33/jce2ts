@@ -1,0 +1,262 @@
+module NewsRecom 
+{
+	// 注意：该jce由NewsRecom维护，但被News::InterfaceComm.jce引用，因为其本身是News::NewsListInfo内的可选内容
+
+	// 复用行情字段的3点原因：
+	// 1，终端首页曾经直接接过，业务代码可直接适配；
+	// 2，如果后台解析，还需要撰写类似以前新增投顾的对接文档，如字段映射，没必要；
+	// 3，不能保证以后只接3种功能。否则，每次新增功能，就要新增对应字段，不如，直接用现成通用的结构体下发，沟通上和对接上最简单。
+	// 4，终端专注样式，后台专注策略。
+	
+	// 1，拷贝至行情NotifyIndex.jce->E_INDEX_TYPE
+	enum E_NEWS_INDEX_TYPE
+    {
+		E_INDEX_NONE            = 0,
+        E_INDEX_WXCP            = 1,     	    // 五星操盘
+        E_INDEX_QKJCY           = 2,     	    // 乾坤决策眼
+        E_INDEX_ZTJB            = 3,           // 涨停尖兵
+        E_INDEX_DXJJ            = 4,           // 短线狙击
+        E_INDEX_ZLGJ            = 5,           // 主力攻击
+        E_INDEX_ZLCT            = 6,           // 主力撤退
+        E_INDEX_HJJC            = 7,           // 黄金交叉
+        E_INDEX_SWJC            = 8,           // 死亡交叉
+        E_INDEX_LS_F            = 9,           // 拉升
+        E_INDEX_TS_F            = 10,          // 跳水
+        E_INDEX_BSJK            = 11,          // BS监控
+        E_INDEX_DYGZMX          = 12,          // 多赢共振模型
+        E_INDEX_DYZCMX          = 13,          // 多赢增仓模型
+        E_INDEX_XTXG            = 14,          // 形态选股
+        E_INDEX_TSXG            = 15,          // 特色选股
+        E_INDEX_JDXG            = 16,          // 经典选股
+        E_INDEX_YHXG            = 17,          // 用户选股
+        E_INDEX_MJXG            = 18,          // 名家选股
+        E_INDEX_MJ60            = 19,          // 名家60
+        E_INDEX_QSDXJGG         = 20,          // 趋势动向九宫图
+        E_INDEX_MMRQJGG         = 21,          // 买卖人气九宫图
+        E_INDEX_JYAQJGG         = 22,          // 交易安全九宫图
+        E_INDEX_CWPGJGG         = 23,          // 财务评估九宫图
+        E_INDEX_ZHPXJGG         = 24,          // 综合评星九宫图
+        E_INDEX_QSAQPF          = 25,          // 趋势安全评分
+        E_INDEX_QSAQZCYL        = 26,          // 趋势安全支撑压力
+        E_INDEX_QSAQZT          = 27,          // 趋势安全状态
+        E_INDEX_ZJDL            = 28,          // 资金动力
+        E_INDEX_ZJKP            = 29,          // 资金控盘
+        E_INDEX_ZJLX            = 30,          // 资金流向
+        E_INDEX_DPFX            = 31,          // 大盘风向
+        E_INDEX_CWML            = 32,          // 仓位马力
+        E_INDEX_SSZF            = 33,          // 邵氏战法
+        E_INDEX_FLXG12          = 34,          // 放量选股12
+        E_INDEX_FLXG13          = 35,          // 放量选股13
+        E_INDEX_DDX_RED         = 36,          // DDX 飘红
+        E_INDEX_DYYH            = 37,          // 多赢一号
+        E_INDEX_DYEH            = 38,          // 多赢二号
+        E_INDEX_HJY             = 39,          // 黄金眼
+        E_INDEX_PKS             = 40,          // 盘口杀
+        E_INDEX_DZZJ            = 41,          // 定增折价
+        E_INDEX_GRZMR           = 42,          // 高融资买入
+        E_INDEX_GSZG            = 43,          // 高送转股
+        E_INDEX_JGYZG           = 44,          // 机构预增股
+        E_INDEX_MJDY            = 45,          // 密集调研
+        E_INDEX_PJDS            = 46,          // 评级调升
+        E_INDEX_SCRMGZ          = 47,          // 市场热门关注
+        E_INDEX_DYDZ            = 48,          // 调研大增
+        E_INDEX_YJYZ            = 49,          // 业绩预增
+        E_INDEX_YPZTYC          = 50,          // 优品涨停预测
+        E_INDEX_YQNG            = 51,          // 舆情牛股
+        E_INDEX_BDLT            = 52,          // 波段龙头
+        E_INDEX_CDLT            = 53,          // 超跌龙头
+        E_INDEX_CZLT            = 54,          // 成长龙头
+        E_INDEX_JZLT            = 55,          // 价值龙头
+        E_INDEX_QSLT            = 56,          // 趋势龙头
+        E_INDEX_RDLT            = 57,          // 热点龙头
+        E_INDEX_ZCLT            = 58,          // 政策龙头
+        E_INDEX_ZTLT            = 59,          // 主题龙头
+        E_INDEX_ZJLT            = 60,          // 资金龙头
+        E_INDEX_XGZB1           = 61,          // 选股指标1
+        E_INDEX_XGZB2           = 62,          // 选股指标2
+        E_INDEX_XGZB3           = 63,          // 选股指标3
+        E_INDEX_XGZB4           = 64,          // 选股指标4
+        E_INDEX_XGZB5           = 65,          // 选股指标5
+        E_INDEX_XGZB6           = 66,          // 选股指标6
+        E_INDEX_XGZB7           = 67,          // 选股指标7
+        E_INDEX_XGZB8           = 68,          // 选股指标8
+        E_INDEX_XGZB9           = 69,          // 选股指标9
+        E_INDEX_XGZB10          = 70,          // 选股指标10
+        E_INDEX_XGZB11          = 71,          // 选股指标11
+        E_INDEX_XGZB12          = 72,          // 选股指标12
+        E_INDEX_XGZB13          = 73,          // 选股指标13
+        E_INDEX_XGZB14          = 74,          // 选股指标14
+        E_INDEX_XGZB15          = 75,          // 选股指标15
+        E_INDEX_XGZB16          = 76,          // 选股指标16
+        E_INDEX_XGZB17          = 77,          // 选股指标17
+        E_INDEX_XGZB18          = 78,          // 选股指标18
+        E_INDEX_XGZB19          = 79,          // 选股指标19
+        E_INDEX_XGZB20          = 80,          // 选股指标20
+        E_INDEX_BDGZ            = 81,          // 波段跟庄
+        E_INDEX_DXLS            = 82,          // 短线猎杀
+        E_INDEX_FZXZ            = 83,          // 反转先知
+        E_INDEX_FLZT            = 84,          // 飞龙在天
+        E_INDEX_LHXF            = 85,          // 量化先锋
+        E_INDEX_WJJ             = 86,          // 挖掘机
+        E_INDEX_WJCP            = 87,          // 无机操盘
+        E_INDEX_YZQD            = 88,          // 赢在起点
+        E_INDEX_FCT_BOLL        = 89,          // 技术类因子 boll
+        E_INDEX_FCT_KDJ         = 90,          // 技术类因子 kdj
+        E_INDEX_FCT_MACD        = 91,          // 技术类因子 macd
+        E_INDEX_FCT_RSI         = 92,          // 技术类因子 rsi
+        E_INDEX_FCT_DKX         = 93,          // 多空线
+        E_INDEX_FCT_DYZCMX_JGYW = 94,          // 多赢增仓模型机构业务
+        E_INDEX_KDJ_DSX         = 95,          // KDJ大师兄
+        E_INDEX_MA_DSX          = 96,          // MA大师兄
+        E_INDEX_MACD_DSX        = 97,          // MACD大师兄
+		E_INDEX_BSJK_BDJK       = 98,          // B点监控
+		E_INDEX_BSJK_WXJK       = 99,          // 五星监控
+		E_INDEX_BSJK_SBFZJK     = 100,         // SB反转监控
+		E_INDEX_TSXG_CPLS       = 101,         // 操盘论势
+		E_INDEX_TSXG_ZJBY       = 102,         // 资金博弈
+		E_INDEX_TSXG_MACDDZQGZ  = 103,         // MACD多周期共振
+		E_INDEX_TSXG_GSBD       = 104,         // 高手波段
+		E_INDEX_TSXG_DKLC       = 105,         // 多空浪潮
+		E_INDEX_TSXG_HCNLBY     = 106,         // 活筹能量博弈
+		E_INDEX_XTXG_MACDJX     = 107,         // MACD金叉
+		E_INDEX_XTXG_DBHSB      = 108,         // 底部红三兵
+		E_INDEX_XTXG_SDHT       = 109,         // 深跌回弹
+		E_INDEX_XTXG_JDXG       = 110,         // 阶段新高
+		E_INDEX_XTXG_DFP        = 111,         // 多方炮
+		E_INDEX_XTXG_LNJB       = 112,         // 量能巨变
+		E_INDEX_XTXG_PZTP       = 113,         // 盘整突破
+		E_INDEX_XTXG_XBSY       = 114,         // 小步上扬
+		E_INDEX_MJXG_DXLS       = 115,         // 短线猎杀
+		E_INDEX_MJXG_SSQL       = 116,         // 顺势擒龙
+		E_INDEX_MJXG_YXQN       = 117,         // 一线擒牛
+		E_INDEX_YHXG_ZJXB       = 118,         // 资金谐波
+		E_INDEX_YHXG_HJZ        = 119,         // 黄金柱
+		E_INDEX_JDXG_BHLCT      = 120,         // 冰火两重天
+		E_INDEX_JDXG_MMPP       = 121,         // 买卖频谱
+		E_INDEX_JDXG_QSDD       = 122,         // 趋势顶底
+		E_INDEX_JDXG_CYHT       = 123,         // 财运亨通
+		E_INDEX_JDXG_BTX        = 124,         // 宝塔线
+		E_INDEX_JDXG_QLDX       = 125,         // 钱龙短线
+		E_INDEX_MHDZ            = 126,         // 蚂蟥叮庄
+		E_INDEX_CPXHD           = 127,         // 操盘信号灯
+		E_INDEX_DXJJ_HIS        = 128,         // 短线狙击战绩回顾
+		E_INDEX_DYYH_HIS        = 129,         // 多赢一号战绩回顾
+		E_INDEX_DYEH_HIS        = 130,         // 多赢二号战绩回顾
+		E_INDEX_HJY_HIS         = 131,         // 黄金眼战绩回顾
+		E_INDEX_PKS_HIS         = 132,         // 盘口杀战绩回顾
+		E_INDEX_DJPD            = 133,         // 点金跑道
+		E_INDEX_WXCP_B          = 134,          // 五星操盘买信号
+		E_INDEX_WXCP_B_HIS      = 135,         // 五星操盘买信号历史战绩
+		E_INDEX_WXCP_BT         = 136,         // 五星操盘回测数据
+		E_INDEX_ZTJBNEW         = 137,         // 新涨停尖兵
+		E_INDEX_ZTJB_APP        = 138,         // app首页涨停尖兵
+		E_INDEX_XSBDW           = 139,         // 晓胜波段王
+		E_INDEX_PYTHON_HSB      = 140,         // python指标 红三兵
+		E_INDEX_PYTHON_QMZX     = 141,         // python指标 启明之星
+		E_INDEX_PYTHON_DWCZX    = 142,         // python指标 低位锤子线
+		E_INDEX_PYTHON_KZTM     = 143,         // python指标 看涨吞没
+		E_INDEX_PYTHON_SGCX     = 144,         // python指标 曙光初现
+		E_INDEX_PYTHON_DFP      = 145,         // python指标 多方炮
+		E_INDEX_PYTHON_SSSF     = 146,         // python指标 上升三法
+		E_INDEX_PYTHON_SKYX     = 147,         // python指标 三空阴线
+		E_INDEX_PYTHON_PTDB     = 148,         // python指标 平头底部
+		E_INDEX_PYTHON_DWBPYX   = 149,         // python指标 低位并排阳线
+		E_INDEX_PYTHON_XSYJ     = 150,         // python指标 晓胜赢家
+		E_INDEX_ZLGZ            = 151,         // 主力跟踪
+		E_INDEX_ZLT0            = 152,         // 主力T+0
+		E_INDEX_ZLT0_RTMIN      = 153,         // 主力T+0 RTMIN
+	    E_INDEX_ZLT0_DAY        = 154,         // 主力T+0 DAY
+		E_INDEX_LB              = 155,         // 量比
+		E_INDEX_LB_RTMIN        = 156,         // 量比 RTMIN
+		E_INDEX_XSBDXG          = 157,         // 晓胜波段选股 信号池
+		E_INDEX_XSBDXG_HIS      = 158,         // 晓胜波段选股 战绩榜
+		E_INDEX_QDYCL           = 159,         // 钱迪原策略
+		E_INDEX_ZJDL_L2         = 160,         // 资金动力_L2
+		E_INDEX_XSBDW_YJ        = 161,         // 晓胜波段王预警
+		E_INDEX_ZJDL_L2_RTMIN   = 162,         // 资金动力_L2 RTMIN
+		E_INDEX_ZJDL_L2_DAY     = 163          // 资金动力_L2 DAY
+    };
+
+	struct NewsSIndexDataNew
+    {
+        1 optional short shtMarket;
+        2 optional string sCode;
+	    3 optional string sStockName;
+	    4 optional double dChangeRate;       //小数, 涨跌幅
+	    5 optional string sSignalLastTime;   //信号持续时间描述
+        6 optional string sChoseReason;      //"入选涨幅", "次日涨幅"等
+        7 optional string sChoseTime;        //入选时间串
+        8 optional int iLimitUpType;      //涨停类型
+        9 optional string sUrl;              //股票池"小股票块"的跳转url
+    };
+
+	//统一存放各种牛逼的复杂的自产内容
+    struct NewsRecomTgLive {
+        0 optional string sImgUrl;   //投顾老师头像url
+        1 optional string sLiveRoomName; //直播房间名称
+        2 optional string sLiveTitle;     //直播主题
+        3 optional int iJoinNum;          //参加人数
+        4 optional string sLiveUrl;       //跳转链接
+        5 optional int iStatus; //0-结束， 1-直播中
+        6 optional int iCommentNum;   //评论人数
+        7 optional string sNewMessage;  //新的消息
+        8 optional bool bHasImage;     //是否含有图片
+		9 optional string	sLiveId;//直播室ID	
+    };
+
+	struct NewsContentColumn
+	{
+		0 optional string	summary;
+		1 optional string	title;
+		2 optional string	toUrl;
+	};
+	//视频信息
+	struct NewsVedioInfo
+	{
+		0 optional int		multiMediaStyle;	//对接E_Multimedia_Style结构体。0表示视频展示样式大；1表示视频展示样式小；2表示关注内容更新
+		1 optional int		multiMediaStatus;	//对接E_Multimedia_status结构体。0表示视频直播状态；1表示视频直播预告；2表示视频转码；3表示视频回放
+		2 optional string	fileUrl;			// 路径或列表页图片或用户头像
+		3 optional string	videoUrl;			//列表页视频链接
+		4 optional string	title;				//视频标题
+		5 optional string	teacherName;		//视频老师名字
+		6 optional string	toUrl;				// 跳转的url
+		7 optional int		type;				//对接E_Multimedia_Type。0表示图片；2表示文件；3表示视频；4表示广告
+		8 optional int		playCount;			//播放次数
+		9 optional string	vedioId;			//视频ID
+		10 optional int		startTime;			//开始时间
+		11 optional int		endTime;			//结束时间
+	};
+
+	struct  NewsTagInfo
+	{
+		0 require  int		type;			// 标签类型 取值E_Tage_Type
+		1 optional int		value;			// 标签的值
+		2 optional string   tittle;			// 语句
+	};
+	
+	//动态信息
+	struct OneDynamicData
+	{
+		0 optional int				id;			// 动态数据的id号
+		1 optional string			stockName;	// 股票名
+		2 optional string			stockCode;	// 股票代码
+		3 optional int				market;		// 市场代码
+		4 optional string			message;	// 动态摘要信息
+		5 optional string			dataName;	// 数据类型名
+		6 optional NewsTagInfo		tag;		// 资讯标签
+		7 optional long				createTime;	// 消息发生的时间
+	};
+
+	struct DynamicData
+	{
+		0 optional int	dataCount;	// 新数据条数，不一定等于vDynamicData.size()
+		1 optional vector<OneDynamicData> vDynamicData;	// 
+	};
+
+    struct NewsRecomAssemblyData {
+        0 optional vector<NewsRecomTgLive>		vTgLive;
+		1 optional vector<NewsContentColumn>	vContentColumn;
+		2 optional vector<NewsVedioInfo>		vVedioInfo;
+		3 optional DynamicData					dynamicData;
+    };
+};

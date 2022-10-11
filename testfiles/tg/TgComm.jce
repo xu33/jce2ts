@@ -1,0 +1,407 @@
+module NTG
+{
+        enum RET_CODE
+        {
+            SUCCESS = 0, //正确返回
+            ERROR = -999, //服务器未知错误
+            PARAM_INVALID = -101,   // 参数非法
+            UNKNOWN = -9999 ,  // 未知错误
+        };
+
+        struct BasicInfo
+        {
+            0 optional  string          upName;         // 优品用户名
+            1 optional	string			token;		    // token
+            2 optional	string			platform;       // 平台，目前平台有：website,ios,android, web, app
+            3 optional	string			device;         // 设备
+            4 optional	string			appId;          // app类型
+            5 optional	string			appVersion;     // app版本号
+            6 optional	string			channel;	    // 渠道
+            7 optional	string			manufacturer;   // 产品制造商
+            8 optional	string			system;	        // 系统
+            9 optional  string          iMei;           // 手机的iMei信息
+        };
+
+        struct WorkWeChatInfo
+        {
+            0 optional	string			                  corpId;	                // 企业微信ID
+            1 optional	string			                  corpSecret;	            // 应用的凭证密钥
+            2 optional	string			                  agentId;	                // 应用Id
+            3 optional	string			                  toParty;	                // 部门
+            4 optional	string			                  toTag;	                // 标签
+            5 optional	string			                  toUsers;	                // 用户
+            6 optional	string			                  author;	                // 作者
+            7 optional	string			                  thumbMediaId;	            // 图文消息缩略图的media_id
+            8 optional	string			                  adContentForWeChat;	    // 广告
+        };
+
+        struct TgInfo
+        {
+            0 optional  int             id;              // id
+            1 optional  int             userId;          // 用户id
+            2 optional  string          license;         // 执照号
+            3 optional  int             type;            // 1：专业投顾；2：大V学者 3机构&媒体
+            4 optional  string          name;            // 真实姓名
+            5 optional  string          idCard;          // 身份证号
+            6 optional  string          nickName;        // 昵称
+            7 optional  string          company;         // 工作单位
+            8 optional  int             sex;             // 性别 0：女性；1：男性
+            9 optional  string          province;        // 省
+            10 optional  string         city;            // 市
+            11 optional  string         tel;             // 电话
+            12 optional  string         email;           // 邮箱
+            13 optional  string         qq;              // QQ号
+            14 optional  string         intro;           // 简介
+            15 optional  int            stockAge;        // 股龄
+            16 optional  int            profession;      // 职业 0：职业股民，1：其它
+            17 optional  string         credentialsUrl;  // 证件照
+            18 optional  string         prove;           // 证明
+            19 optional  string         proveUrl;        // 证明图片
+            20 optional  string         updateTime;      // 更新时间
+            21 optional  string         avatar;          // 登记照
+            22 optional  int            status;          // 状态，1：更新信息，2：更新证件照，3：更新简介
+            23 optional  string         createTime;      // 创建时间
+            24 optional  string         description;     // 一句话介绍
+            25 optional  string         tgUpName;        // 投顾优品用户名
+            26 optional  string         weChat;          // 微信号
+			27 optional  string         icon;            // 小图标
+			28 optional  string         weChatName;      // 微信名称
+			29 optional  string         styleIntro;      // 风格介绍
+			30 optional  string         vipIntro;        // VIP介绍
+			31 optional  string         goldStockIntro;  // 金股池服务介绍
+            32 optional  string         courseIntro;     // 课程服务介绍
+            33 optional  string         groupIntro;      // 圈子服务介绍
+            34 optional  string         customerServiceUrl; // 客服地址
+            35 optional  string         vipServiceIntro; // 会员服务介绍
+            36 optional  vector<string> tags;            // 标签
+        };
+
+        struct TgDetail
+        {
+            1 optional	TgInfo			                  tgInfo;	        // 投顾信息
+            4 optional  long                              fans = 0;         // 粉丝数目
+            5 optional  int                               followStatus=0;   // 关注状态 0: 未关注；1：已关注
+            6 optional  string                            extra;            // 投顾附加信息
+        };
+		struct UserInfo
+        {
+            0 optional  int             userId;       // 用户id
+            1 optional  string          userName;     // 用户名/昵称
+            2 optional  string          upName;       // 用户名
+            3 optional  string          avatar;       // 头像
+            4 optional  int             type;         // 用户类型 1：投顾，2：普通用户
+        };
+		struct VideoInfo
+        {
+            0 optional	string		            coverUrl;		   // 视频封面图片url
+            1 optional	string		            videoUrl;		   // 视频url
+        };
+
+        struct Stock
+        {
+            0 optional   int                                           shtMarket;
+            1 optional   string                                        sCode;
+            2 optional   string                                        sName;
+        };
+
+        struct ArticleBasicInfo
+        {
+            0 optional	int		                id;		        // 观点id
+            1 optional	string		            tgId;		    // 投顾id
+            2 optional	string		            title;		    // 标题
+            3 optional	string		            content;	    // 内容
+            4 optional	string		            summary;	    // 简介
+            5 optional	int		                type;	        // 观点类型 1：免费；2：付费;3：小额付费
+            6 optional	double		            cost;	        // 价格
+            7 optional  string                  createTime;     // 创建时间
+            8 optional  string                  updateTime;     // 更新时间
+            9 optional	string		            publishTime;    // 发布时间
+            10 optional	int		                status;	        // 状态 -1：删除；0：观点上架；1：观点草稿；2：审核通过；3：审核不通过；4：待审核；5：下架
+            11 optional	string      		    tagType;            // tag类型,1:短线操作, 2:价值投资, 3:内容精研, 4:稳健波段,5:特供布局, 6:利好公告, 21:盘前早报, 22:开盘速递, 23:主力点金, 24:热门事件, 25:A股收评, 26:今日复盘, 27:研报淘金, 28:热点聚焦, 29:免费利好公告
+            12 optional int                     riskLevel;      // 风险等级 1-5，默认为3
+            13 optional string                  description;    // 一句话描述
+            14 optional string                  extra;          // 存储音频等信息
+            15 optional string                  marketingWord;  // 付费观点营销语
+            16 optional string                  audioMessage;   // 音频信息
+            17 optional string                  adContent;      // 广告内容
+            18 optional VideoInfo               videoInfo;      // 视频信息
+            19 optional vector<string>          img;            //  图片
+            20 optional string                  extraInfo;      // 点赞评论数等信息
+            21 optional string                  tgUpName;       // 用户名
+            22 optional int                     isPush=0;       // 推送状态，0：未推送；1：已推送
+            23 optional string                  cronTime;       // 定时时间
+            24 optional vector<Stock>           relateStock;             // 关联股票
+            25 optional string                  coverImg;       // 封面图片
+			26 optional string                  adContentForIOS; // iOS广告内容
+			27 optional string                  serviceType;    // 服务类型
+			28 optional	string      		    tagTypeName;    // tag类型名称
+            29 optional	string      		    serviceTypeName;// 服务类型名称
+            30 optional	string      		    syncWeChat;     // 是否同步企业微信
+            31 optional	string      		    rightType;      // 权限类型，1会员可看
+        };
+        struct ArticleDetailExtra
+        {
+            0 optional	ArticleBasicInfo       basicInfo;      // 基本详情
+            1 optional  TgInfo                 userInfo;       // 投顾信息
+            2 optional	int		               commentCount;   // 观点评论数
+            3 optional	int		               readCount;	   // 观点阅读数
+            4 optional	int		               favorites;	   // 观点点赞数
+            5 optional	int		               saleCount;      // 售出份数
+            6 optional	int		               rewardCount;    // 打赏次数
+            7 optional  int                    shareCount;     //分享次数
+            8 optional  int                    isFavorite;     // 点赞状态 0：未点赞，1：已点赞
+            9 optional	int		               buyStatus;      // 购买状态 0：未购买，1：已购买
+            10 optional  TgDetail              tgDetail;       // 投顾详情
+            11 optional  int                    isRecommend;        //是否推荐，0:未推荐；1:已经推荐
+            12 optional  string                 recommendTime;      //推荐时间
+			13 optional  int                    collectStatus;      // 1为已收藏 0为未收藏
+			14 optional  string                articleDetailUrl;   // 观点详情H5的url
+			15 optional  WorkWeChatInfo        workWeChatInfo;     // 企业微信信息
+        };
+
+
+        struct ViewDetail
+        {
+            0 optional	ArticleBasicInfo       basicInfo;      // 基本详情
+            1 optional  TgInfo                 userInfo;       // 投顾信息
+            2 optional	int		               commentCount;   // 观点评论数
+            3 optional	int		               readCount;	   // 观点阅读数
+            4 optional	int		               favorites;	   // 观点点赞数
+            5 optional	int		               saleCount;      // 售出份数
+            6 optional	int		               rewardCount;    // 打赏次数
+        };
+
+        struct GoldStockRecord
+        {
+            0   optional int			 id;                     // id
+            1   optional string			 tgUpName;               // 投顾用户名
+            2   optional string			 business;               // 业务
+            3   optional string			 bId;                    // 业务对应的id
+            4   optional int			 goldStockId;            // 圈子个股版本id
+            5   optional string			 stockCode;              // 股票代码
+            6   optional string          stockName;              // 股票名
+            7   optional int			 type;                   // 1：调入；2：调出；
+            8   optional string			 reason;                 // 理由
+            9   optional string			 createTime;             // 创建时间
+            10  optional string	         stockMarket;            // 股票市场代码(1:深市;0:沪市)
+            11  optional double          price;                  // 股价
+            12  optional double          change;                 // 涨跌额
+            13  optional double          changeRate;             // 涨跌幅度
+        };
+
+        struct TopicBasicInfo
+        {
+            0 optional	int		                id;		        // 观点id
+            1 optional	string		            tgId;		    // 投顾id
+            2 optional	string		            title;		    // 标题
+            3 optional	string		            content;	    // 内容
+            4 optional	string		            summary;	    // 简介
+            5 optional	int		                type;	        // 观点类型 1：免费；2：付费;3：小额付费
+            6 optional	double		            cost;	        // 价格
+            7 optional  string                  createTime;     // 创建时间
+            8 optional  string                  updateTime;     // 更新时间
+            9 optional	string		            publishTime;    // 发布时间
+            10 optional	int		                status;	        // 状态 -1：删除；0：观点上架；1：观点草稿；2：审核通过；3：审核不通过；4：待审核；5：下架
+            11 optional	string      		    tagType;            // tag类型,1:短线操作, 2:价值投资, 3:内容精研, 4:稳健波段,5:特供布局
+            12 optional int                     riskLevel;      // 风险等级 1-5，默认为3
+            13 optional string                  description;    // 一句话描述
+            14 optional string                  extra;          // 存储音频等信息
+            15 optional string                  marketingWord;  // 付费观点营销语
+            16 optional string                  audioMessage;   // 音频信息
+            17 optional string                  adContent;      // 广告内容
+            18 optional VideoInfo               videoInfo;      // 视频信息
+            19 optional vector<string>          img;            // 图片
+            20 optional string                  extraInfo;      // 点赞评论数等信息
+            21 optional string                  tgUpName;       // 用户名
+            22 optional int                     isPush=0;       // 推送状态，0：未推送；1：已推送
+            23 optional string                  cronTime;       // 定时时间
+            24 optional vector<Stock>           relateStock;    // 关联股票
+            25 optional string                  coverImg;       // 封面图片
+            26 optional string                  adContentForIOS;// iOS广告内容
+        };
+
+        struct TopicDetailExtra
+        {
+            0 optional	TopicBasicInfo       basicInfo;      // 基本详情
+            1 optional  TgInfo                 userInfo;       // 投顾信息
+            2 optional	int		               commentCount;   // 观点评论数
+            3 optional	int		               readCount;	   // 观点阅读数
+            4 optional	int		               favorites;	   // 观点点赞数
+            5 optional	int		               saleCount;      // 售出份数
+            6 optional	int		               rewardCount;    // 打赏次数
+            7 optional  int                    shareCount;     //分享次数
+            8 optional  int                    isFavorite;     // 点赞状态 0：未点赞，1：已点赞
+            9 optional	int		               buyStatus;      // 购买状态 0：未购买，1：已购买
+            10 optional  TgDetail              tgDetail;       // 投顾详情
+            11 optional  int                    isRecommend;        //是否推荐，0:未推荐；1:已经推荐
+            12 optional  string                 recommendTime;      //推荐时间
+            13 optional  int                    collectStatus;      // 1为已收藏 0为未收藏
+        };
+
+
+        struct TopicDetail
+        {
+            0 optional	TopicBasicInfo         basicInfo;      // 基本详情
+            1 optional  TgInfo                 userInfo;       // 投顾信息
+            2 optional	int		               commentCount;   // 观点评论数
+            3 optional	int		               readCount;	   // 观点阅读数
+            4 optional	int		               favorites;	   // 观点点赞数
+            5 optional	int		               saleCount;      // 售出份数
+            6 optional	int		               rewardCount;    // 打赏次数
+        };
+
+///////////////////////////////////// 直播相关的基本结构体 /////////////////////////////////////
+        struct LiveBasicInfo
+        {
+            0 require	int		        id;		       // 直播室id
+            1 optional  string             upName;        // 投顾id
+            2 optional  string          title;         // 直播室名称
+            3 optional  string          summary;       // 直播室简介
+            4 optional  int             type;          // 类型 1：免费；2：付费
+            5 optional  double          cost;          // 价格
+            6 optional  int             status;        // 状态
+            7 optional  string          createTime;    // 创建时间
+            8 optional  string          updateTime;    // 更新时间
+            9 optional  string          adPic;         // 广告图片
+            10 optional string          adUrl;         // 广告url
+        };
+
+        struct LiveDetail
+        {
+            0 optional  LiveBasicInfo        liveBasicInfo;    // 直播室基本信息
+            1 optional  int                  saleCount;        // 售出份数
+            2 optional  TgDetail             tgDetail;         // 投顾详情
+        };
+
+        struct StageLiveBasicInfo
+        {
+            0 require	int		        id;		       // 分期直播id
+            1 optional  string             upName;        // 投顾id
+            2 optional  int             liveId;        // 直播室id
+            3 optional  string          no;            // 分期直播编号
+            4 optional  string          summary;       // 分期直播主题
+            5 optional  int             status;        // 状态 0：结束；1：直播中
+            6 optional  string          createTime;    // 创建时间
+            7 optional  string          updateTime;    // 更新时间
+            8 optional  string          groupId;       // 关联消息系统的群组id
+            9 optional  LiveBasicInfo   liveBasicInfo; // 直播室基本信息
+        };
+
+        struct StageLiveDetail
+        {
+            0 optional  StageLiveBasicInfo   stageLiveBasicInfo;        // 分期直播基本信息
+            1 optional  int                  commentCount;              // 评论数
+            2 optional  int                  favoriteCount;             // 点赞数
+            3 optional  int                  participants;              // 参与人数
+            4 optional  int                  saleCount;                 // 售出份数
+            5 optional  int                  rewardCount;               // 打赏次数
+            6 optional  int                  contentCount;              // 观点数据
+            7 optional  TgDetail             tgDetail;                  // 投顾信息
+            8 optional  int                  isRecommend;               //是否推荐，0:未推荐；1:已经推荐
+            9 optional string                recommendTime;             //推荐时间
+        };
+
+        struct LiveContent
+        {
+            0 require	int		        id;		       // 内容id
+            1 optional  string             upName;        // 投顾id
+            2 optional  int             liveId;        // 直播室id
+            3 optional  int             stageLiveId;   // 分期直播id
+            4 optional  int             type;          // 类型 1：系统；2：投顾
+            5 optional  string          content;       // 直播内容
+            6 optional  vector<string>  pics;          // 直播图片
+            7 optional  vector<string>  thumbnails;    // 直播缩略图片
+            8 optional  int             status;        // 状态
+            9 optional  string          createTime;    // 创建时间
+            10 optional string          updateTime;    // 更新时间
+            11 optional int             messageType;   // 消息类型(0普通直播消息，1直播打赏，2广告消息，5锦囊启动，6锦囊结束，7锦囊更新，10金股池更新，11研究更新，12战法更新，13报告更新，14交易圈锦囊更新，15发布观点。其中0到4为直播相关；5到9为锦囊相关；10到14为圈子相关；15到19为观点相关。)
+            12 optional vector<Stock>   relateStock;    // 关联股票
+        };
+
+        struct LiveMsg
+        {
+            0 optional  int             id;                 // 消息id
+            1 optional  int             replyId;            // 回复的消息id
+            2 optional  string             upName;             // 用户id
+            3 optional  int             liveId;             // 直播室id
+            4 optional  int             liveStageId;        // 分期直播id
+            5 optional  string          content;            // 消息内容
+            6 optional  int             isDelete;           // 是否删除 1：删除；0：未删除
+            7 optional  int             status;             // 状态
+            8 optional  string          updateTime;         // 更新时间
+        };
+
+        struct LiveDictionary
+        {
+            0 optional	int		        id;		         // 字典id
+            1 optional  string          dicKey;          // key
+            2 optional  string          dicValue;        // value
+            3 optional  int             extraType;       // 扩展类型
+            4 optional  string          extraValue;      // 扩展值
+        };
+
+        struct GagInfo
+        {
+            0 optional	string		        upName;		      // 用户id
+            1 optional	int		        liveId;		      // 直播室id
+            2 optional  int             status;           // 状态 0：未禁言；1：直播室禁言；2：全局禁言；3：直播室+全局禁言
+        };
+
+        struct LiveMsgDetail
+        {
+            0 optional  LiveMsg         msgInfo;
+            1 optional  TgDetail        userInfo;
+            2 optional  LiveMsg         replyInfo;
+            3 optional  TgDetail        replyUserInfo;
+            4 optional  GagInfo         gagInfo;
+        };
+
+        struct StageLive
+        {
+            0 optional	int			                total;		       // 总数
+            1 optional	vector<StageLiveDetail>	    stageLives;	       // 分期直播
+        };
+
+        struct StageLiveMsg
+        {
+            0 optional	int			                total;		       // 总数
+            1 optional	vector<LiveMsgDetail>	    liveMessages;	   // 直播互动消息
+        };
+
+        struct StageLiveContent
+        {
+            0 optional	int			                total;		       // 总数
+            1 optional	vector<LiveContent>	        liveContents;	   // 直播内容
+        };
+
+        struct RecommendMsg
+        {
+            0 optional	LiveMsgDetail			    msgInfo;		       // 消息内容
+            1 optional  TgInfo                      tgInfo;                // 投顾消息
+            2 optional  StageLiveBasicInfo          stageLiveInfo;         // 分期直播信息
+        };
+
+        struct StageLiveNotice
+        {
+            0 optional	int			        total;		       // 未读消息总数
+            1 optional	LiveContent			latestContent;	   // 最新的一条消息
+            2 optional  StageLiveBasicInfo          stageLiveInfo;         // 分期直播信息
+        };
+
+        struct CriterionOrderInfo
+        {
+            0   optional string			                iosRightId;             // ios权限id
+            1   optional string			                iosOrderUrl;            // ios订单地址
+            2   optional string                     	iosCallbackUrl;         // ios支付成功后回调页面
+            3   optional string                     	iosSpecialRightId;      // ios特殊权限Id
+            4   optional string			                rightId;                // 权限id
+            5   optional string			                orderUrl;               // 订单地址
+            6   optional string                     	callbackUrl;            // 支付成功后回调页面
+            7   optional string                     	specialRightId;         // 特殊权限Id，绑定产品用
+            8   optional string                     	iosDisPlayPrice;        // ios展示价格
+            9   optional string                     	disPlayPrice;           // 展示价格
+
+        };
+
+
+};

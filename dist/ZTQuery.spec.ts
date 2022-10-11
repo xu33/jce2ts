@@ -446,7 +446,7 @@ declare global {
       vecAllCaUnuAct?: Array<FCaUnuActTypeData>;
     }
     interface FNumOfCallAuctionStkRsp {
-      mapNumOfStk?: Record<E_CALL_AUCTION_DATA_TYPE, number>;
+      mapNumOfStk?: Map<E_CALL_AUCTION_DATA_TYPE, number>;
       iNumOfAllStk?: number;
     }
     interface FZDPanKouInfoReq {
@@ -502,6 +502,51 @@ declare global {
     interface FZTAllTagTypeRsp {
       vecType?: Array<FTagTypeInfo>;
       lRefreshTime?: string;
+    }
+    interface ZTQuery {
+      getAllTagType: (stReq: FZTAllTagTypeReq) => FZTAllTagTypeRsp;
+      getTagTypeData: (stReq: FZTTagReq) => FZTTagRsp;
+      batchUnitedStockPool: (stReq: FBatchUnitedStockPoolReq) => FBatchUnitedStockPoolRsq;
+      getZTPanKouInfo: (stReq: FZDPanKouInfoReq) => FZDPanKouInfoRsq;
+      getNumOfCallAuctionStk: (stReq: FNumOfCaUnuActTypeStkReq) => FNumOfCallAuctionStkRsp;
+      getAllCallAuctionData: (stReq: FMultiCaUnuActTypeDataReq) => FCaUnuActTypeDataRsq;
+      getCaUnuActLevelStk: (stReq: FCaUnuActLevelStkReq) => FCaUnuActLevelStkRsp;
+      getCaUnuActTypeData: (stReq: FCaUnuActTypeDataReq) => FCaUnuActTypeDataRsq;
+      batchStkCaUnuAct: (stReq: FBatchStkCaUnuActReq) => FBatchStkCaUnuActRsp;
+      batchBlkStormEyeIdx: (stReq: FBlkStormEyeIdxReq) => FBlkStormEyeIdxRsp;
+      getBlockExternData: (stReq: FBlkExtDataReq) => FBlkExtDataRsp;
+      batchStockData: (stReq: FBatchStkDataReq) => FBatchStkDataRsp;
+      getBlockStockData: (stReq: FBlkStkDataReq) => FBlkStkDataRsp;
+      getBlockBasicData: (stReq: FBlkBasicDataReq) => FBlkBasicDataRsp;
+      getUltraShortLastZTStock: (stReq: FUltraShtLastZtStkReq) => FUltraShtLastZtStkRsp;
+      getCatchBullStock: (stReq: FCatchBullStkReq) => FCatchBullStkRsp;
+      getUltraShortTermStock: (stReq: FUltraShortTermStkReq) => FUltraShortTermStkRsp;
+      getHotPointBlkStock: (stReq: FHotPointBlkStkReq) => FHotPointBlkStkRsp;
+      getBlkUnusualActionTag: (stReq: FBlkUnuActFlagReq) => FBlkUnuActFlagRsp;
+      getBlkUnusualAction: (stReq: FBlkUnuActReq) => FBlkUnuActRsp;
+      getSubNewStock: (stReq: FSubNewStockReq) => FSubNewStockRsp;
+      getZTModelStock: (stReq: FZTModelStockReq) => FZTModelStockRsp;
+      getZTTrendStock: (stReq: FZTTrendStockReq) => FZTTrendStockRsp;
+      batchSubDragonHeadStock: (stReq: FBatchSubDragonHeadStockReq) => FSubDragonHeadStockRsp;
+      getBlkChanges: (stReq: FBlkChangesReq) => FBlkChangesRsp;
+      getLeadBlkByDate: (stReq: FLeadBlkReq) => FLeadBlkRsp;
+      pushLeadBlkInfo: (sPushLeadBlkInfo: IC.SPushLeadBlkInfo) => void;
+      pushBlockChangeDataNew: (sPushBlockChangeDataNew: IC.SPushBlockChangeDataNew) => void;
+      pushNewTradeDate: (iNewDate: number) => void;
+      blkHisTurn: (stReq: FBlkHisTurnReq) => FBlkHisTurnRsp;
+      blkStockHis: (stReq: FBlkStockHisReq) => FBlkStockHisRsp;
+      blkTimeHis: (stReq: FBlkTimeHisReq) => FBlkTimeHisRsp;
+      blkLastHis: (stReq: FBlkLastHisReq) => FBlkLastHisRsp;
+      blkCurUnZT: (stReq: FBlkCurUnZTReq) => FBlkCurUnZTRsp;
+      blkCurZT: (stReq: FBlkCurZTReq) => FBlkCurZTRsp;
+      blkCurrent: (stReq: FBlkCurrentReq) => FBlkCurrentRsp;
+      marketTrendVec: (stReq: FMarketTrendReq) => FMarketTrendVecRsp;
+      marketTrend: (stReq: FMarketTrendReq) => FMarketTrendRsp;
+      boardDetail: (stReq: FBoardDetailReq) => FBoardDetailRsp;
+      batchStockPool: (stReq: FBatchStockPoolReq) => FBatchStockPoolRsp;
+      stockPool: (stReq: FStockPoolReq) => FStockPoolRsp;
+      getStockPoolFBoardPeriod: (stReq: FStockPoolFBoardPeriodReq) => FStockPoolFBoardPeriodRsp;
+      getHisFactorData: (stReq: FHisFactorReq) => FHisFactorRsp;
     }
   }
 }
