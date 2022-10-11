@@ -149,11 +149,11 @@ def
 ;
 
 statement
-: CONST t IDENTIFIER EQUAL STRING_LITERAL SEMI {
+: CONST t IDENTIFIER EQUAL value SEMI {
     {
         const id = t.identifier($3);
-        id.typeAnnotation = t.tsTypeAnnotation($2);
-        const init = t.stringLiteral($5);
+        // id.typeAnnotation = t.tsTypeAnnotation($2);
+        const init = $value;
         $$ = t.variableDeclaration("const", [t.variableDeclarator(id, init)]);
     }
 };
@@ -194,27 +194,36 @@ enumitemDef
 {
     $$ = t.tsEnumMember(t.identifier($1));
 }
-| IDENTIFIER EQUAL NUMBER
+| IDENTIFIER EQUAL value
 {
     {
     const value = Number($3);
-    $$ = t.tsEnumMember(t.identifier($1), t.numericLiteral(value));
-    }
-}
-| IDENTIFIER EQUAL HEX
-{
-    {
-    $$ = t.tsEnumMember(t.identifier($1), t.stringLiteral($3));
-    }
-}
-| IDENTIFIER EQUAL UMINUS NUMBER
-{
-    {
-    const value = -Number($4);
-    $$ = t.tsEnumMember(t.identifier($1), t.numericLiteral(value));
+    $$ = t.tsEnumMember(t.identifier($1), $3);
     }
 }
 ;
+
+value
+: NUMBER {
+    {
+        $$ = t.numericLiteral(Number($1));
+    }
+}
+| STRING_LITERAL {
+    {
+        const s = String($STRING_LITERAL).replace(/^"/, "").replace(/"$/, "")
+        $$ = t.stringLiteral(s);
+    }
+}
+| HEX {
+    $$ = t.stringLiteral($1);
+}
+| UMINUS NUMBER {
+    {
+        const value = -Number($2);
+        $$ = t.numericLiteral(value);
+    }
+};
 
 struct
 : STRUCT IDENTIFIER itemlist 

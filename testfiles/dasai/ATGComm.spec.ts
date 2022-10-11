@@ -1037,7 +1037,6 @@ declare global {
       E_TWAP_MATCH = 2,
     }
     interface SimluatedTradeCompetInfo {
-      /** 标识 */
       ID: string;
       startDate?: string;
       endDate?: string;
@@ -1059,4 +1058,4 @@ declare global {
     }
   }
 }
-export { };
+export {};

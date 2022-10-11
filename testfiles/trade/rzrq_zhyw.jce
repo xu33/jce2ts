@@ -1,0 +1,1201 @@
+module AT
+{
+    /*
+        ID:rzrq_zhyw_sdxglcpjgcx
+        Desc:融资融券/综合业务/适当性管理测评结果查询
+        Version: 1.0
+        Date:20150330
+    */
+    struct rzrq_zhyw_sdxglcpjgcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  stlb; //试题类别,,VARCHAR
+        8  optional string  cpbh; //产品编号,,VARCHAR
+        9  optional string  cpzt; //测评状态,,VARCHAR
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        13  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_sdxglcpjgcx_cxlb_info
+    {
+        0  optional string  khdm; //客户编号,,VARCHAR
+        1  optional string  cpbh; //产品编号,,VARCHAR
+        2  optional string  sjlb; //试卷类别,,VARCHAR
+        3  optional unsigned int  fxjb; //风险级别,,INTEGER
+        4  optional unsigned int  sjdf; //试卷得分,,INTEGER
+        5  optional string  sjda; //试卷答案,,VARCHAR
+        6  optional string  sjfxjb; //上次风险级别,,VARCHAR
+        7  optional string  glsjlb; //关联试卷类型,,VARCHAR
+        8  optional string  glsjda; //关联试卷答案,,VARCHAR
+        9  optional string  cpzt; //自动测评状态,,DICT
+        10  optional string  cpztsm; //自动测评状态说明,,DICT
+        11  optional string  khbh; //客户编号,,VARCHAR
+    };
+
+    struct rzrq_zhyw_sdxglcpjgcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_sdxglcpjgcx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_sdxglcpjgqr
+        Desc:融资融券/综合业务/适当性管理测评结果确认
+        Version: 1.0
+        Date:20150330
+    */
+    struct rzrq_zhyw_sdxglcpjgqr_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  stlb; //试题类别,,DICT
+        8  optional string  khdm; //客户代码,,VARCHAR
+        9  optional string  zjzh; //资金账号,,VARCHAR
+        10  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        11  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_sdxglcpjgqr_cxlb_info
+    {
+        0  optional string  zdcpzt; //自动测评状态,,DICT
+        1  optional string  zdcpztsm; //自动测评状态说明,,DICT
+        2  optional string  czbz; //操作备注,,VARCHAR
+        3  optional string  cpzt; //测评状态,,DICT
+    };
+
+    struct rzrq_zhyw_sdxglcpjgqr_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_sdxglcpjgqr_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_hqtwhtnr
+        Desc:融资融券/综合业务/获取天威合同内容
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_hqtwhtnr_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  mblb; //模板类别,根据实际送,DICT
+        8  optional string  khdm; //客户代码,,VARCHAR
+        9  optional string  zjzh; //资金账号,,VARCHAR
+        10  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        11  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqtwhtnr_cxlb_info
+    {
+        0  optional string  htnr; //合同内容,,VARCHAR
+        1  optional string  htmc; //合同名称,,VARCHAR
+        2  optional string  xynr; //协议内容,,VARCHAR
+        3  optional string  xymc; //协议名称,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqtwhtnr_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_hqtwhtnr_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_twlh
+        Desc:融资融券/综合业务/天威留痕
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_twlh_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  mblb; //模板类别,根据实际送,DICT
+        8  optional string  khsx; //客户属性,,VARCHAR
+        9  optional unsigned int  qsrq; //签署日期,,INTEGER
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        13  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_twlh_cxlb_info
+    {
+        0  optional string  lhlsh; //留痕流水号,,VARCHAR
+    };
+
+    struct rzrq_zhyw_twlh_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_twlh_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_khfxcx
+        Desc:融资融券/综合业务/客户风险查询
+        Version: 1.0
+        Date:20151119
+    */
+    struct rzrq_zhyw_khfxcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  khdm; //客户代码,,VARCHAR
+        8  optional string  zjzh; //资金账号,,VARCHAR
+        9  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        10  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_khfxcx_cxlb_info
+    {
+        0  optional string  fxdj; //风险等级,-1:未做风险测评,VARCHAR
+        1  optional string  fxdjsm; //风险等级说明,,UTF8
+        2  optional unsigned int  yxxzrq; //限制有效日期,,INTEGER
+        3  optional string  yxbz; //有效标志,,VARCHAR
+        4  optional int  xtsj; //系统时间,,DATE8
+        5  optional int  xtrq; //系统日期,,DATE8
+        6  optional unsigned int  xzyxrq; //限制有效日期,,INTEGER
+    };
+
+    struct rzrq_zhyw_khfxcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_khfxcx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_sdxlh
+        Desc:融资融券/综合业务/适当性留痕
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_sdxlh_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jyxw; //交易行为,,DICT
+        8  optional string  cpdm; //产品代码,,VARCHAR
+        9  optional string  xxlb; //消息类别,,VARCHAR
+        10  optional string  xxbb; //消息版本,,VARCHAR
+        11  optional string  zhfxjssqsbz; //账户风险揭示书签署标志,金证win版场内使用 1-需要签署,VARCHAR
+        12  optional string  xyid; //协议ID,世纪证券场内、外留痕时必送,VARCHAR
+        13  optional string  xylx; //协议类型,世纪证券场内、外留痕时必送,VARCHAR
+        14  optional string  khsx; //客户属性,0 个人1机构,VARCHAR
+        15  optional string  mblb; //模板类别,华龙证券第三方留痕必送,DICT
+        16  optional string  cpfxdj; //产品风险等级,zhfxjssqsbz 值为1时必送,申港证券场内必送,VARCHAR
+        17  optional string  fxppjg; //风险等级匹配结果,恒生柜台必送,DICT
+        18  optional string  tzqxppjg; //投资期限匹配结果,恒生柜台必送,DICT
+        19  optional string  tzpzppjg; //投资品种匹配结果,恒生柜台必送,DICT
+        20  optional string  yqsyppjg; //预期收益匹配结果,恒生柜台必送,DICT
+        21  optional string  sdxxynr; //适当性协议内容,,VARCHAR
+        22  optional string  ywfxdj; //业务风险等级,申港证券必送,DICT
+        23  optional string  sdxbz; //适当性标志,0-不接受1-不匹配确认接受2—匹配确认接受,VARCHAR
+        24  optional string  jysdm; //市场代码,,DICT
+        25  optional string  xtbs; //系统标识,0-场内，1-场外,DICT
+        26  optional string  khfxdj; //客户风险等级,,DICT
+        27  optional string  qsrq; //签署日期,,VARCHAR
+        28  optional string  khxm; //客户姓名,,VARCHAR
+        29  optional string  zjzh; //资金账号,,VARCHAR
+        30  optional string  khdm; //客户代码,,VARCHAR
+        31  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        32  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_sdxlh_fhxx_info
+    {
+        0  optional string  lhlsh; //留痕流水号,,VARCHAR
+        1  optional string  ywlsh; //业务流水号,,VARCHAR
+    };
+
+    struct rzrq_zhyw_sdxlh_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_sdxlh_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_hqfxcpst
+        Desc:融资融券/综合业务/获取风险测评试题
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_hqfxcpst_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  tmlb; //题目类别,,DICT
+        8  optional string  khsx; //客户属性,,DICT
+        9  optional string  khh; //客户号,,VARCHAR
+        10  optional string  zkg; //主客观,,DICT
+        11  optional string  tmbb; //题目版本,不送取最新版本,VARCHAR
+        12  optional string  khdm; //客户代码,,VARCHAR
+        13  optional string  zjzh; //资金账号,,VARCHAR
+        14  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        15  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqfxcpst_stlb_info
+    {
+        0  optional unsigned int  stlz; //试题栏组,,INTEGER
+        1  optional unsigned int  stbh; //试题编号,,INTEGER
+        2  optional string  stid; //试题 ID,,VARCHAR
+        3  optional unsigned int  tmbh; //题目编号,,INTEGER
+        4  optional unsigned int  xxbh; //选项编号,,INTEGER
+        5  optional string  xxnr; //选项内容,,UTF8
+        6  optional long  xxdf; //选项得分,,INTEGER
+        7  optional string  stnr; //试题内容,,UTF8
+        8  optional string  xxlx; //选项类型,0:单选 1:多选,VARCHAR
+        9  optional string  dxfgf; //多选分隔符,,VARCHAR
+        10  optional string  tmbb; //题目版本,,VARCHAR
+        11  optional string  stfl; //试题分类,,VARCHAR
+        12  optional string  zkg; //主客观,,DICT
+        13  optional string  kgtda; //客观题答案,多个答案之间以,分隔,VARCHAR
+        14  optional unsigned int  xbbz; //新版标识,0：旧版，1：新版,INTEGER
+    };
+
+    struct rzrq_zhyw_hqfxcpst_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_hqfxcpst_stlb_info> stlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_fxcpdt
+        Desc:融资融券/综合业务/风险测评答题（批量）
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_fxcpdt_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  dcbbm; //调查表编码,试题编号,DICT
+        8  optional unsigned int  dcblz; //调查表栏组,,INTEGER
+        9  optional string  dcblmid; //调查表栏目 id（复数）,题目 ID，用|隔开，需要按题的顺序分隔,比如301|302|303,VARCHAR
+        10  optional string  dcblm; //调查表栏目（复数）,题目编号，用|隔开，需要按题的顺序分隔,比如1|2|3,VARCHAR
+        11  optional string  dcbdy; //调查表单元（复数）,选项编号，用|隔开，如果1个题有多个答案,答案之间用英文逗号分隔,VARCHAR
+        12  optional string  dcbzdfz; //调查表作答分值(复数),选项得分，用|隔开,VARCHAR
+        13  optional string  tbzxtbz; //同步子系统标志,,VARCHAR
+        14  optional string  dtzt; //答题状态,选项得分，用|隔开,VARCHAR
+        15  optional string  khh; //客户号,,VARCHAR
+        16  optional string  stbb; //试题版本,“不送默认最新版本”,VARCHAR
+        17  optional string  stdahz; //试题答案汇总数据,恒生柜台必送，试题答案格式，题号&答案|题号&答案|  。例如：20&2|24&2^3|27&1|   其中20号题的答案为2，24号题的答案为2、3。,VARCHAR
+        18  optional string  khdm; //客户代码,,VARCHAR
+        19  optional string  zjzh; //资金账号,,VARCHAR
+        20  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        21  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_fxcpdt_fhxx_info
+    {
+        0  optional string  dcblb; //调查表类别,,VARCHAR
+        1  optional unsigned int  dcbbm; //调查表编码,,INTEGER
+        2  optional unsigned int  jcfz; //基础分值,,INTEGER
+        3  optional unsigned int  pjjb; //评级级别,,INTEGER
+        4  optional string  pjjbmc; //评级级别名称,,VARCHAR
+        5  optional int  yxrq; //有效日期,,DATE8
+        6  optional int  xckcprq; //下次可测评日期,,DATE8
+        7  optional string  stbb; //试题版本,,VARCHAR
+        8  optional unsigned int  cpcx; //测评次序,,INTEGER
+        9  optional unsigned int  pjrq; //评级日期,,INTEGER
+        10  optional unsigned int  ccbz; //重测标识,0:不可重测,1:可重测,根据xccprq与当前日期的关系计算出,INTEGER
+        11  optional unsigned int  xbbz; //新版标识,0:老版，1:新版,INTEGER
+        12  optional string  tzqx; //投资期限,,DICT
+        13  optional string  INVEST_LMT; //投资期限,重复定义，以便字典转换,DICT
+        14  optional string  tzqxmc; //投资期限名称,,VARCHAR
+        15  optional string  tzpz; //投资品种,由字典组成的字符串,VARCHAR
+        16  optional string  tzpzmc; //投资品种名称,,VARCHAR
+        17  optional string  yybjc; //营业部简称,,VARCHAR
+        18  optional unsigned int  xtsj; //系统日期,,INTEGER
+        19  optional string  sfgq; //是否过期,Y过期N未过期,VARCHAR
+        20  optional string  jbmc; //级别名称,,VARCHAR
+        21  optional unsigned int  cspf; //测试评分,,INTEGER
+    };
+
+    struct rzrq_zhyw_fxcpdt_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_fxcpdt_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_fxcpjgcx
+        Desc:融资融券/综合业务/风险测评结果查询
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_fxcpjgcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  zdlx; //作答类型,,VARCHAR
+        8  optional string  stbh; //试题编号,,DICT
+        9  optional unsigned int  yylsh; //预约流水号,,INTEGER
+        10  optional unsigned int  ksrq; //开始日期,,INTEGER
+        11  optional unsigned int  jsrq; //结束日期,,INTEGER
+        12  optional string  khh; //客户号,,VARCHAR
+        13  optional string  stbb; //试题版本,,VARCHAR
+        14  optional string  khdm; //客户代码,,VARCHAR
+        15  optional string  zjzh; //资金账号,,VARCHAR
+        16  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        17  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_fxcpjgcx_fhxx_info
+    {
+        0  optional unsigned int  khh; //客户号,,INTEGER
+        1  optional unsigned int  yylsh; //预约流水号,,INTEGER
+        2  optional unsigned int  stbm; //试题编码,,INTEGER
+        3  optional unsigned int  cspf; //测试评分,,INTEGER
+        4  optional unsigned int  pjjb; //评级级别,-1:未做风险测评,INTEGER
+        5  optional string  jbmc; //级别名称,,VARCHAR
+        6  optional unsigned int  pjrq; //评级日期,,INTEGER
+        7  optional unsigned int  yxrq; //有效日期,,INTEGER
+        8  optional unsigned int  xtsj; //系统日期,,INTEGER
+        9  optional unsigned int  jjgqts; //即将过期天数,,INTEGER
+        10  optional string  sfgq; //是否过期,Y过期N未过期,VARCHAR
+        11  optional string  xckcprq; //下次可测评日期,,VARCHAR
+        12  optional string  fxcpxb; //风险测评新版,1:新版，表示经过适当性改造，以下字段生效，否则是老版,VARCHAR
+        13  optional string  cpjgjjgqtxbs; //测评结果即将过期提醒标示,0:否;1:是,VARCHAR
+        14  optional string  txhs; //临近到期提醒话术,,VARCHAR
+        15  optional string  nfcc; //能否重测,0:否;1:是,VARCHAR
+        16  optional string  tzzfl; //投资者分类,0:普通投资者;1:专业投资者,VARCHAR
+        17  optional string  cpgxgzbs; //测评更新告知标示,0:否;1:是,VARCHAR
+        18  optional string  cpgxgzhs; //测评更新告知话术,,VARCHAR
+        19  optional unsigned int  zjyxrq; //证件有效日期,,INTEGER
+        20  optional string  xlkhbz; //新老客户标志,1:新客户,0:老客户,VARCHAR
+        21  optional unsigned int  sfjyr; //是否交易日,0 否 1 是,INTEGER
+        22  optional string  zydm; //职业代码,,VARCHAR
+        23  optional string  xldm; //学历代码,,VARCHAR
+        24  optional string  zytzzbz; //专业投资者标志,,DICT
+        25  optional string  khtzpzsm; //客户投资品种说明,,VARCHAR
+        26  optional string  khtzpz; //客户投资品种,,DICT
+        27  optional string  ywfxdj; //业务风险等级,,DICT
+        28  optional string  ywfxdjsm; //业务风险等级说明,,VARCHAR
+        29  optional unsigned int  zjjjgqts; //证件即将过期天数,,INTEGER
+        30  optional unsigned int  cpjjgqts; //产品即将过期天数,,INTEGER
+        31  optional string  sfjjgq; //是否即将过期,Y过期N未过期,VARCHAR
+    };
+
+    struct rzrq_zhyw_fxcpjgcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_fxcpjgcx_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_cpdacx
+        Desc:融资融券/统一帐户/测评答案查询
+        Version: 1.0
+        Date:20170424
+    */
+    struct rzrq_zhyw_cpdacx_req
+    {
+        0  optional string  sessionid; //会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  stfl; //试题分类,,DICT
+        8  optional string  khsx; //客户属性,,DICT
+        9  optional string  stbb; //版本,如果不填，默认取最新版本,VARCHAR
+        10  optional unsigned int  cpcx; //测试次序,如果不填，主观题取上次测评结果，客观题取最新答案,INTEGER
+        11  optional string  khdm; //客户代码,,VARCHAR
+        12  optional string  zjzh; //资金账号,,VARCHAR
+        13  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        14  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cpdacx_stlb_info
+    {
+        0  optional unsigned int  yhdm; //用户代码,,INTEGER
+        1  optional string  yhjs; //用户角色,,VARCHAR
+        2  optional unsigned int  stbm; //试题编码,,INTEGER
+        3  optional string  stbb; //版本,,VARCHAR
+        4  optional string  stlb; //试题类别,,VARCHAR
+        5  optional string  zkg; //主客观,0:客观，1:主观,DICT
+        6  optional unsigned int  tmfz; //试题题目分组,,INTEGER
+        7  optional unsigned int  tmbh; //题目编号,第几题,INTEGER
+        8  optional string  tmnr; //题目内容,题目内容,UTF8
+        9  optional unsigned int  xxbm; //选项编码,第几选项,INTEGER
+        10  optional string  xxnr; //选项内容,选项内容,UTF8
+        11  optional unsigned int  xxfz; //选项分值,,INTEGER
+        12  optional string  xxlx; //选项类型,0单选，1多选,DICT
+        13  optional string  dabm; //答案编码,第几个答案,多个以,分隔,VARCHAR
+        14  optional unsigned int  dafz; //答案分值,多个以,分隔,INTEGER
+        15  optional unsigned int  cpcx; //测评次序,,INTEGER
+        16  optional unsigned int  xbbz; //新版标识,0:老版，1:新版,INTEGER
+    };
+
+    struct rzrq_zhyw_cpdacx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_cpdacx_stlb_info> stlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_cpgqpd
+        Desc:融资融券/统一账户/测评过期判断
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_cpgqpd_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  khdm; //客户代码,,VARCHAR
+        8  optional string  zjzh; //资金账号,,VARCHAR
+        9  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        10  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cpgqpd_fhxx_info
+    {
+        0  optional string  pjjb; //评级级别,-1:未做风险测评,DICT
+        1  optional unsigned int  pjrq; //评级日期,,INTEGER
+        2  optional unsigned int  yxrq; //有效日期,,INTEGER
+        3  optional unsigned int  xtsj; //系统日期,,INTEGER
+        4  optional string  sfgq; //是否过期,Y过期N未过期,VARCHAR
+        5  optional string  jbmc; //级别名称,,VARCHAR
+        6  optional string  xlkhbz; //新老客户标志,1:新客户,0:老客户,VARCHAR
+        7  optional unsigned int  zjjjgqts; //证件即将过期天数,,INTEGER
+        8  optional unsigned int  cpjjgqts; //产品即将过期天数,,INTEGER
+    };
+
+    struct rzrq_zhyw_cpgqpd_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_cpgqpd_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_hqsdxxy
+        Desc:融资融券/综合业务/获取适当性协议
+        Version: 1.0
+        Date:20150502
+    */
+    struct rzrq_zhyw_hqsdxxy_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  mblb; //模板类别,,DICT
+        8  optional string  khdm; //客户代码,,VARCHAR
+        9  optional string  zjzh; //资金账号,,VARCHAR
+        10  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        11  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqsdxxy_cxlb_info
+    {
+        0  optional string  fxjss; //风险警示书,,VARCHAR
+        1  optional string  fxjssmc; //风险警示书名称,,VARCHAR
+        2  optional string  khfxdj; //客户风险等级,,VARCHAR
+        3  optional string  khfxdjsm; //客户风险等级说明,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqsdxxy_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_hqsdxxy_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_jyqxcx
+        Desc:融资融券/综合业务/交易权限查询
+        Version: 1.0
+        Date:20180620
+    */
+    struct rzrq_zhyw_jyqxcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  zqdm; //证券代码,,VARCHAR
+        8  optional string  jysdm; //交易所代码,,DICT
+        9  optional string  gddm; //股东代码,,VARCHAR
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        13  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+        14  optional string  zytzz; //专业投资者,,VARCHAR
+    };
+
+    struct rzrq_zhyw_jyqxcx_cxlb_info
+    {
+        0  optional string  zqlb; //证券类别,,DICT
+        1  optional string  gpsx; //股票属性,0表示普通股票，1表示创新股票,DICT
+        2  optional string  qxbz; //权限标志,1表示有权限，0表示无权限,DICT
+        3  optional string  fxjsbz; //风险警示标志,1表示有权限，0表示无权限,DICT
+        4  optional string  wqsxylx; //未签署的协议类型,,DICT
+        5  optional string  xywbnr; //协议文本内容,,UTF8
+        6  optional string  qxlb; //权限列表,在不传证券代码的时候查询,VARCHAR
+        7  optional string  fxzt; //风险状态,风险状态,zc正常,stST股,ts退市,VARCHAR
+        8  optional string  zytzz; //专业投资者,1:是 其他:否,VARCHAR
+        9  optional string  sdxbz; //适当性检查标志,0:不检查 1:检查,VARCHAR
+        10  optional string  ggsxkzc; //个股属性控制串,位数置1生效,参见字典ggsxkzc,DICT
+        11  optional string  dxkzzbz; //定向可转债标志,1:是 其他:否,VARCHAR
+    };
+
+    struct rzrq_zhyw_jyqxcx_dlxx_info
+    {
+        0  optional string  zytzz; //专业投资者,0:否 1:是,VARCHAR
+    };
+
+    struct rzrq_zhyw_jyqxcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_jyqxcx_cxlb_info> cxlb;
+        3 optional vector<rzrq_zhyw_jyqxcx_dlxx_info> dlxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_gdqxcx
+        Desc:融资融券/综合业务/股东权限查询
+        Version: 1.0
+        Date:20190507
+    */
+    struct rzrq_zhyw_gdqxcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  lhxxn; //新留痕信息,,VARCHAR
+        8  optional string  lhxxnVer; //留痕版本,,VARCHAR
+        9  optional string  khdm; //客户代码,,VARCHAR
+        10  optional string  zjzh; //资金账号,,VARCHAR
+        11  optional string  qxbz; //权限标志,多个权限以'|'分隔,空则查全部股东权限,DICT
+    };
+
+    struct rzrq_zhyw_gdqxcx_cxlb_info
+    {
+        0  optional string  jysdm; //交易所代码,仅当有权限有值,DICT
+        1  optional string  jysjc; //交易所简称,仅当有权限有值,VARCHAR
+        2  optional string  gddm; //股东代码,仅当有权限有值,VARCHAR
+        3  optional string  qxbz; //权限标志,,DICT
+        4  optional string  qxsm; //权限说明,,VARCHAR
+        5  optional string  sfkt; //是否开通,0:否 1:是,VARCHAR
+        6  optional string  sfts; //是否提示,0:否 1:是,VARCHAR
+        7  optional string  zcbz; //主从标志,,DICT
+        8  optional string  zcbzsm; //主从标志说明,,DICT
+        9  optional string  qxbzsm; //期限标志说明,,UTF8
+    };
+
+    struct rzrq_zhyw_gdqxcx_dlxx_info
+    {
+        0  optional string  zytzz; //专业投资者,0:否 1:是,VARCHAR
+    };
+
+    struct rzrq_zhyw_gdqxcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_gdqxcx_cxlb_info> cxlb;
+        3 optional vector<rzrq_zhyw_gdqxcx_dlxx_info> dlxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_cncpsdxcx
+        Desc:融资融券/综合业务/场内产品适当性查询
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_cncpsdxcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  zqdm; //证券代码,,VARCHAR
+        8  optional string  jyxw; //交易行为,,DICT
+        9  optional string  jysdm; //交易市场,,DICT
+        10  optional string  wtlx; //委托类型,申港证券必送,DICT
+        11  optional string  mmlb; //买卖类别,申港证券必送，B-买入，S-卖出,DICT
+        12  optional string  rzrqwtlb; //委托类型,申港证券必送,0-担保品买卖，6-融资，7-融券,DICT
+        13  optional string  ywmk; //业务模块,检查指定业务适当性开关，送空则默认为开,DICT
+        14  optional string  khdm; //客户代码,,VARCHAR
+        15  optional string  zjzh; //资金账号,,VARCHAR
+        16  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        17  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpsdxcx_cxlb_info
+    {
+        0  optional string  sdxjybz; //适当性校验标志,1校验0不校验,VARCHAR
+        1  optional string  jjfxtsbz; //基金风险提示标志,,DICT
+        2  optional string  jjfxtsbzsm; //基金风险提示标志说明,,VARCHAR
+        3  optional string  lhlsh; //留痕流水号,,VARCHAR
+        4  optional string  xxlb; //消息类别,,VARCHAR
+        5  optional string  xxbb; //消息版本,,VARCHAR
+        6  optional string  fxjss; //风险警示书,,VARCHAR
+        7  optional string  fxjss2; //新风险警示书,国元证券兼容线上版本新增,其他券商不使用,VARCHAR
+        8  optional string  gqbz; //过期标志,1过期或未测评,空 其他,VARCHAR
+        9  optional string  sdxppbz; //适当性匹配标志,,DICT
+        10  optional string  sdxppbzsm; //适当性匹配标志说明,,DICT
+        11  optional string  jzts; //禁止提示,,VARCHAR
+        12  optional string  zqfxdj; //证券风险等级,,DICT
+        13  optional string  zqfxdjsm; //证券风险等级说明,,VARCHAR
+        14  optional string  khfxdj; //客户风险等级,,DICT
+        15  optional string  khfxdjsm; //客户风险等级说明,,VARCHAR
+        16  optional string  fxppjg; //风险等级匹配结果,,DICT
+        17  optional string  fxppjgsm; //风险等级匹配结果说明,,VARCHAR
+        18  optional string  zqtzqx; //证券投资期限,,DICT
+        19  optional string  zqtzqxsm; //证券投资期限说明,,VARCHAR
+        20  optional string  khtzqxsm; //客户投资期限说明,,VARCHAR
+        21  optional string  khtzqx; //客户投资期限,,DICT
+        22  optional string  tzqxppjg; //投资期限匹配结果,,DICT
+        23  optional string  tzqxppjgsm; //投资期限匹配结果说明,,VARCHAR
+        24  optional string  zqtzpz; //证券投资品种,,DICT
+        25  optional string  zqtzpzsm; //证券投资品种说明,,VARCHAR
+        26  optional string  khtzpzsm; //客户投资品种说明,,VARCHAR
+        27  optional string  khtzpz; //客户投资品种,,DICT
+        28  optional string  tzpzppjg; //投资品种匹配结果,,DICT
+        29  optional string  tzpzppjgsm; //投资品种匹配结果说明,,VARCHAR
+        30  optional string  zqyqsy; //证券预期收益,,DICT
+        31  optional string  zqyqsysm; //证券预期收益说明,,VARCHAR
+        32  optional string  khyqsysm; //客户预期收益说明,,DICT
+        33  optional string  khyqsy; //客户预期收益,,VARCHAR
+        34  optional string  yqsyppjg; //预期收益匹配结果,,DICT
+        35  optional string  yqsyppjgsm; //预期收益匹配结果说明,,VARCHAR
+        36  optional string  khxm; //客户姓名,,VARCHAR
+        37  optional string  zjzh; //资金账户,,VARCHAR
+        38  optional string  zytzbz; //专业投资标志,,DICT
+        39  optional string  ywfxdj; //业务风险等级,,DICT
+        40  optional string  ywfxdjsm; //业务风险等级说明,,VARCHAR
+        41  optional unsigned int  bsxbz; //保守型标志,1是,非1不是,INTEGER
+        42  optional unsigned int  jzgmbz; //禁止购买标志,1是,非1不是,INTEGER
+        43  optional unsigned int  xyqsbz; //协议签署标志,1是,INTEGER
+        44  optional int  xtsj; //系统时间,,DATE8
+        45  optional string  zqmc; //证券名称,,VARCHAR
+        46  optional string  zqdm; //证券代码,,VARCHAR
+        47  optional string  zytzzbz; //专业投资者标志,,DICT
+        48  optional string  yxzdksl; //允许最大亏损率,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpsdxcx_tzpzlb_info
+    {
+        0  optional string  khtzpzsm; //客户投资品种说明,,VARCHAR
+        1  optional string  khtzpz; //客户投资品种,,DICT
+        2  optional string  ywfxdj; //业务风险等级,,DICT
+        3  optional string  ywfxdjsm; //业务风险等级说明,,VARCHAR
+        4  optional string  zytzzbz; //专业投资者标志,,DICT
+        5  optional string  sdxqrs; //适当性确认书,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpsdxcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_cncpsdxcx_cxlb_info> cxlb;
+        3 optional vector<rzrq_zhyw_cncpsdxcx_tzpzlb_info> tzpzlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_jyqxkt
+        Desc:融资融券/综合业务/交易权限开通
+        Version: 1.0
+        Date:2018628
+    */
+    struct rzrq_zhyw_jyqxkt_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  khdm; //客户代码,,VARCHAR
+        8  optional string  jysdm; //交易所代码,,DICT
+        9  optional string  gddm; //股东代码,,VARCHAR
+        10  optional string  jyqx; //交易权限,,DICT
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        13  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_jyqxkt_cxlb_info
+    {
+        0  optional unsigned int  lsh; //流水号,,INTEGER
+    };
+
+    struct rzrq_zhyw_jyqxkt_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_jyqxkt_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_czfskt
+        Desc:普通交易/综合业务/操作方式开通
+        Version: 1.0
+        Date:20180721
+    */
+    struct rzrq_zhyw_czfskt_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional unsigned int  khdm; //客户代码,,INTEGER
+        8  optional string  czfs; //操作方式,,DICT
+        9  optional string  zjzh; //资金账号,,VARCHAR
+        10  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        11  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_czfskt_fhxx_info
+    {
+        0  optional unsigned int  sfkt; //是否开通,1,开通成功,NULL,开通失败,INTEGER
+    };
+
+    struct rzrq_zhyw_czfskt_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_czfskt_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_tsywlh
+        Desc:融资融券/综合业务/特殊业务留痕接口
+        Version: 1.0
+        Date:20210113
+    */
+    struct rzrq_zhyw_tsywlh_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  zqdm; //证券代码,,VARCHAR
+        8  optional string  jysdm; //交易所代码,,DICT
+        9  optional string  gddm; //股东代码,,VARCHAR
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        12  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+        13  optional string  zjzh; //资金账号,,VARCHAR
+    };
+
+    struct rzrq_zhyw_tsywlh_fhxx_info
+    {
+        0  optional string  lhlsh; //留痕流水号,,VARCHAR
+        1  optional string  kzzlhxx; //科创板可转债留痕信息,,VARCHAR
+    };
+
+    struct rzrq_zhyw_tsywlh_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_tsywlh_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_hqfxjs
+        Desc:融资融券/综合业务/获取风险警示
+        Version: 1.0
+        Date:20210126
+    */
+    struct rzrq_zhyw_hqfxjs_req
+    {
+        0  optional string  sessionid; //会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  zqdm; //证券代码,,DICT
+        8  optional string  jysdm; //交易所代码,,DICT
+        9  optional string  gddm; //股东代码,,VARCHAR
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqfxjs_fhxx_info
+    {
+        0  optional string  fxzt; //风险状态,,DICT
+        1  optional string  fxxx; //风险信息,,UTF8
+        2  optional string  sfts; //是否提示,参考字典 fxzt.sfts ,VARCHAR
+        3  optional string  kzzbz; //是否可转债,1-是(包括申购) 其他-不是,VARCHAR
+        4  optional string  kzzqx; //是否签署可转债风险揭示书,1-已签署 其他-未签署,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqfxjs_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_hqfxjs_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_grxxcx
+        Desc:融资融券/综合业务/个人信息查询
+        Version: 1.0
+        Date:20150502
+    */
+    struct rzrq_zhyw_grxxcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  khdm; //客户代码,,VARCHAR
+        8  optional string  zjzh; //资金账号,,VARCHAR
+        9  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+    };
+
+    struct rzrq_zhyw_grxxcx_fhxx_info
+    {
+        0  optional string  khdm; //客户代码,N,VARCHAR
+        1  optional string  zjzh; //资金账户,N,VARCHAR
+        2  optional string  yybdm; //营业部代码,N,VARCHAR
+        3  optional string  khxm; //客户姓名,N,VARCHAR
+        4  optional string  khxb; //客户性别,N,VARCHAR
+        5  optional string  khbz; //客户标志,N,VARCHAR
+        6  optional string  zjlb; //证件类别,N,DICT
+        7  optional string  zjmc; //证件名称,N,DICT
+        8  optional string  zjhm; //证件号码,N,VARCHAR
+        9  optional string  sjhm; //手机号码,N,VARCHAR
+        10  optional string  dhhm; //电话号码,N,VARCHAR
+        11  optional string  txdz; //通讯地址,N,VARCHAR
+        12  optional string  yzbm; //邮政编码,N,VARCHAR
+        13  optional string  dzyx; //电子邮箱,N,VARCHAR
+        14  optional string  glr; //管理人,N,VARCHAR
+        15  optional string  tgr; //托管人,N,VARCHAR
+        16  optional string  khmc; //客户名称,N,VARCHAR
+        17  optional string  jgbz; //机构标志,1-是机构 其他-不是机构,VARCHAR
+        18  optional string  xxwx; //信息无效,1-无效,VARCHAR
+        19  optional string  idxxgq; //id信息过期,1-过期,VARCHAR
+        20  optional string  csrq; //出生日期,,VARCHAR
+        21  optional string  wzfxcp; //未做风险测评,1-无效,VARCHAR
+        22  optional string  fxcpgq; //风险测评过期,1-过期,VARCHAR
+        23  optional string  zytzz; //专业投资者,0:否 1:是,VARCHAR
+        24  optional unsigned int  cpyxrq; //测评有效日期,,INTEGER
+        25  optional string  cpgqrq; //测评过期日期,,VARCHAR
+        26  optional string  nlbwz; //能力不完整,1-过期,VARCHAR
+        27  optional string  wrqpcgq; //无日期测评过期,1-过期,VARCHAR
+        28  optional string  pcygq; //测评已过期,1-过期,VARCHAR
+    };
+
+    struct rzrq_zhyw_grxxcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_grxxcx_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_cncpdz
+        Desc:普通交易/综合业务/场内测评地址
+        Version: 1.0
+        Date:20150925
+    */
+    struct rzrq_zhyw_cncpdz_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  token; //账户会话ID,,VARCHAR
+        4  optional string  yybdm; //营业部代码,,VARCHAR
+        5  optional string  lhxx; //留痕信息,,VARCHAR
+        6  optional string  zqdm; //证券代码,,VARCHAR
+        7  optional string  jysdm; //交易市场,,DICT
+        8  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        9  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpdz_cxlb_info
+    {
+        0  optional string  fxjss; //风险警示书,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpdz_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_cncpdz_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_zhyw_hqurlpz
+        Desc:融资融券/综合业务/获取url配置
+        Version: 1.0
+        Date:20210815
+    */
+    struct rzrq_zhyw_hqurlpz_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  khdm; //客户代码,,VARCHAR
+        8  optional string  zjzh; //资金账号,,VARCHAR
+        9  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        10  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqurlpz_urllb_info
+    {
+        0  optional string  type; //类型,,VARCHAR
+        1  optional string  url; //地址,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqurlpz_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_hqurlpz_urllb_info> urllb;
+    };
+
+    /*
+        ID:rzrq_zhyw_cncpsdxjy
+        Desc:融资融券/综合业务/场内产品适当性校验
+        Version: 1.0
+        Date:20210414
+    */
+    struct rzrq_zhyw_cncpsdxjy_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易市场,,DICT
+        8  optional string  gddm; //股东代码,,CHAR
+        9  optional string  zqdm; //证券代码,,VARCHAR
+        10  optional string  wtlx; //委托类型,,DICT
+        11  optional string  mmlb; //买卖类别,,DICT
+        12  optional string  jylx; //交易类别,,DICT
+        13  optional string  khdm; //客户代码,,VARCHAR
+        14  optional string  zjzh; //资金账号,,VARCHAR
+        15  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        16  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpsdxjy_fhxx_info
+    {
+        0  optional string  fxcpbz; //风险测评标志,1-已测评 其他-未测评,VARCHAR
+        1  optional string  cpgqbz; //测评过期标志,1-过期 其他-正常,VARCHAR
+        2  optional string  sdxppbz; //适当性匹配标志,1-匹配 其他-不匹配,VARCHAR
+        3  optional string  khdfxbz; //客户低风险标志,1-是低风险 其他-不是低风险,VARCHAR
+        4  optional string  cpgfxbz; //产品高风险标志,1-是高风险(大于R3) 其他-不是高风险,VARCHAR
+        5  optional string  khfxdj; //客户风险等级,,DICT
+        6  optional string  khfxdjsm; //客户风险等级说明,,VARCHAR
+        7  optional string  cpfxdj; //产品风险等级,,DICT
+        8  optional string  cpfxdjsm; //产品风险等级说明,,VARCHAR
+        9  optional int  khfxcpr; //客户风险测评日,,DATE8
+        10  optional int  khfxdqr; //客户风险到期日,,DATE8
+        11  optional string  zytzz; //专业投资者,1:是 其他:否,VARCHAR
+        12  optional string  yybmc; //营业部名称,,VARCHAR
+        13  optional string  zqlb; //证券类别,,DICT
+        14  optional string  zqlbsm; //证券类别说明,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpsdxjy_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_cncpsdxjy_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_cncpsdxlh
+        Desc:融资融券/综合业务/场内产品适当性留痕
+        Version: 1.0
+        Date:20210414
+    */
+    struct rzrq_zhyw_cncpsdxlh_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  xybh; //协议编号,1-匹配 2-不匹配 3-风险警示,VARCHAR
+        8  optional string  xybb; //协议版本,,VARCHAR
+        9  optional string  jysdm; //交易市场,,DICT
+        10  optional string  zqdm; //证券代码,,VARCHAR
+        11  optional string  mmlb; //买卖类别,,DICT
+        12  optional string  jylx; //交易类别,,DICT
+        13  optional string  qrbz; //确认标志,0-否 1-是,VARCHAR
+        14  optional string  bz; //备注,,VARCHAR
+        15  optional string  khdm; //客户代码,,VARCHAR
+        16  optional string  zjzh; //资金账号,,VARCHAR
+        17  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        18  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+        19  optional string  khfxdj; //客户风险等级,,DICT
+        20  optional string  cpfxdj; //产品风险等级,,DICT
+    };
+
+    struct rzrq_zhyw_cncpsdxlh_fhxx_info
+    {
+        0  optional string  ywlsh; //业务流水号,,VARCHAR
+    };
+
+    struct rzrq_zhyw_cncpsdxlh_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_cncpsdxlh_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_zhyw_hqxynr
+        Desc:融资融券/综合业务/获取协议内容
+        Version: 1.0
+        Date:20210414
+    */
+    struct rzrq_zhyw_hqxynr_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional unsigned int  khdm; //客户代码,,INTEGER
+        8  optional string  zjzh; //资金账号,,VARCHAR
+        9  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        10  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+        11  optional string  khmc; //客户名称,,VARCHAR
+        12  optional string  zjlb; //证件类别,,VARCHAR
+        13  optional string  zjmc; //证件名称,,VARCHAR
+        14  optional string  zjhm; //证件号码,,VARCHAR
+        15  optional string  sjhm; //手机号码,,VARCHAR
+        16  optional string  dqrq; //当前日期,,VARCHAR
+        17  optional string  yhdm; //银行代码,,VARCHAR
+        18  optional string  xybh; //协议编号,1-匹配 2-不匹配 3-风险警示,VARCHAR
+        19  optional string  xybb; //协议版本,,VARCHAR
+        20  optional string  ywlx; //业务类型,1-匹配 2-不匹配 3-风险警示,VARCHAR
+        21  optional string  ywlsh; //业务流水号,,VARCHAR
+        22  optional string  khfxdj; //客户风险等级,,DICT
+        23  optional string  khfxdjsm; //客户风险等级说明,,VARCHAR
+        24  optional string  cpfxdj; //产品风险等级,,DICT
+        25  optional string  cpfxdjsm; //产品风险等级说明,,VARCHAR
+        26  optional string  qsbz; //签署标志,1:已签署 其他:未签署,VARCHAR
+        27  optional string  jgbz; //机构标志,1:机构 其他:非机构,VARCHAR
+        28  optional string  cpmc; //产品名称,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqxynr_fhxx_info
+    {
+        0  optional string  errcode; //错误代码,,VARCHAR
+        1  optional string  errmsg; //错误信息,,VARCHAR
+        2  optional string  ywlsh; //业务流水号,,VARCHAR
+        3  optional string  xybh; //协议编号,,VARCHAR
+        4  optional string  xybb; //协议版本,,VARCHAR
+        5  optional string  xymc; //协议名称,,VARCHAR
+        6  optional string  xynr; //协议内容,,VARCHAR
+    };
+
+    struct rzrq_zhyw_hqxynr_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_zhyw_hqxynr_fhxx_info> fhxx;
+    };
+
+};

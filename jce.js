@@ -72,12 +72,12 @@
   }
 */
 var jce = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[8,10],$V1=[1,20],$V2=[1,19],$V3=[1,18],$V4=[1,14],$V5=[14,21,24,32,44],$V6=[1,30],$V7=[1,29],$V8=[1,31],$V9=[1,32],$Va=[11,28,41],$Vb=[1,47],$Vc=[1,50],$Vd=[1,54],$Ve=[14,29],$Vf=[11,14],$Vg=[11,14,28],$Vh=[11,38,39,42,49,52],$Vi=[11,28,38,39,42,49,52];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[8,10],$V1=[1,20],$V2=[1,19],$V3=[1,18],$V4=[1,14],$V5=[14,21,25,33,45],$V6=[1,30],$V7=[1,29],$V8=[1,31],$V9=[1,32],$Va=[11,29,42],$Vb=[1,47],$Vc=[1,50],$Vd=[1,54],$Ve=[14,30],$Vf=[11,14],$Vg=[11,14,29],$Vh=[1,71],$Vi=[1,70],$Vj=[1,72],$Vk=[1,73],$Vl=[11,14,15,29],$Vm=[11,39,40,43,50,53],$Vn=[11,29,39,40,43,50,53];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"jce":3,"deplist":4,"expressions":5,"EOF":6,"dep":7,"INCLUDE":8,"STRING_LITERAL":9,"MODULE":10,"IDENTIFIER":11,"LEFT":12,"structlist":13,"RIGHT":14,"SEMI":15,"interface":16,"def":17,"struct":18,"enum":19,"statement":20,"CONST":21,"t":22,"EQUAL":23,"ENUM":24,"enumitems":25,"enumitem":26,"enumitemDef":27,"COMMA":28,"NUMBER":29,"HEX":30,"UMINUS":31,"STRUCT":32,"itemlist":33,"items":34,"item":35,"REQUIRED":36,"propertyName":37,"TYPE":38,"VECTOR":39,"OPEN":40,"CLOSE":41,"MAP":42,"DOUBLE_COLON":43,"INTERFACE":44,"methodlist":45,"method":46,"LEFT_QUOTE":47,"args":48,"RIGHT_QUOTE":49,"argc":50,"arg":51,"OUT":52,"$accept":0,"$end":1},
-terminals_: {2:"error",6:"EOF",8:"INCLUDE",9:"STRING_LITERAL",10:"MODULE",11:"IDENTIFIER",12:"LEFT",14:"RIGHT",15:"SEMI",21:"CONST",23:"EQUAL",24:"ENUM",28:"COMMA",29:"NUMBER",30:"HEX",31:"UMINUS",32:"STRUCT",36:"REQUIRED",38:"TYPE",39:"VECTOR",40:"OPEN",41:"CLOSE",42:"MAP",43:"DOUBLE_COLON",44:"INTERFACE",47:"LEFT_QUOTE",49:"RIGHT_QUOTE",52:"OUT"},
-productions_: [0,[3,3],[4,0],[4,2],[7,2],[5,6],[5,7],[5,6],[13,1],[13,2],[17,1],[17,1],[17,1],[20,6],[19,6],[25,1],[25,2],[26,1],[26,2],[27,1],[27,3],[27,3],[27,4],[18,3],[33,4],[34,1],[34,2],[35,5],[37,1],[37,4],[37,3],[37,3],[37,3],[22,1],[22,1],[22,4],[22,6],[22,3],[16,6],[45,1],[45,2],[46,6],[48,0],[48,2],[50,2],[50,1],[51,2],[51,3]],
+symbols_: {"error":2,"jce":3,"deplist":4,"expressions":5,"EOF":6,"dep":7,"INCLUDE":8,"STRING_LITERAL":9,"MODULE":10,"IDENTIFIER":11,"LEFT":12,"structlist":13,"RIGHT":14,"SEMI":15,"interface":16,"def":17,"struct":18,"enum":19,"statement":20,"CONST":21,"t":22,"EQUAL":23,"value":24,"ENUM":25,"enumitems":26,"enumitem":27,"enumitemDef":28,"COMMA":29,"NUMBER":30,"HEX":31,"UMINUS":32,"STRUCT":33,"itemlist":34,"items":35,"item":36,"REQUIRED":37,"propertyName":38,"TYPE":39,"VECTOR":40,"OPEN":41,"CLOSE":42,"MAP":43,"DOUBLE_COLON":44,"INTERFACE":45,"methodlist":46,"method":47,"LEFT_QUOTE":48,"args":49,"RIGHT_QUOTE":50,"argc":51,"arg":52,"OUT":53,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",8:"INCLUDE",9:"STRING_LITERAL",10:"MODULE",11:"IDENTIFIER",12:"LEFT",14:"RIGHT",15:"SEMI",21:"CONST",23:"EQUAL",25:"ENUM",29:"COMMA",30:"NUMBER",31:"HEX",32:"UMINUS",33:"STRUCT",37:"REQUIRED",39:"TYPE",40:"VECTOR",41:"OPEN",42:"CLOSE",43:"MAP",44:"DOUBLE_COLON",45:"INTERFACE",48:"LEFT_QUOTE",50:"RIGHT_QUOTE",53:"OUT"},
+productions_: [0,[3,3],[4,0],[4,2],[7,2],[5,6],[5,7],[5,6],[13,1],[13,2],[17,1],[17,1],[17,1],[20,6],[19,6],[26,1],[26,2],[27,1],[27,2],[28,1],[28,3],[24,1],[24,1],[24,1],[24,2],[18,3],[34,4],[35,1],[35,2],[36,5],[38,1],[38,4],[38,3],[38,3],[38,3],[22,1],[22,1],[22,4],[22,6],[22,3],[16,6],[46,1],[46,2],[47,6],[49,0],[49,2],[51,2],[51,1],[52,2],[52,3]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -91,7 +91,7 @@ case 1:
     }
 
 break;
-case 2: case 42:
+case 2: case 44:
 
     this.$ = [];
 
@@ -143,12 +143,12 @@ case 7:
     );
 
 break;
-case 8: case 15: case 25: case 39:
+case 8: case 15: case 27: case 41:
 
     this.$ = [$$[$0]];
 
 break;
-case 10: case 11: case 12: case 17: case 45:
+case 10: case 11: case 12: case 17: case 47:
 
     this.$ = $$[$0];
 
@@ -157,8 +157,8 @@ case 13:
 
     {
         const id = t.identifier($$[$0-3]);
-        id.typeAnnotation = t.tsTypeAnnotation($$[$0-4]);
-        const init = t.stringLiteral($$[$0-1]);
+        // id.typeAnnotation = t.tsTypeAnnotation($$[$0-4]);
+        const init = $$[$0-1];
         this.$ = t.variableDeclaration("const", [t.variableDeclarator(id, init)]);
     }
 
@@ -178,7 +178,7 @@ case 16:
     this.$ = $$[$0-1].concat($$[$0]);
 
 break;
-case 18: case 44:
+case 18: case 46:
 
     this.$ = $$[$0-1];
 
@@ -192,26 +192,39 @@ case 20:
 
     {
     const value = Number($$[$0]);
-    this.$ = t.tsEnumMember(t.identifier($$[$0-2]), t.numericLiteral(value));
+    this.$ = t.tsEnumMember(t.identifier($$[$0-2]), $$[$0]);
     }
 
 break;
 case 21:
 
     {
-    this.$ = t.tsEnumMember(t.identifier($$[$0-2]), t.stringLiteral($$[$0]));
+        this.$ = t.numericLiteral(Number($$[$0]));
     }
 
 break;
 case 22:
 
     {
-    const value = -Number($$[$0]);
-    this.$ = t.tsEnumMember(t.identifier($$[$0-3]), t.numericLiteral(value));
+        const s = String($$[$0]).replace(/^"/, "").replace(/"$/, "")
+        this.$ = t.stringLiteral(s);
     }
 
 break;
 case 23:
+
+    this.$ = t.stringLiteral($$[$0]);
+
+break;
+case 24:
+
+    {
+        const value = -Number($$[$0]);
+        this.$ = t.numericLiteral(value);
+    }
+
+break;
+case 25:
 
     this.$ = t.tsInterfaceDeclaration(
         t.identifier($$[$0-1]),
@@ -221,19 +234,19 @@ case 23:
     );
 
 break;
-case 24: case 30: case 31: case 32:
+case 26: case 32: case 33: case 34:
 
     this.$ = $$[$0-2]
 
 break;
-case 26:
+case 28:
 
     // console.log('ERROR', $$[$0-1], $$[$0]);
 
     this.$ = $$[$0-1].concat($$[$0])
 
 break;
-case 27:
+case 29:
 
     {
         const node = t.tsPropertySignature(
@@ -249,17 +262,17 @@ case 27:
     }
 
 break;
-case 28:
+case 30:
 
     this.$ = $$[$0]
 
 break;
-case 29:
+case 31:
 
     this.$ = $$[$0-3]
 
 break;
-case 33:
+case 35:
 
     // console.log('TYPE:', $$[$0] + '_x');
     if ($$[$0] === 'bool') {
@@ -273,12 +286,12 @@ case 33:
     }
 
 break;
-case 34:
+case 36:
 
     this.$ = t.tsTypeReference(t.identifier($$[$0]));
 
 break;
-case 35:
+case 37:
 
     this.$ = t.tsTypeReference(
         t.identifier('Array'),
@@ -288,7 +301,7 @@ case 35:
       );
 
 break;
-case 36:
+case 38:
 
     // console.log("map:", $$[$0-3]);
     if ($$[$0-3].type === 'TSTypeReference') {
@@ -310,7 +323,7 @@ case 36:
     }
 
 break;
-case 37:
+case 39:
 
     // module::struct => namespace.interface
     const left = t.identifier($$[$0-2]);
@@ -318,7 +331,7 @@ case 37:
     this.$ = t.tsTypeReference(t.tsQualifiedName(left, right));
 
 break;
-case 38:
+case 40:
 
     // console.log($$[$0-5]);
     // console.log($$[$0-4]);
@@ -331,12 +344,12 @@ case 38:
     );
 
 break;
-case 40:
+case 42:
 
     this.$ = $$[$0].concat($$[$0-1]);
 
 break;
-case 41:
+case 43:
 
     {
     const typeParameters = null;
@@ -374,7 +387,7 @@ case 41:
     }
 
 break;
-case 43:
+case 45:
 
     // console.log('arg', $$[$0], $$[$0-1]);
     // if (!Array.isArray($$[$0-1])) {
@@ -385,7 +398,7 @@ case 43:
     this.$ = $$[$0-1].concat($$[$0]);
 
 break;
-case 46:
+case 48:
 
     this.$ = {
         name: $$[$0],
@@ -394,7 +407,7 @@ case 46:
     }
 
 break;
-case 47:
+case 49:
 
     this.$ = {
         name: $$[$0],
@@ -405,8 +418,8 @@ case 47:
 break;
 }
 },
-table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,8:[1,6],10:[1,5]},{6:[1,7]},o($V0,[2,3]),{11:[1,8]},{9:[1,9]},{1:[2,1]},{12:[1,10]},o($V0,[2,4]),{13:11,16:12,17:13,18:15,19:16,20:17,21:$V1,24:$V2,32:$V3,44:$V4},{14:[1,21],16:22,17:23,18:15,19:16,20:17,21:$V1,24:$V2,32:$V3,44:$V4},{14:[1,24]},o($V5,[2,8]),{11:[1,25]},o($V5,[2,10]),o($V5,[2,11]),o($V5,[2,12]),{11:[1,26]},{11:[1,27]},{11:$V6,22:28,38:$V7,39:$V8,42:$V9},{15:[1,33]},{14:[1,34]},o($V5,[2,9]),{15:[1,35]},{12:[1,36]},{12:[1,38],33:37},{12:[1,39]},{11:[1,40]},o($Va,[2,33]),o($Va,[2,34],{43:[1,41]}),{40:[1,42]},{40:[1,43]},{6:[2,5]},{15:[1,44]},{6:[2,7]},{38:$Vb,45:45,46:46},o($V5,[2,23]),{29:$Vc,34:48,35:49},{11:$Vd,25:51,26:52,27:53},{23:[1,55]},{11:[1,56]},{11:$V6,22:57,38:$V7,39:$V8,42:$V9},{11:$V6,22:58,38:$V7,39:$V8,42:$V9},{6:[2,6]},{14:[1,59]},{14:[2,39],38:$Vb,45:60,46:46},{11:[1,61]},{14:[1,62],29:$Vc,35:63},o($Ve,[2,25]),{36:[1,64]},{11:$Vd,14:[1,65],26:66,27:53},o($Vf,[2,15]),o($Vf,[2,17],{28:[1,67]}),o($Vg,[2,19],{23:[1,68]}),{9:[1,69]},o($Va,[2,37]),{41:[1,70]},{28:[1,71]},{15:[1,72]},{14:[2,40]},{47:[1,73]},{15:[1,74]},o($Ve,[2,26]),{11:$V6,22:75,38:$V7,39:$V8,42:$V9},{15:[1,76]},o($Vf,[2,16]),o($Vf,[2,18]),{29:[1,77],30:[1,78],31:[1,79]},{15:[1,80]},o($Va,[2,35]),{11:$V6,22:81,38:$V7,39:$V8,42:$V9},{14:[2,38]},o($Vh,[2,42],{48:82}),o($V5,[2,24]),{11:[1,84],37:83},o($V5,[2,14]),o($Vg,[2,20]),o($Vg,[2,21]),{29:[1,85]},o($V5,[2,13]),{41:[1,86]},{11:$V6,22:90,38:$V7,39:$V8,42:$V9,49:[1,87],50:88,51:89,52:[1,91]},{15:[1,92]},{15:[2,28],23:[1,93]},o($Vg,[2,22]),o($Va,[2,36]),{15:[1,94]},o($Vh,[2,43]),o($Vh,[2,45],{28:[1,95]}),{11:[1,96]},{11:$V6,22:97,38:$V7,39:$V8,42:$V9},o($Ve,[2,27]),{9:[1,101],11:[1,100],29:[1,99],31:[1,98]},o([14,38],[2,41]),o($Vh,[2,44]),o($Vi,[2,46]),{11:[1,102]},{29:[1,103]},{15:[2,30]},{15:[2,31]},{15:[2,32]},o($Vi,[2,47]),{15:[2,29]}],
-defaultActions: {7:[2,1],33:[2,5],35:[2,7],44:[2,6],60:[2,40],72:[2,38],99:[2,30],100:[2,31],101:[2,32],103:[2,29]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,8:[1,6],10:[1,5]},{6:[1,7]},o($V0,[2,3]),{11:[1,8]},{9:[1,9]},{1:[2,1]},{12:[1,10]},o($V0,[2,4]),{13:11,16:12,17:13,18:15,19:16,20:17,21:$V1,25:$V2,33:$V3,45:$V4},{14:[1,21],16:22,17:23,18:15,19:16,20:17,21:$V1,25:$V2,33:$V3,45:$V4},{14:[1,24]},o($V5,[2,8]),{11:[1,25]},o($V5,[2,10]),o($V5,[2,11]),o($V5,[2,12]),{11:[1,26]},{11:[1,27]},{11:$V6,22:28,39:$V7,40:$V8,43:$V9},{15:[1,33]},{14:[1,34]},o($V5,[2,9]),{15:[1,35]},{12:[1,36]},{12:[1,38],34:37},{12:[1,39]},{11:[1,40]},o($Va,[2,35]),o($Va,[2,36],{44:[1,41]}),{41:[1,42]},{41:[1,43]},{6:[2,5]},{15:[1,44]},{6:[2,7]},{39:$Vb,46:45,47:46},o($V5,[2,25]),{30:$Vc,35:48,36:49},{11:$Vd,26:51,27:52,28:53},{23:[1,55]},{11:[1,56]},{11:$V6,22:57,39:$V7,40:$V8,43:$V9},{11:$V6,22:58,39:$V7,40:$V8,43:$V9},{6:[2,6]},{14:[1,59]},{14:[2,41],39:$Vb,46:60,47:46},{11:[1,61]},{14:[1,62],30:$Vc,36:63},o($Ve,[2,27]),{37:[1,64]},{11:$Vd,14:[1,65],27:66,28:53},o($Vf,[2,15]),o($Vf,[2,17],{29:[1,67]}),o($Vg,[2,19],{23:[1,68]}),{9:$Vh,24:69,30:$Vi,31:$Vj,32:$Vk},o($Va,[2,39]),{42:[1,74]},{29:[1,75]},{15:[1,76]},{14:[2,42]},{48:[1,77]},{15:[1,78]},o($Ve,[2,28]),{11:$V6,22:79,39:$V7,40:$V8,43:$V9},{15:[1,80]},o($Vf,[2,16]),o($Vf,[2,18]),{9:$Vh,24:81,30:$Vi,31:$Vj,32:$Vk},{15:[1,82]},o($Vl,[2,21]),o($Vl,[2,22]),o($Vl,[2,23]),{30:[1,83]},o($Va,[2,37]),{11:$V6,22:84,39:$V7,40:$V8,43:$V9},{14:[2,40]},o($Vm,[2,44],{49:85}),o($V5,[2,26]),{11:[1,87],38:86},o($V5,[2,14]),o($Vg,[2,20]),o($V5,[2,13]),o($Vl,[2,24]),{42:[1,88]},{11:$V6,22:92,39:$V7,40:$V8,43:$V9,50:[1,89],51:90,52:91,53:[1,93]},{15:[1,94]},{15:[2,30],23:[1,95]},o($Va,[2,38]),{15:[1,96]},o($Vm,[2,45]),o($Vm,[2,47],{29:[1,97]}),{11:[1,98]},{11:$V6,22:99,39:$V7,40:$V8,43:$V9},o($Ve,[2,29]),{9:[1,103],11:[1,102],30:[1,101],32:[1,100]},o([14,39],[2,43]),o($Vm,[2,46]),o($Vn,[2,48]),{11:[1,104]},{30:[1,105]},{15:[2,32]},{15:[2,33]},{15:[2,34]},o($Vn,[2,49]),{15:[2,31]}],
+defaultActions: {7:[2,1],33:[2,5],35:[2,7],44:[2,6],60:[2,42],76:[2,40],101:[2,32],102:[2,33],103:[2,34],105:[2,31]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -929,7 +942,7 @@ case 21:return "REQUIRED"
 break;
 case 22:return "OUT";
 break;
-case 23:return 38
+case 23:return 39
 break;
 case 24:return "TYPE"
 break;

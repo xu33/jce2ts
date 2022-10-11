@@ -1,0 +1,464 @@
+module AT
+{
+    /*
+        ID:rzrq_yzzz_yzzz
+        Desc:融资融券/银证转账/银证转账
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_yzzz_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  zjmm; //资金密码,,PASSWORD
+        8  optional string  yhmm; //银行密码,,PASSWORD
+        9  optional string  yhdm; //银行代码,,VARCHAR
+        10  optional string  zzlx; //转帐类型,,VARCHAR
+        11  optional string  hbdm; //货币代码,,DICT
+        12  optional double  zzje; //转账金额,,DECIMAL
+        13  optional string  dyzjzh; //对应资金账号,,VARCHAR
+        14  optional string  yhzh; //银行账号,,VARCHAR
+        15  optional string  khdm; //客户代码,,VARCHAR
+        16  optional string  zjzh; //资金账号,,VARCHAR
+        17  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        18  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_yzzz_fhxx_info
+    {
+        0  optional string  wtbh; //委托编号,,VARCHAR
+        1  optional string  wtxh; //委托序号,,VARCHAR
+        2  optional string  htxh; //合同序号,,VARCHAR
+    };
+
+    struct rzrq_yzzz_yzzz_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_yzzz_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_yzzz_yhyecx
+        Desc:融资融券/银证转账/银行余额查询
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_yhyecx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  yhdm; //银行代码,,VARCHAR
+        8  optional string  yhmm; //银行密码,,PASSWORD
+        9  optional string  zjmm; //资金密码,,PASSWORD
+        10  optional string  hbdm; //货币代码,,DICT
+        11  optional string  dyzjzh; //对应资金账号,,VARCHAR
+        12  optional string  yhzh; //银行账号,,VARCHAR
+        13  optional string  khdm; //客户代码,,VARCHAR
+        14  optional string  zjzh; //资金账号,,VARCHAR
+        15  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        16  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_yhyecx_fhxx_info
+    {
+        0  optional string  wtxh; //委托序号,,VARCHAR
+        1  optional string  htxh; //合同序号,,VARCHAR
+        2  optional double  yhye; //银行余额,,DECIMAL
+        3  optional string  fhxx; //返回信息,,VARCHAR
+    };
+
+    struct rzrq_yzzz_yhyecx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_yhyecx_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_yzzz_dryzzzlscx
+        Desc:融资融券/银证转账/银证转账查询
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_dryzzzlscx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional long  wtxh; //委托序号,,INTEGER
+        10  optional string  cxfx; //查询方向,1向下/0向上查询方向,VARCHAR
+        11  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        12  optional string  dwc; //定位串,第一次填空,VARCHAR
+        13  optional string  khdm; //客户代码,,VARCHAR
+        14  optional string  zjzh; //资金账号,,VARCHAR
+        15  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        16  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_dryzzzlscx_cxlb_info
+    {
+        0  optional int  zzrq; //转账日期,,DATE8
+        1  optional string  zzsj; //转账时间,,VARCHAR
+        2  optional string  zzlx; //转账类型,,VARCHAR
+        3  optional string  zzzt; //转账状态,,DICT
+        4  optional string  hbmc; //货币名称,,VARCHAR
+        5  optional double  zzje; //转账金额,,DECIMAL
+        6  optional double  yhye; //银行余额,,DECIMAL
+        7  optional string  zjzh; //资金账号,,VARCHAR
+        8  optional string  zzztsm; //转账状态说明,,VARCHAR
+        9  optional string  zzlxsm; //转账类型说明,,VARCHAR
+        10  optional string  yhmc; //银行名称,,VARCHAR
+        11  optional string  hbdm; //货币代码,,DICT
+        12  optional string  yhdm; //银行代码,,VARCHAR
+        13  optional string  dwc; //定位串,,VARCHAR
+        14  optional string  bzxx; //备注信息,,UTF8
+        15  optional string  yhxx; //银行信息,当zzzt的值为1的时候，可取字段的内容作为银行提示信息在前端展示,UTF8
+        16  optional string  xtxx; //系统信息,,UTF8
+        17  optional string  lsh; //流水号,,VARCHAR
+        18  optional string  fdyy; //废单原因,,VARCHAR
+    };
+
+    struct rzrq_yzzz_dryzzzlscx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_dryzzzlscx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_yzzz_lsyzzzlscx
+        Desc:融资融券/银证转账/历史银证转账查询
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_lsyzzzlscx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional long  wtxh; //委托序号,,INTEGER
+        10  optional string  cxfx; //查询方向,1向下/0向上查询方向,VARCHAR
+        11  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        12  optional string  dwc; //定位串,第一次填空,VARCHAR
+        13  optional int  qsrq; //开始日期,,DATE8
+        14  optional int  zzrq; //终止日期,,DATE8
+        15  optional string  khdm; //客户代码,,VARCHAR
+        16  optional string  zjzh; //资金账号,,VARCHAR
+        17  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        18  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_lsyzzzlscx_cxlb_info
+    {
+        0  optional int  zzrq; //转账日期,,DATE8
+        1  optional string  zzsj; //转账时间,,VARCHAR
+        2  optional string  zzlx; //转账类型,,DICT
+        3  optional string  zzzt; //转账状态,,DICT
+        4  optional string  hbmc; //货币名称,,VARCHAR
+        5  optional double  zzje; //转账金额,,DECIMAL
+        6  optional string  zjzh; //资金账号,,VARCHAR
+        7  optional string  zzztsm; //转账状态说明,,VARCHAR
+        8  optional string  zzlxsm; //转账类型说明,,DICT
+        9  optional string  yhmc; //银行名称,,VARCHAR
+        10  optional string  hbdm; //货币代码,,DICT
+        11  optional string  yhdm; //银行代码,,VARCHAR
+        12  optional string  dwc; //定位串,,VARCHAR
+        13  optional string  bzxx; //备注信息,,UTF8
+        14  optional string  yhxx; //银行信息,当zzzt的值为1的时候，可取字段的内容作为银行提示信息在前端展示,UTF8
+        15  optional string  xtxx; //系统信息,,UTF8
+        16  optional string  lsh; //流水号,,VARCHAR
+    };
+
+    struct rzrq_yzzz_lsyzzzlscx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_lsyzzzlscx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_yzzz_dzhzjcx
+        Desc:融资融券/银证转账/多账户资金查询
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_dzhzjcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional string  dyzjzh; //对应资金账号,,VARCHAR
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        13  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_dzhzjcx_cxlb_info
+    {
+        0  optional string  zjzh; //资金账号,,VARCHAR
+        1  optional string  hbdm; //货币代码,,VARCHAR
+        2  optional string  zcbz; //主从标识,,DICT
+        3  optional double  zjye; //资金余额,,DECIMAL
+        4  optional double  zjkys; //资金可用数,,DECIMAL
+        5  optional double  zjkqs; //资金可取数,,DECIMAL
+        6  optional string  mmpz; //密码配置,,VARCHAR
+        7  optional string  yhmc; //银行名称,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional string  zjzhmc; //资金账号简称,,VARCHAR
+        10  optional string  hbmc; //货币名称,,VARCHAR
+    };
+
+    struct rzrq_yzzz_dzhzjcx_kzzje_info
+    {
+        0  optional double  kzzje; //可转总金额,,DECIMAL
+        1  optional double  rmbkzzje; //人民币可转总金额,,DECIMAL
+        2  optional double  gbkzzje; //港币可转总金额,,DECIMAL
+        3  optional double  mykzzje; //美元可转总金额,,DECIMAL
+    };
+
+    struct rzrq_yzzz_dzhzjcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_dzhzjcx_cxlb_info> cxlb;
+        3 optional vector<rzrq_yzzz_dzhzjcx_kzzje_info> kzzje;
+    };
+
+    /*
+        ID:rzrq_yzzz_dzhyhcx
+        Desc:融资融券/银证转账/多账户银行查询
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_dzhyhcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional string  khdm; //客户代码,,VARCHAR
+        10  optional string  zjzh; //资金账号,,VARCHAR
+        11  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        12  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_dzhyhcx_cxlb_info
+    {
+        0  optional string  hbdm; //货币代码,,VARCHAR
+        1  optional string  hbmc; //货币名称,,VARCHAR
+        2  optional string  yhdm; //银行代码,,VARCHAR
+        3  optional string  yhmc; //银行名称,,VARCHAR
+        4  optional string  yhzh; //银行账户,,VARCHAR
+        5  optional double  kyzj; //可用资金,,DECIMAL
+        6  optional string  zjzh; //资金账号,,VARCHAR
+        7  optional string  yhmmcd; //银行密码长度,,VARCHAR
+        8  optional string  fqfx; //发起方向,'0'-证券发起,'1'-银行发起,'2'-双方发起,VARCHAR
+        9  optional string  zrmmpz; //转入密码配置,0:不需要验证密码 1:需要验证资金密码 2:需要验证银行密码 3:资金密码银行密码都需要验证 4:不支持该功能,VARCHAR
+        10  optional string  zcmmpz; //转出密码配置,0:不需要验证密码 1:需要验证资金密码 2:需要验证银行密码 3:资金密码银行密码都需要验证 4:不支持该功能,VARCHAR
+        11  optional string  yhgmmmpz; //银行改密密码配置,0:不需要验证密码 1:需要验证资金密码 2:需要验证银行密码 3:资金密码银行密码都需要验证 4:不支持该功能,VARCHAR
+        12  optional string  yhyemmpz; //余额查询密码配置,0:不需要验证密码 1:需要验证资金密码 2:需要验证银行密码 3:资金密码银行密码都需要验证 4:不支持该功能,VARCHAR
+        13  optional string  zcbz; //资金账户主从标识,0：主；1：从,VARCHAR
+        14  optional string  zjzhmc; //资金账户简称,,VARCHAR
+    };
+
+    struct rzrq_yzzz_dzhyhcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_dzhyhcx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_yzzz_yhyelscx
+        Desc:融资融券/银证转账/银行余额流水查询
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_yhyelscx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional long  wtxh; //委托序号,,INTEGER
+        10  optional string  cxfx; //查询方向,1向下/0向上查询方向,VARCHAR
+        11  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        12  optional string  dwc; //定位串,第一次填空,VARCHAR
+        13  optional string  khdm; //客户代码,,VARCHAR
+        14  optional string  zjzh; //资金账号,,VARCHAR
+        15  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        16  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_yzzz_yhyelscx_cxlb_info
+    {
+        0  optional int  zzrq; //转账日期,,DATE8
+        1  optional string  zzsj; //转账时间,,VARCHAR
+        2  optional string  zzlx; //转账类型,,VARCHAR
+        3  optional string  zzzt; //转账状态,,VARCHAR
+        4  optional string  hbmc; //货币名称,,VARCHAR
+        5  optional double  zzje; //转账金额,,DECIMAL
+        6  optional string  zjzh; //资金账号,,VARCHAR
+        7  optional string  zzztsm; //转账状态说明,,VARCHAR
+        8  optional string  zzlxsm; //转账类型说明,,VARCHAR
+        9  optional string  yhmc; //银行名称,,VARCHAR
+        10  optional string  hbdm; //货币代码,,DICT
+        11  optional string  yhdm; //银行代码,,VARCHAR
+        12  optional string  dwc; //定位串,,VARCHAR
+        13  optional string  cgbz; //查询成功标志,0:查询失败 1:查询成功,VARCHAR
+        14  optional string  fdyy; //废单原因,,VARCHAR
+        15  optional string  yhxx; //银行信息,,VARCHAR
+        16  optional string  bzxx; //备注信息,,VARCHAR
+    };
+
+    struct rzrq_yzzz_yhyelscx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_yhyelscx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_yzzz_hqjzr
+        Desc:融资融券/银证转账/获取净转入
+        Version: 1.0
+        Date:20200903
+    */
+    struct rzrq_yzzz_hqjzr_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional int  qsrq; //开始日期,,DATE8
+        10  optional int  zzrq; //终止日期,,DATE8
+        11  optional string  khdm; //客户代码,,VARCHAR
+        12  optional string  zjzh; //资金账号,,VARCHAR
+        13  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+    };
+
+    struct rzrq_yzzz_hqjzr_cxlb_info
+    {
+        0  optional string  hbdm; //货币代码,,DICT
+        1  optional double  jzr; //净转入,,DECIMAL
+    };
+
+    struct rzrq_yzzz_hqjzr_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_hqjzr_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_yzzz_hqzzlb
+        Desc:融资融券/银证转账/获取转账列表
+        Version: 1.0
+        Date:20150506
+    */
+    struct rzrq_yzzz_hqzzlb_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  hbdm; //货币代码,,VARCHAR
+        8  optional string  yhdm; //银行代码,,VARCHAR
+        9  optional int  qsrq; //开始日期,,DATE8
+        10  optional int  zzrq; //终止日期,,DATE8
+        11  optional string  khdm; //客户代码,,VARCHAR
+        12  optional string  zjzh; //资金账号,,VARCHAR
+        13  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+    };
+
+    struct rzrq_yzzz_hqzzlb_cxlb_info
+    {
+        0  optional string  hbdm; //货币代码,,DICT
+        1  optional double  jzr; //每月净转入,,DECIMAL
+    };
+
+    struct rzrq_yzzz_hqzzlb_rmbyzr_info
+    {
+        0  optional string  month; //年月,,VARCHAR
+        1  optional double  jzr; //每月净转入,,DECIMAL
+    };
+
+    struct rzrq_yzzz_hqzzlb_jlmx_info
+    {
+        0  optional int  zzrq; //转账日期,,DATE8
+        1  optional string  zzsj; //转账时间,,VARCHAR
+        2  optional string  zzlx; //转账类型,,DICT
+        3  optional string  zzzt; //转账状态,,DICT
+        4  optional string  hbmc; //货币名称,,VARCHAR
+        5  optional double  zzje; //转账金额,,DECIMAL
+        6  optional double  yhye; //银行余额,,DECIMAL
+        7  optional string  zjzh; //资金账号,,VARCHAR
+        8  optional string  zzztsm; //转账状态说明,,VARCHAR
+        9  optional string  zzlxsm; //转账类型说明,,VARCHAR
+        10  optional string  yhmc; //银行名称,,VARCHAR
+        11  optional string  hbdm; //货币代码,,DICT
+        12  optional string  yhdm; //银行代码,,VARCHAR
+        13  optional string  month; //年月,,VARCHAR
+        14  optional string  bzxx; //备注信息,,UTF8
+        15  optional string  yhxx; //银行信息,,VARCHAR
+        16  optional string  xtxx; //系统信息,,UTF8
+    };
+
+    struct rzrq_yzzz_hqzzlb_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_yzzz_hqzzlb_cxlb_info> cxlb;
+        3 optional vector<rzrq_yzzz_hqzzlb_rmbyzr_info> rmbyzr;
+        4 optional vector<rzrq_yzzz_hqzzlb_jlmx_info> jlmx;
+    };
+
+};

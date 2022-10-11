@@ -1,0 +1,512 @@
+module AT
+{
+    /*
+        ID:rzrq_wltp_gddh
+        Desc:融资融券/网络投票/股东大会
+        Version: 1.0
+        Date:20150330
+    */
+    struct rzrq_wltp_gddh_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易所代码,,DICT
+        8  optional string  zqdm; //证券代码,,VARCHAR
+        9  optional double  fahm; //方案号码,,DECIMAL
+        10  optional string  khdm; //客户代码,,VARCHAR
+        11  optional string  zjzh; //资金账号,,VARCHAR
+        12  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        13  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+        14  optional string  gsdm; //公司代码,,VARCHAR
+        15  optional string  cpdm; //产品代码,,VARCHAR
+        16  optional int  qsrq; //起始日期,,DATE8
+        17  optional int  zzrq; //终止日期,,DATE8
+        18  optional int  yxrq; //有效日期,,DATE8
+        19  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        20  optional string  dwc; //定位串,,VARCHAR
+    };
+
+    struct rzrq_wltp_gddh_cxlb_info
+    {
+        0  optional string  jysdm; //交易所代码,,DICT
+        1  optional string  jysmc; //交易所名称,,DICT
+        2  optional string  zqdm; //证券代码,,VARCHAR
+        3  optional string  zqmc; //证券名称,,VARCHAR
+        4  optional string  tpdm; //投票代码,,VARCHAR
+        5  optional string  gddhdm; //股东大会代码,,VARCHAR
+        6  optional string  gddhmc; //股东大会名称,,VARCHAR
+        7  optional string  gqdjr; //股权登记日,,VARCHAR
+        8  optional string  gddhksrq; //股东大会开始日期,,VARCHAR
+        9  optional string  gddhjsrq; //股东大会结束日期,,VARCHAR
+        10  optional string  gsdm; //公司代码,,VARCHAR
+        11  optional string  gsjc; //公司简称,,VARCHAR
+        12  optional string  gddhlx; //股东大会类型,,VARCHAR
+        13  optional string  gddhlxmc; //股东大会类型名称,,VARCHAR
+        14  optional string  jysjc; //交易所简称,,DICT
+        15  optional string  dwc; //定位串,,VARCHAR
+        16  optional string  gddhbm; //股东大会编码,Y,VARCHAR
+    };
+
+    struct rzrq_wltp_gddh_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_gddh_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_wltp_yacx
+        Desc:融资融券/网络投票/议案查询
+        Version: 1.0
+        Date:20150922
+    */
+    struct rzrq_wltp_yacx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易所代码,,DICT
+        8  optional string  zqdm; //证券代码,,VARCHAR
+        9  optional string  tpdm; //投票代码,,VARCHAR
+        10  optional string  dhdm; //大会代码,,VARCHAR
+        11  optional string  falx; //议案类型,0是逐项，1是累积,VARCHAR
+        12  optional string  zjzh; //资金账号,,VARCHAR
+        13  optional string  khdm; //客户代码,,VARCHAR
+        14  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        15  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_yacx_cxlb_info
+    {
+        0  optional string  jysdm; //交易所代码,,DICT
+        1  optional string  gddm; //股东代码,,VARCHAR
+        2  optional string  zqdm; //证券代码,,VARCHAR
+        3  optional string  tpdm; //投票代码,,VARCHAR
+        4  optional string  zqmc; //证券名称,,VARCHAR
+        5  optional double  fahm; //方案号码,,DECIMAL
+        6  optional string  falx; //方案类型,,VARCHAR
+        7  optional string  famc; //方案名称,,VARCHAR
+        8  optional unsigned int  gfkys; //股份可用数,,INTEGER
+        9  optional unsigned int  gfye; //股份余额,,INTEGER
+        10  optional unsigned int  ytpsl; //已投票数量,,INTEGER
+        11  optional string  dhdm; //大会代码,,VARCHAR
+        12  optional unsigned int  ktpsl; //可投票数量,,INTEGER
+    };
+
+    struct rzrq_wltp_yacx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_yacx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_wltp_wltp
+        Desc:融资融券/网络投票/网络投票
+        Version: 1.0
+        Date:20150923
+    */
+    struct rzrq_wltp_wltp_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易所代码,,DICT
+        8  optional string  gddm; //股东代码,,VARCHAR
+        9  optional unsigned int  dlrdm; //代理人代码,,INTEGER
+        10  optional string  tpdm; //投票代码,议案编号用|隔开,VARCHAR
+        11  optional string  tpya; //投票议案,议案议案|隔开,VARCHAR
+        12  optional string  tpsl; //投票数量,议案数量|隔开,VARCHAR
+        13  optional string  yamc; //议案名称,议案名称用|隔开,VARCHAR
+        14  optional string  czgx; //存在关系,,VARCHAR
+        15  optional string  falx; //方案类型,,VARCHAR
+        16  optional string  dhdm; //大会代码,,VARCHAR
+        17  optional string  khdm; //客户代码,,VARCHAR
+        18  optional string  zjzh; //资金账号,,VARCHAR
+        19  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        20  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+        21  optional string  zqdm; //证券代码,,VARCHAR
+        22  optional string  gddhbm; //股东大会编码,,VARCHAR
+        23  optional string  yabh; //议案编号,议案编号用|隔开,顶点、恒生柜台普通议案1赞成2反对3弃权,VARCHAR
+        24  optional string  tpyj; //投票意见,投票意见用|隔开; 顶点、恒生、金证u版: 不需要此入参,VARCHAR
+        25  optional string  tpsc; //投票市场,,VARCHAR
+        26  optional string  wtph; //委托批号,,VARCHAR
+    };
+
+    struct rzrq_wltp_wltp_cxlb_info
+    {
+        0  optional string  cwxx; //错误信息,,VARCHAR
+        1  optional string  cwbm; //错误编码,,VARCHAR
+        2  optional string  yabh; //议案编号,,VARCHAR
+        3  optional string  yamc; //议案名称,,VARCHAR
+        4  optional string  tpya; //投票议案,议案议案|隔开,VARCHAR
+        5  optional string  tpsl; //投票数量,,VARCHAR
+    };
+
+    struct rzrq_wltp_wltp_fhxx_info
+    {
+        0  optional string  fhxx; //返回信息,,VARCHAR
+        1  optional string  wtxh; //委托序号,,VARCHAR
+    };
+
+    struct rzrq_wltp_wltp_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_wltp_cxlb_info> cxlb;
+        3 optional vector<rzrq_wltp_wltp_fhxx_info> fhxx;
+    };
+
+    /*
+        ID:rzrq_wltp_tpcx
+        Desc:融资融券/网络投票/投票查询
+        Version: 1.0
+        Date:20150922
+    */
+    struct rzrq_wltp_tpcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易所代码,,DICT
+        8  optional string  zqdm; //证券代码,,VARCHAR
+        9  optional string  dhdm; //大会代码,,VARCHAR
+        10  optional string  zjzh; //资金账户,,VARCHAR
+        11  optional string  ksrq; //开始日期,,VARCHAR
+        12  optional string  jsrq; //结束日期,,VARCHAR
+        13  optional string  khdm; //客户代码,,VARCHAR
+        14  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        15  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_tpcx_cxlb_info
+    {
+        0  optional string  gddm; //股东代码,,VARCHAR
+        1  optional string  zqdm; //证券代码,,VARCHAR
+        2  optional string  dhdm; //大会代码,,VARCHAR
+        3  optional string  tpsl; //投票数量,,VARCHAR
+        4  optional string  falx; //方案类型,,VARCHAR
+        5  optional string  falxsm; //方案类型说明,,VARCHAR
+        6  optional string  famc; //方案名称,,VARCHAR
+    };
+
+    struct rzrq_wltp_tpcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_tpcx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_wltp_drtpcx
+        Desc:融资融券/网络投票/当日投票查询
+        Version: 1.0
+        Date:20150922
+    */
+    struct rzrq_wltp_drtpcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  cxbs; //查询标识,,VARCHAR
+        8  optional int  gdksrq; //归档开始日期,,DATE8
+        9  optional int  gdjsrq; //归档结束日期,,DATE8
+        10  optional string  gddhbm; //股东大会编码,,VARCHAR
+        11  optional string  yabh; //议案编号,,VARCHAR
+        12  optional string  jysdm; //交易所代码,,DICT
+        13  optional string  cpdm; //产品代码,,VARCHAR
+        14  optional string  tpsc; //投票市场,,VARCHAR
+        15  optional int  qsrq; //起始日期,,DATE8
+        16  optional int  zzrq; //终止日期,,DATE8
+        17  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        18  optional string  dwc; //定位串,,VARCHAR
+        19  optional string  khdm; //客户代码,,VARCHAR
+        20  optional string  zjzh; //资金账号,,VARCHAR
+        21  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        22  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_drtpcx_cxjg_info
+    {
+        0  optional string  yabh; //议案编号,,VARCHAR
+        1  optional string  yamc; //议案名称,,VARCHAR
+        2  optional string  yalx; //议案类型,2:代表普通,1:代表累计,VARCHAR
+        3  optional long  qq; //弃权,,INTEGER
+        4  optional long  fd; //反对,,INTEGER
+        5  optional long  zc; //赞成,,INTEGER
+        6  optional string  cpdm; //产品代码,,VARCHAR
+        7  optional string  gddm; //股东代码,,VARCHAR
+        8  optional long  khdm; //客户代码,,INTEGER
+        9  optional string  gddhbm; //股东大会编码,,VARCHAR
+        10  optional string  wtzt; //委托状态,,VARCHAR
+        11  optional string  tpsc; //投票市场,,VARCHAR
+        12  optional string  zqdm; //证券代码,,VARCHAR
+        13  optional string  zqmc; //证券名称,,VARCHAR
+        14  optional unsigned int  cjsl; //成交数量,,INTEGER
+        15  optional unsigned int  jyrq; //交易日期,,INTEGER
+        16  optional unsigned int  cjrq; //成交日期,,INTEGER
+        17  optional string  yalxsm; //议案类型说明,,VARCHAR
+        18  optional unsigned int  cjsj; //成交时间,,INTEGER
+        19  optional unsigned int  wtrq; //委托日期,,INTEGER
+        20  optional string  wtsj; //委托时间,,VARCHAR
+        21  optional unsigned int  wtsl; //委托数量,,INTEGER
+        22  optional string  wtztsm; //委托状态说明,,VARCHAR
+    };
+
+    struct rzrq_wltp_drtpcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_drtpcx_cxjg_info> cxjg;
+    };
+
+    /*
+        ID:rzrq_wltp_lstpcx
+        Desc:融资融券/网络投票/历史投票查询
+        Version: 1.0
+        Date:20150922
+    */
+    struct rzrq_wltp_lstpcx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  cxbs; //查询标识,,VARCHAR
+        8  optional int  gdksrq; //归档开始日期,,DATE8
+        9  optional int  gdjsrq; //归档结束日期,,DATE8
+        10  optional string  gddhbm; //股东大会编码,,VARCHAR
+        11  optional string  yabh; //议案编号,,VARCHAR
+        12  optional string  jysdm; //交易所代码,,DICT
+        13  optional string  cpdm; //产品代码,,VARCHAR
+        14  optional string  tpsc; //投票市场,,VARCHAR
+        15  optional int  qsrq; //起始日期,,DATE8
+        16  optional int  zzrq; //终止日期,,DATE8
+        17  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        18  optional string  dwc; //定位串,,VARCHAR
+        19  optional string  khdm; //客户代码,,VARCHAR
+        20  optional string  zjzh; //资金账号,,VARCHAR
+        21  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        22  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_lstpcx_cxjg_info
+    {
+        0  optional string  yabh; //议案编号,,VARCHAR
+        1  optional string  yamc; //议案名称,,VARCHAR
+        2  optional string  yalx; //议案类型,2:代表普通,1:代表累计,VARCHAR
+        3  optional long  qq; //弃权,,INTEGER
+        4  optional long  fd; //反对,,INTEGER
+        5  optional long  zc; //赞成,,INTEGER
+        6  optional string  cpdm; //产品代码,,VARCHAR
+        7  optional string  gddm; //股东代码,,VARCHAR
+        8  optional long  khdm; //客户代码,,INTEGER
+        9  optional string  gddhbm; //股东大会编码,,VARCHAR
+        10  optional string  wtzt; //委托状态,,VARCHAR
+        11  optional string  tpsc; //投票市场,,VARCHAR
+        12  optional string  zqdm; //证券代码,,VARCHAR
+        13  optional string  zqmc; //证券名称,,VARCHAR
+        14  optional unsigned int  cjsl; //成交数量,,INTEGER
+        15  optional unsigned int  jyrq; //交易日期,,INTEGER
+        16  optional unsigned int  cjrq; //成交日期,,INTEGER
+        17  optional string  yalxsm; //议案类型说明,,VARCHAR
+        18  optional unsigned int  cjsj; //成交时间,,INTEGER
+        19  optional unsigned int  wtrq; //委托日期,,INTEGER
+        20  optional string  wtsj; //委托时间,,VARCHAR
+        21  optional unsigned int  wtsl; //委托数量,,INTEGER
+        22  optional string  wtztsm; //委托状态说明,,VARCHAR
+    };
+
+    struct rzrq_wltp_lstpcx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_lstpcx_cxjg_info> cxjg;
+    };
+
+    /*
+        ID:rzrq_wltp_ljyacx
+        Desc:融资融券/网络投票/累积议案查询
+        Version: 1.0
+        Date:20150922
+    */
+    struct rzrq_wltp_ljyacx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易所代码,,DICT
+        8  optional string  gddhbm; //股东大会编码,,VARCHAR
+        9  optional int  qsrq; //起始日期,大通证券需送,取股东大会开始日期,DATE8
+        10  optional int  zzrq; //终止日期,大通证券需送,取股东大会结束日期,DATE8
+        11  optional string  tpsc; //投票市场,,VARCHAR
+        12  optional string  zqdm; //证券代码,大通证券需要送,股东大会返回的产品代码,VARCHAR
+        13  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        14  optional string  dwc; //定位串,,VARCHAR
+        15  optional string  khdm; //客户代码,,VARCHAR
+        16  optional string  zjzh; //资金账号,,VARCHAR
+        17  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        18  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_ljyacx_cxlb_info
+    {
+        0  optional string  yabh; //议案编号,,VARCHAR
+        1  optional string  yamc; //议案名称,,VARCHAR
+        2  optional string  yalx; //议案类型,,VARCHAR
+        3  optional string  ljtpyxs; //累积投票应选数,,VARCHAR
+        4  optional string  gdsf; //股东身份,,DICT
+        5  optional string  wtzt; //委托状态,,DICT
+        6  optional string  tpyj; //投票意见,,DICT
+        7  optional long  tpsl; //投票数量,,INTEGER
+        8  optional string  tpyjsm; //投票意见说明,,VARCHAR
+        9  optional string  tpzt; //投票状态,,DICT
+        10  optional string  yagx; //议案关系,,VARCHAR
+        11  optional string  tpsc; //投票市场,,VARCHAR
+        12  optional string  cpdm; //产品代码,,VARCHAR
+        13  optional string  yxtpdm; //允许投票代码,,VARCHAR
+        14  optional string  zqdm; //证券代码,,VARCHAR
+        15  optional string  zqmc; //证券名称,,VARCHAR
+        16  optional string  gddhbm; //股东大会编码,,VARCHAR
+        17  optional string  yalxmc; //议案类型名称,,VARCHAR
+        18  optional string  dwc; //定位串,,VARCHAR
+        19  optional long  valid; //有效位1有效,,INTEGER
+    };
+
+    struct rzrq_wltp_ljyacx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_ljyacx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_wltp_ptyacx
+        Desc:融资融券/网络投票/普通议案查询
+        Version: 1.0
+        Date:20150922
+    */
+    struct rzrq_wltp_ptyacx_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  gddhbm; //股东大会编码,,VARCHAR
+        8  optional string  jysdm; //交易所代码,,DICT
+        9  optional int  qsrq; //起始日期,大通证券需送,取股东大会开始日期,DATE8
+        10  optional int  zzrq; //终止日期,大通证券需送,取股东大会结束日期,DATE8
+        11  optional string  tpsc; //投票市场,,VARCHAR
+        12  optional string  zqdm; //证券代码,大通证券需要送,VARCHAR
+        13  optional unsigned int  qqhs; //请求行数,每次取的行数,INTEGER
+        14  optional string  dwc; //定位串,,VARCHAR
+        15  optional string  khdm; //客户代码,,VARCHAR
+        16  optional string  zjzh; //资金账号,,VARCHAR
+        17  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        18  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_ptyacx_cxlb_info
+    {
+        0  optional string  yabh; //议案编号,,VARCHAR
+        1  optional string  gddhbm; //股东大会编码,,VARCHAR
+        2  optional string  yamc; //议案名称,,VARCHAR
+        3  optional string  yalx; //议案类型,,VARCHAR
+        4  optional string  ljtpyxs; //累积投票应选数,,VARCHAR
+        5  optional string  gdsf; //股东身份,,DICT
+        6  optional long  tpsl; //投票数量,,INTEGER
+        7  optional string  wtzt; //委托状态,,DICT
+        8  optional string  tpyj; //投票意见,,DICT
+        9  optional string  tpyjsm; //投票意见说明,,VARCHAR
+        10  optional string  tpzt; //投票状态,,DICT
+        11  optional string  yagx; //议案关系,,VARCHAR
+        12  optional string  tpsc; //投票市场,,VARCHAR
+        13  optional string  cpdm; //产品代码,,VARCHAR
+        14  optional string  zqdm; //证券代码,,VARCHAR
+        15  optional string  zqmc; //证券名称,,VARCHAR
+        16  optional string  yxtpdm; //允许投票代码,,VARCHAR
+        17  optional string  yalxmc; //议案类型名称,,VARCHAR
+        18  optional string  dwc; //定位串,,VARCHAR
+        19  optional long  valid; //有效位1有效,,INTEGER
+    };
+
+    struct rzrq_wltp_ptyacx_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_ptyacx_cxlb_info> cxlb;
+    };
+
+    /*
+        ID:rzrq_wltp_mmfw
+        Desc:融资融券/网络投票/密码服务
+        Version: 1.0
+        Date:20150923
+    */
+    struct rzrq_wltp_mmfw_req
+    {
+        0  optional string  sessionid; //移动app注册会话ID,,VARCHAR
+        1  optional string  khbzlx; //客户标志类型,,DICT
+        2  optional string  khbz; //客户标志,,VARCHAR
+        3  optional string  jymm; //交易密码,,PASSWORD
+        4  optional string  token; //账户会话ID,,VARCHAR
+        5  optional string  yybdm; //营业部代码,,VARCHAR
+        6  optional string  lhxx; //留痕信息,,VARCHAR
+        7  optional string  jysdm; //交易所代码,,DICT
+        8  optional string  gddm; //股东代码,,VARCHAR
+        9  optional string  wtsl; //委托数量,,VARCHAR
+        10  optional double  wtjg; //委托价格,,DECIMAL
+        11  optional string  jypt; //交易平台,0 深交所 1 上交所 2 中登平台,VARCHAR
+        12  optional string  khdm; //客户代码,,VARCHAR
+        13  optional string  zjzh; //资金账号,,VARCHAR
+        14  optional string  lhxxn; //新格式留痕信息,,VARCHAR
+        15  optional string  lhxxnVer; //新格式留痕信息版本,,VARCHAR
+    };
+
+    struct rzrq_wltp_mmfw_htxx_info
+    {
+        0  optional string  fhxx; //返回信息,,VARCHAR
+        1  optional string  wtxh; //委托序号,,VARCHAR
+        2  optional string  cwbm; //错误编码,,VARCHAR
+        3  optional string  cwxx; //错误信息,,VARCHAR
+    };
+
+    struct rzrq_wltp_mmfw_rsp
+    {
+        0 optional string ret_code;//处理结果
+        1 optional string ret_msg;//处理结果
+        2 optional vector<rzrq_wltp_mmfw_htxx_info> htxx;
+    };
+
+};
