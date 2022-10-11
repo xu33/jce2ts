@@ -45,13 +45,13 @@ interface SimulationTransaction {
 /** 生成函数签名测试 end */
 
 /** 生成简单赋值语句 */
-const id = t.identifier("a");
-id.typeAnnotation = t.tsTypeAnnotation(t.tsStringKeyword());
-const init = t.stringLiteral("hehe");
-const s = t.variableDeclaration("const", [t.variableDeclarator(id, init)]);
+// const id = t.identifier("a");
+// id.typeAnnotation = t.tsTypeAnnotation(t.tsStringKeyword());
+// const init = t.stringLiteral("hehe");
+// const s = t.variableDeclaration("const", [t.variableDeclarator(id, init)]);
 
-const ast = generate(s);
+// const ast = generate(s);
 
-console.log(ast.code);
+// console.log(ast.code);
 
 /** 生成简单赋值语句 end */

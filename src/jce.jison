@@ -270,6 +270,7 @@ item
 }
 ;
 
+/** 类型声明单行 */
 propertyName
 : IDENTIFIER {
     $$ = $IDENTIFIER
@@ -287,7 +288,9 @@ propertyName
     $$ = $1
 }
 ;
+/** 类型声明单行 */
 
+/** 类型节点声明 */
 t
 : TYPE
 {
@@ -344,7 +347,9 @@ t
     $$ = t.tsTypeReference(t.tsQualifiedName(left, right));
 }
 ;
+/** 类型节点声明 */
 
+/** 接口列表 */
 interface
 : INTERFACE IDENTIFIER LEFT methodlist RIGHT SEMI {
     // console.log($1);
@@ -365,7 +370,9 @@ methodlist
 | method methodlist {
     $$ = $2.concat($1);
 };
+/** 接口列表 */
 
+/** 接口方法声明 */
 method
 : TYPE IDENTIFIER LEFT_QUOTE args RIGHT_QUOTE SEMI {
     {
@@ -403,7 +410,9 @@ method
         );
     }
 };
+/** 接口方法声明 */
 
+/** 函数声明入参出参 */
 args
 : /* empty */
 {
@@ -443,3 +452,4 @@ arg
         out: true
     }
 };
+/** 函数声明入参出参 */

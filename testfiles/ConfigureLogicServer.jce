@@ -1,0 +1,295 @@
+module DataCenter
+{
+
+    //消息组件所属用户角色
+    enum E_MESSAGE_ROLE
+    {
+         E_GUEST=0,  //游客
+         E_NORMAL=1, //普通账户
+         E_ACCOUNT=2 //资金账户
+    };
+
+    //组件
+    struct Widget
+    {
+        0  optional string sWidgetName; //组件名称
+        1  optional string sWidgetCode; //组件编码
+        2  optional string sIcon;      //组件图标（白天模式）
+        3  optional string sSubScript;  //组件角标（白天模式）
+        4  optional string sLink; //组件链接
+        5  optional string sDescription;//扩展描述字段
+        6  optional int iLoginStatus = 0;//功能组件是否需要登录校验  0:不校验登录  1：需用户登录  2：需资金账户登录  3：需同时 用户+资金账户登录
+        7  optional string sBuryPoint;  //埋点统计编码 
+        8  optional string sSubhead;    //副标题
+        9  optional string sFeature_desc; //功能描述
+        10 optional string sIcon_black; //功能图标(黑夜模式)
+        11 optional string sFeature_horn_icon_black; //功能角标（黑夜模式）
+        12 optional string sPlat;  //平台类型
+        13 optional string sStatus;    //状态
+    }; 
+
+    //功能配置
+    struct Feature
+    {
+         0 optional int iAppName;  //APP名称对应ID   1：智信通IOS   2：智信通ANDROID
+         1 optional string sChannel;  //渠道 
+         2 optional string sFeatureCode;  //功能编码
+         3 optional string sFeatureName;  //功能名称
+         4 optional string sVersion;      //版本号
+         5 optional vector<Widget> vWidgetList; //组件
+         
+    };
+
+    struct FeatureInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid;           
+        3 require string sFeatureCode;   //功能编码
+    };
+
+    struct FeatureInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional Feature feature;
+    };
+	
+	struct FeatureInfoBatchReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid;           
+        3 require  vector<string> sFeatureCodeList;  //功能编码 
+    };
+
+    struct FeatureInfoBatchRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional vector<Feature> featureList;
+    };
+
+    //消息配置
+    struct Message
+    {
+        0 optional int iAppName;    //APP名称对应ID  
+        1 optional int iCategory;       //消息分类ID   1:推送消息
+        2 optional string sTitle;   //消息标题
+        3 optional string sSubType; //消息副标题
+        4 optional string sVersion; //版本号
+        5 optional string sIcon;    //消息图标
+        6 optional string sLink;    //跳转地址
+        7 optional int iType;     //消息业务类型  TYPE
+
+        8 optional string sCategoryName; //分类名称
+        9 optional int  iCategorySort; //分类权重 （用于大分类排序）
+        10 optional E_MESSAGE_ROLE  eMessageRole; //消息栏目所属用户角色
+		11 optional int iSerialNum;  //序号
+    };
+
+
+    struct MessageInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid;       
+        3 optional bool isAccount = false;//是否带资金账户 
+    };
+
+    struct MessageInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional map<int, vector<Message>> mMessage;
+    };
+    
+    
+    //公告配置
+    struct Notice
+    {
+        0 optional int iAppName;    //APP名称对应ID  
+        1 optional int iType;       //公告类型    1:公告  2：活动
+        2 optional int iPublishType;   //发布方式  1：弹窗发布 2：推送发布 3：首页滚动栏发布 4：行情滚动栏发布 5：交易滚动栏发布 
+        3 optional string sStartTime; //有效开始时间
+        4 optional string sEndTime; //有效截止时间
+        5 optional string sTitle;    //公告标题
+        6 optional string sContext;  //公告内容
+        7 optional long iPublishTime;//公告发布时间
+    };
+
+    struct NoticeInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid;     
+        3 optional int iType;
+        4 optional int iPublishType;
+    };
+
+    struct NoticeInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional vector<Notice> vNoticeList;
+    };
+    
+    //其他配置
+    struct Other
+    {
+         0 optional int iAppName;  //APP名称对应ID  
+         1 optional string sChannel;  //渠道 
+         2 optional string sOtherCode;  ///配置项编码
+         3 optional string sOtherName;  //配置项名称
+         4 optional string sVersion;      //版本号
+         5 optional string sContent;    //配置项内容
+    };
+
+    struct OtherInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid;     
+        3 require string sOtherCode;
+    };
+
+    struct OtherInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional Other otherInfo;
+    };
+
+    struct RiskStock
+    {
+        0 require int iMarket;          //证券市场
+        1 require string sStockCode;    //证券代码
+        2 require string sContent;      //风险警示文案
+    };
+
+    struct RiskTip
+    {
+        0 optional int iType; //品种类型 1：基金 2：股票  3：债券
+        1 optional string sTaskName;//任务名称
+        2 optional int iSmSwitch;   //个股闪买入口开关  0：关闭  1：开启
+        3 optional int iJySwitch;   //普通交易买入开关  0：关闭  1：开启
+        4 optional vector<RiskStock> riskStock; //风险警示股票列表
+    };
+
+    struct RiskTipReq
+    {
+       0 optional string  sGuid;
+       1 optional string  sXua;   
+       2 require  vector<int> vType;    //品种类型   1：基金 2：股票  3：债券   传参格式[1,2,3]
+    };
+
+    struct RiskTipRsp
+    {
+       0 require int iRet;   //响应状态    0：正常   otherwise: 错误
+       1 optional string sMsg;  //错误消息
+       2 optional map<int,vector<RiskTip>> mRiskTip; //风险警示
+    };
+	
+	//楼层配置
+    struct FloorInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid;           
+        3 require int   iPageCode;   //页面编码
+    };
+
+    struct FloorInfo
+      {
+          0 optional string sFloorName;  //楼层名字
+          1 optional int iFloorCode;  //楼层编码
+          2 optional string sVersion;    //版本号
+          3 optional int iPlat;       //平台类型
+          4 optional int iStatus;     //状态
+      };
+
+
+    struct FloorInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional vector<FloorInfo> vFloorList;  //
+    };
+	
+	struct HotStockInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid; 
+    };
+
+    struct HotStock
+    {
+        0 optional string sStockName;
+        1 optional string sGotoUrl;
+        2 optional string sTag;
+        3 optional int    iStatus; 
+    };
+
+    struct HotStockInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional vector<HotStock> vHotStockList;
+    };
+    
+    struct HotFeatureInfoReq
+    {
+        0 optional string  sGuid;
+        1 optional string  sXua;   
+        2 optional string  sUid; 
+    };
+
+    struct HotFeature
+    {
+        0 optional string sFeatureName;
+        1 optional string sFeatureSub;
+        2 optional string sFeatureUrl;
+        3 optional string sTag;
+        4 optional int sInterceptor; //登录拦截
+        5 optional string sBuryPoint; //埋点编好
+        6 optional int    iStatus; 
+    };
+
+    struct HotFeatureInfoRsp
+    {
+        0 require int iRet;      //响应状态    0：正常   otherwise: 错误
+        1 optional string sMsg;  //错误消息
+        2 optional vector<HotFeature> vHotFeatureList;
+    };
+
+    interface ConfigureLogicServer
+    {
+        //功能配置
+        int getFeatureInfo(FeatureInfoReq req,out FeatureInfoRsp rsp);
+		int getFeatureInfoBatch(FeatureInfoBatchReq req,out FeatureInfoBatchRsp rsp);
+
+        //消息配置
+        int getMessageInfo(MessageInfoReq req,out MessageInfoRsp rsp);
+
+        //公告配置
+        int getNoticeInfo(NoticeInfoReq req,out NoticeInfoRsp rsp);
+
+        //其他配置
+        int getOtherInfo(OtherInfoReq req,out OtherInfoRsp rsp);
+
+        //获取交易风险警示
+        int getRiskTip(RiskTipReq req,out RiskTipRsp rsp);
+		
+		//楼层配置
+        int getFloorInfo(FloorInfoReq req, out FloorInfoRsp rsp);
+		
+		
+		//热门股票
+        int getHotStockInfo(HotStockInfoReq req, out HotStockInfoRsp rsp);
+		//热门功能
+		int getHotFeatureInfo(HotFeatureInfoReq req, out HotFeatureInfoRsp rsp);
+		
+		
+    };
+};
