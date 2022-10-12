@@ -1,0 +1,67 @@
+module HQSys
+{
+	struct HStockUnique  //股票信息
+	{
+		1 optional short shtSetcode;
+		2 optional string sCode;
+	};
+
+	struct HCheckData
+	{
+		0 optional int iDate;      	//日期YYYYMMDD
+		1 optional byte cCheckVal;
+		2 optional int iTime;		//HHMM
+	};
+
+    
+	/**
+    * 此结构实际是union
+    */
+    struct HDateTime
+    {
+        1 optional int iDate;               // 日期YYYYMMDD(日线)
+        // 2, 3 分钟线 需要用
+        2 optional short shtDay;            // 日
+        3 optional short shtTime;           // 零点以来的分钟数
+    };
+
+    /**
+    * 此结构实际是union
+    */
+    struct HTogetherZhiShu                      //单位前收盘价(除权用)，期货的持仓量, 指数,涨跌家数
+    {
+        1 optional unsigned int uiVolInStock;   // 持仓量
+        2 optional double fYClose;              // 当日结算价
+        3 optional unsigned short usUp;         // 上涨家数
+        4 optional unsigned short usDown;       // 下跌家数
+    };
+
+	struct HAnalyData
+    {
+        1 optional HDateTime sttDateTime;                  // 时间,历史原因, 存到盘上的数据都是 *100 以后的 DWORD 型数据
+        2 optional double fOpen;                           // 单位开盘价
+        3 optional double fHigh;                           // 单位最高价
+        4 optional double fLow;                            // 单位最低价
+        5 optional double fClose;                          // 单位收盘价
+        6 optional double fAmount;                         // 单位成交金额 期货没有成交额 实际是持仓量
+        7 optional long lVolume;                           // 成交量
+        9 optional double dSettlementPrice;                // 今日结算
+        10 optional HTogetherZhiShu sttZhiShu;             // 指数信息
+        11 optional unsigned int uiAtpVolume = 0;          // 盘后成交量
+        12 optional double dAtpAmount = 0;                 // 盘后成交额
+        13 optional unsigned int uiAtpTradeNum = 0;        // 盘后成交笔数
+		14 optional float fZhenfu = 0;						// 振幅 * 100%
+		15 optional float fTurnoverRate = 0;				// 换手率 * 100%
+    };
+    
+    struct HCQAnalyData
+    {
+        1 optional HAnalyData stLine;						//基本k线数据
+        2 optional long lOpenDate;							//开盘价取的不复权日期，日k级别以上才有效
+        3 optional long lCloseDate;						    //收盘价取的不复权日期，日k级别以上才有效
+        4 optional long lHighDate;						    //最高价取的不复权日期，日k级别以上才有效
+        5 optional long lLowDate;							//最低价取的不复权日期，日k级别以上才有效
+        6 optional double dHigh;							//根据复权确定最高价日期，再取不复权最高价
+        7 optional double dLow;								//根据复权确定最低价日期，再取不复权最低价
+    };
+};

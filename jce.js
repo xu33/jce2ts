@@ -213,7 +213,7 @@ case 22:
 break;
 case 23:
 
-    this.$ = t.stringLiteral($$[$0]);
+    this.$ = t.numericLiteral(Number($$[$0]));
 
 break;
 case 24:
@@ -411,7 +411,7 @@ case 49:
 
     this.$ = {
         name: $$[$0],
-        type: $$[$0-1],
+        type: t.tsTypeReference(t.identifier('Promise'), t.tsTypeParameterInstantiation([$$[$0-1]])),
         out: true
     }
 
@@ -992,7 +992,7 @@ case 46: return "EOF";
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:key\[[^\]]*\];)/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:"(\\.|[^"\\])*")/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:\[)/,/^(?:\])/,/^(?:\()/,/^(?:\))/,/^(?:(require|optional))/,/^(?:out\b)/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:unsigned\\s\+byte\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:const\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=)/,/^(?:-)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:0[xX][0-9a-fA-F]+)/,/^(?:$)/],
+rules: [/^(?:\s+)/,/^(?:\/\/(.*))/,/^(?:[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/])/,/^(?:key\[[^\]]*\];)/,/^(?:#include\b)/,/^(?:\.jce\b)/,/^(?:$)/,/^(?:"(\\.|[^"\\])*")/,/^(?:")/,/^(?:module\b)/,/^(?:struct\b)/,/^(?:enum\b)/,/^(?:interface\b)/,/^(?:<)/,/^(?:>)/,/^(?:\{)/,/^(?:\})/,/^(?:\[)/,/^(?:\])/,/^(?:\()/,/^(?:\))/,/^(?:(require|optional))/,/^(?:out\b)/,/^(?:string\b)/,/^(?:byte\b)/,/^(?:short\b)/,/^(?:bool\b)/,/^(?:int\b)/,/^(?:float\b)/,/^(?:long\b)/,/^(?:double\b)/,/^(?:signed\s+int\b)/,/^(?:unsigned\s+int\b)/,/^(?:unsigned\s+short\b)/,/^(?:unsigned\\s\+byte\b)/,/^(?:vector\b)/,/^(?:map\b)/,/^(?:const\b)/,/^(?:[a-zA-Z_$][a-zA-Z_$0-9]*)/,/^(?:;)/,/^(?:,)/,/^(?:::)/,/^(?:=)/,/^(?:-)/,/^(?:[0-9]+(\.[0-9]+)?f?\b)/,/^(?:0[xX][0-9a-fA-F]+)/,/^(?:$)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46],"inclusive":true}}
 });
 return lexer;

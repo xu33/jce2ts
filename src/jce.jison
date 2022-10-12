@@ -52,7 +52,7 @@ map { return "MAP"; }
 // "-"?\d+ { return "ENUM_VALUE"; }
 "=" { return "EQUAL"; }
 "-" { return "UMINUS"; }
-[0-9]+("."[0-9]+)?\b { return "NUMBER"; }
+[0-9]+("."[0-9]+)?f?\b { return "NUMBER"; }
 0[xX][0-9a-fA-F]+ { return "HEX"; }
 <<EOF>> { return "EOF"; }
 
@@ -216,7 +216,7 @@ value
     }
 }
 | HEX {
-    $$ = t.stringLiteral($1);
+    $$ = t.numericLiteral(Number($1));
 }
 | UMINUS NUMBER {
     {
@@ -448,7 +448,7 @@ arg
 | OUT t IDENTIFIER {
     $$ = {
         name: $IDENTIFIER,
-        type: $t,
+        type: t.tsTypeReference(t.identifier('Promise'), t.tsTypeParameterInstantiation([$t])),
         out: true
     }
 };

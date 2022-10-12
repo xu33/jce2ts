@@ -1,0 +1,118 @@
+#include "BasicData.jce"
+#include "Common.jce"
+
+module HQSys
+{
+    enum E_HQ_PUSH_REG
+    {
+        E_HQ_PUSH_NONE = 0,             //不需要push
+        E_HQ_PUSH_REQUIRE = 1,          //需要push
+        E_HQ_PUSH_CANCEL  = 2,          //取消push
+    };
+
+    struct HProxyHeartReq
+    {
+        0 optional HeaderInfo stHeader;
+    };
+
+    struct HStockHqReq
+    {
+        0 optional HeaderInfo stHeader;
+        1 require vector<HStockUnique> vStock;      //股票信息
+        2 optional E_HQ_PUSH_REG ePushFlag = E_HQ_PUSH_NONE;
+        3 optional E_STOCK_HQ_DATA eHqData = E_SHD_NONE;    //本次返回哪些行情数据,默认不返回行情
+        4 optional E_STOCK_DATA_ENV eEnvData = E_SHDE_NORMAL;  //默认根据E_STOCK_HQ_DATA确定行情数据
+        6 optional int iDelayFlag = 0;  // 废弃。延时标识，0：实时；1：港股延时
+        7 optional vector<byte>  vBitmap;    // 指定返回的字段 
+    };
+
+
+    struct HStockHqRsp
+    {
+        1 optional vector<HStockHq> vStockHq;
+    };
+
+    struct HTickDataReq
+    {
+		0 optional HeaderInfo stHeader;
+        1 require string sCode;
+        2 optional short shtStartxh = 0;  // 从新往旧的方向
+        3 optional short shtWantNum = 100;
+        4 optional E_HQ_PUSH_REG ePushFlag = E_HQ_PUSH_NONE;
+    };
+
+    struct HTickDataRsp
+    {
+        1 optional byte cPrecise;               // 小数精度
+        2 optional vector<HTickData> vTickData; // 对期货市场需要进行性质分类计算
+        3 optional int iCount;                  // 总数
+    };
+
+    //根据业务类型查询板块
+	struct HType2StockSimpleReq
+	{
+		0 optional HeaderInfo stHeader;
+		1 require E_BUSS_TYPE eBussType; //一个业务类型可能对于多个内部类型
+		2 optional E_HQ_SORT_COLUMN eColumn;
+		3 optional E_SORT_METHOD eSort = E_SORT_DEFAULT;
+        4 optional E_STOCK_HQ_DATA eHqData = E_SHD_NONE;      //本次返回哪些行情数据，默认不返回
+		5 optional int iWantNum = -1;                         //请求个数,默认-1为全部返回.
+        6 optional E_HQ_PUSH_REG ePushFlag = E_HQ_PUSH_NONE;
+        7 optional E_STOCK_DATA_ENV eEnvData = E_SHDE_NORMAL;  //默认根据E_STOCK_HQ_DATA确定行情数据
+        8 optional bool bDelayHq = false;                               //是否获取延时行情（主要是港股）
+        9 optional int iStartPos = 0; // 起始编号
+        10 optional vector<byte>  vBitmap;    // 指定返回的字段
+	};
+
+	struct HType2StockRsp
+	{
+		1 optional vector<HStockHq> vStock;
+		2 optional int iTotalNum; // 总个数
+	};
+
+    //注册个股的K线数据, 请求结构，pc端使用  （PS.这个接口并不支持复权，只是带了部分复权信息而已）
+    struct HRegKLineReq
+    {
+		0 optional HeaderInfo stHeader;
+        1 require string sCode;
+        2 require HISTORY_DATA_TYPE eLineType;       //请求k线数据类型
+        3 optional long lDate;                       //日期YYYYMMDDHHmm
+        4 optional int iWantNum = 100;              //可为正负值，正值往起始日后取数据，负往起始日前取数据，不包含当日数据
+        6 optional E_HQ_PUSH_REG ePushFlag = E_HQ_PUSH_NONE;
+        7 optional bool bXRXDFlag = false;            //复权标识,为true时会返回高开低收日期，价格为复权前价格
+    };
+    //注册个股的K线数据, 回包结构
+    struct HRegKLineRsp
+    {
+        1 optional vector<HCQAnalyData> vAnalyData;   //根据请求进行除权除息计算
+    };
+
+    interface BasicHq
+    {
+		/**
+        *心跳请求，用于客户端保持与代理长连接
+        */
+        int heartBeat(HProxyHeartReq stReq);
+        /*
+        ** 功能简介：获取股票的行情
+        ** 原协议代码：4202
+        */
+        //4202协议(兼容4212协议--适配器过滤），获取股票的行情信息
+        int stockHq(HStockHqReq stReq, out HStockHqRsp stRsp);
+        /*
+        ** 功能简介：获取个股的tick数据
+        ** 原协议代码：4207
+        */    
+        int tickData(HTickDataReq stReq, out HTickDataRsp stRsp);
+		/*
+		* 功能：同上
+		* 参数更简单，只传一个type，无需传递市场，方便业务调用
+		*/
+		int type2StockSimple(HType2StockSimpleReq stReq, out HType2StockRsp stRsp);
+        /*
+        ** 功能简介：注册个股的K线数据，目前只会推送分钟k，给pc端使用
+        ** 原协议代码：
+        */
+        int regKLine(HRegKLineReq stReq, out HRegKLineRsp stRsp);
+	};
+};
