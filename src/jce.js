@@ -356,7 +356,7 @@ case 43:
     const inputArgs = $$[$0-2].filter(o => o.out === false);
 
     const parameters = inputArgs.map(o => {
-        const p = t.identifier(o.name);
+        p = t.identifier(o.name);
         p.typeAnnotation = t.tsTypeAnnotation(o.type);
 
         return p;

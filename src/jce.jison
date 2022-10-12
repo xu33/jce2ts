@@ -380,7 +380,7 @@ method
     const inputArgs = $args.filter(o => o.out === false);
 
     const parameters = inputArgs.map(o => {
-        p = t.identifier(o.name);
+        const p = t.identifier(o.name);
         p.typeAnnotation = t.tsTypeAnnotation(o.type);
 
         return p;
